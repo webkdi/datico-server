@@ -3,6 +3,7 @@
 
 const mysql = require("mysql2");
 const ogs = require("open-graph-scraper");
+const FormData = require("form-data");
 
 const db = mysql
   .createConnection({
