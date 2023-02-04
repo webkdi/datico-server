@@ -3,7 +3,7 @@
 
 const mysql = require("mysql2");
 const ogs = require("open-graph-scraper");
-const FormData = require("form-data");
+
 
 const db = mysql
   .createConnection({
@@ -21,17 +21,20 @@ db.connect((err) => {
   console.log("Mysql connected");
 });
 
-var ymHeaders = new Headers();
+// var ymHeaders = new Headers();
 // ymHeaders.append("Cookie", "JSESSIONID=node0s0hgfezw4vy81c53iuyvx4iid14698474.node0");
-ymHeaders.append(
-  "Authorization",
-  "OAuth AQAAAAAKR6bdAAdww3IEN3DdDkkWsuP4j_ygy6E"
-);
+// ymHeaders.append(
+//   "Authorization",
+//   "OAuth AQAAAAAKR6bdAAdww3IEN3DdDkkWsuP4j_ygy6E"
+// );
 var ymRequestOptions = {
   method: "GET",
-  headers: ymHeaders,
+  headers: {
+    "Authorization": "OAuth AQAAAAAKR6bdAAdww3IEN3DdDkkWsuP4j_ygy6E",
+  },
   redirect: "follow",
 };
+
 
 // getVisitsStatsWeek();
 //yesterday
