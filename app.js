@@ -9,7 +9,7 @@ const PORT = 3000;
 
 // app.use(cors({
 //   origin: "http://localhost:8080",
-// }))
+// }));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
