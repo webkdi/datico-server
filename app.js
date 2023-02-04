@@ -2,9 +2,16 @@ const express = require ("express");
 const helmet = require("helmet");
 // const cors= require("cors");
 
+const pm2 = require('pm2');
+pm2.launchBus(function(err, bus) {
+    bus.on('log:err', function(e) {
+        //When a task throws errors
+    });
+});
+
 const app = express();
 // app.use(helmet());
-// const PORT = process.env.PORT || 3000
+// const PORT = process.env.PORT || 3000;
 const PORT = 3000;
 
 // app.use(cors({
