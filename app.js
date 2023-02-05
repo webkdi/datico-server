@@ -1,6 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
-// const cors= require("cors");
+const cors= require("cors");
 
 const pm2 = require("pm2");
 pm2.launchBus(function (err, bus) {
@@ -10,19 +10,17 @@ pm2.launchBus(function (err, bus) {
 });
 
 const app = express();
-// app.use(helmet());
-// const PORT = process.env.PORT || 3000;
-const PORT = 3000;
+app.use(helmet());
+const PORT = process.env.PORT || 3000;
 
-// app.use(cors({
-//   origin: "http://localhost:8080",
-// }));
+app.use(cors({
+  origin: "http://localhost:3000",
+}));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
-
 
 app.use(express.json());
 
