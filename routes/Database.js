@@ -1,9 +1,6 @@
-// import mysql from "mysql2";
-// import ogs from "open-graph-scraper";
-
 const mysql = require("mysql2");
 const ogs = require("open-graph-scraper");
-
+const axios = require("axios");
 
 const db = mysql
   .createConnection({
@@ -21,22 +18,8 @@ db.connect((err) => {
   console.log("Mysql connected");
 });
 
-// var ymHeaders = new Headers();
-// ymHeaders.append("Cookie", "JSESSIONID=node0s0hgfezw4vy81c53iuyvx4iid14698474.node0");
-// ymHeaders.append(
-//   "Authorization",
-//   "OAuth AQAAAAAKR6bdAAdww3IEN3DdDkkWsuP4j_ygy6E"
-// );
-var ymRequestOptions = {
-  method: "GET",
-  headers: {
-    "Authorization": "OAuth AQAAAAAKR6bdAAdww3IEN3DdDkkWsuP4j_ygy6E",
-  },
-  redirect: "follow",
-};
+var ymUid = "1631455669534331916";
 
-
-// getVisitsStatsWeek();
 //yesterday
 var yesterday = new Date();
 var lastPeriod = new Date();
@@ -58,14 +41,45 @@ async function checkLatest(ymUid) {
   return res[0];
 }
 
+var ymRequestOptions = {
+  // method: "GET",
+  headers: {
+    Authorization: "OAuth AQAAAAAKR6bdAAdww3IEN3DdDkkWsuP4j_ygy6E",
+  },
+  redirect: "follow",
+};
+
 async function getVisitsStatsDay() {
   let url = `https://api-metrika.yandex.net/stat/v1/data?ids=61404367&dimensions=ym:pv:URLPath&accuracy=full&proposed_accuracy=false&limit=1000&metrics=ym:pv:users&date1=${yesterday}`;
-  const response = await fetch(url, ymRequestOptions);
-  if (!response.ok) {
-    console.log("error: ", response.status);
+
+  try {
+    const response = await axios.get(url, ymRequestOptions);
+    const result = await response.data.data;
+
+    const delResult = await db.query(`truncate stat_visits_day`);
+
+    result.forEach((e) => {
+      let visit = { url: e.dimensions[0].name, visits: e.metrics[0] };
+      //   lastVisits.push(visit);
+      let sql = "insert into stat_visits_day SET ?";
+      db.query(sql, visit, (err, res) => {
+        if (err) throw err;
+      });
+    });
+  } catch (error) {
+    if (error.response) {
+      let { status, statusText } = error.response;
+      console.log(status, statusText);
+      response.status(status).send(statusText);
+    } else {
+      response.status(404).send(error);
+    }
   }
-  const result = await response.json();
-  const delResult = await db.query(`truncate stat_visits_day`);
+
+  // const response = await fetch(url, ymRequestOptions);
+  // if (!response.ok) {
+  //   console.log("error: ", response.status);
+  // }
 
   // .then((response) => response.json())
   // .then((result) => {
@@ -75,71 +89,78 @@ async function getVisitsStatsDay() {
   //   // });
   //   // let lastVisits = [];
   //   // console.log(result.data);
-
-  result.data.forEach((e) => {
-    let visit = { url: e.dimensions[0].name, visits: e.metrics[0] };
-    //   lastVisits.push(visit);
-    let sql = "insert into stat_visits_day SET ?";
-    db.query(sql, visit, (err, res) => {
-      if (err) throw err;
-    });
-  });
 }
 
 async function getVisitsStatsWeek() {
   let url =
     "https://api-metrika.yandex.net/stat/v1/data?ids=61404367&metrics=ym:pv:users &dimensions=ym:pv:URLPath&accuracy=full&proposed_accuracy=false&limit=1000";
-  const response = await fetch(url, ymRequestOptions);
-  if (!response.ok) {
-    console.log("error: ", response.status);
-  }
-  const result = await response.json();
-  const delResult = await db.query(`truncate stat_visits_week`);
 
-  result.data.forEach((e) => {
-    let visit = { url: e.dimensions[0].name, visits: e.metrics[0] };
-    let sql = "insert into stat_visits_week SET ?";
-    db.query(sql, visit, (err, res) => {
-      if (err) throw err;
+  try {
+    const response = await axios.get(url, ymRequestOptions);
+    const result = await response.data.data;
+    const delResult = await db.query(`truncate stat_visits_week`);
+
+    result.forEach((e) => {
+      // console.log(e.dimensions[0].name);
+      let visit = { url: e.dimensions[0].name, visits: e.metrics[0] };
+      let sql = "insert into stat_visits_week SET ?";
+      db.query(sql, visit, (err, res) => {
+        if (err) throw err;
+      });
     });
-  });
+  } catch (error) {
+    if (error.response) {
+      let { status, statusText } = error.response;
+      console.log(status, statusText);
+      res.status(status).send(statusText);
+    } else {
+      res.status(404).send(error);
+    }
+  }
+
+  // const response = await fetch(url, ymRequestOptions);
+  // if (!response.ok) {
+  //   console.log("error: ", response.status);
+  // }
+
   // })
   // .catch((error) => console.log("error", error));
 }
 
 async function getVisitsUser(ymUid) {
   let url = `https://api-metrika.yandex.net/stat/v1/data?ids=61404367&filters=ym:s:clientID==${ymUid}&metrics=ym:s:pageviews&dimensions=ym:s:dateTime,ym:s:startURLPath&date1=${lastPeriod}`;
-  const response = await fetch(url, ymRequestOptions);
-  if (!response.ok) {
-    console.log("error: ", response.status);
-  }
-  const result = await response.json();
-  const [resDelete] = await db.query(`delete from stat_user where user = ?`, [
-    ymUid,
-  ]);
 
-  // fetch(url, ymRequestOptions)
-  //   .then((response) => response.json())
-  //   .then((result) => {
-  //     let sql = `delete from stat_user where user='${ymUid}'`;
-  //     db.query(sql, (err, res) => {
-  //       if (err) throw err;
-  //     });
-  //     let sessions = [];
-  result.data.forEach((e) => {
-    let visit = {
-      url: e.dimensions[1].name,
-      user: ymUid,
-      date: e.dimensions[0].name,
-      views: e.metrics[0],
-    };
-    let sql = "insert into stat_user SET ?";
-    db.query(sql, visit, (err, res) => {
-      if (err) throw err;
+  try {
+    const response = await axios.get(url, ymRequestOptions);
+    const result = await response.data.data;
+
+    const [resDelete] = await db.query(`delete from stat_user where user = ?`, [
+      ymUid,
+    ]);
+
+    result.forEach((e) => {
+      let visit = {
+        url: e.dimensions[1].name,
+        user: ymUid,
+        date: e.dimensions[0].name,
+        views: e.metrics[0],
+      };
+      let sql = "insert into stat_user SET ?";
+      db.query(sql, visit, (err, res) => {
+        if (err) throw err;
+      });
     });
-  });
-  // })
-  // .catch((error) => console.log("error", error));
+
+  } catch (error) {
+    if (error.response) {
+      let { status, statusText } = error.response;
+      console.log(status, statusText);
+    } else {
+      // response.status(404).send(error);
+      console.log('unknown error');
+    }
+  }
+
 }
 
 async function getSuggestions() {
@@ -168,9 +189,7 @@ async function getSuggestions() {
 }
 
 async function updateOgLinks() {
-  const [res] = await db.query(
-    `SELECT id, url FROM datico.stat_links`
-  );
+  const [res] = await db.query(`SELECT id, url FROM datico.stat_links`);
   for (const e of res) {
     console.log(e);
     const og = await getOg(e.url);
