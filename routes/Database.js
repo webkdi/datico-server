@@ -18,14 +18,12 @@ db.connect((err) => {
   console.log("Mysql connected");
 });
 
-var ymUid = "1631455669534331916";
-
 //yesterday
 var yesterday = new Date();
 var lastPeriod = new Date();
 yesterday.setDate(yesterday.getDate() - 1);
 yesterday = yesterday.toISOString().split("T")[0]; //YYYY-MM-DD
-lastPeriod.setMonth(lastPeriod.getMonth() - 6);
+lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
 async function checkLatest(ymUid) {
@@ -128,28 +126,16 @@ async function getVisitsStatsWeek() {
 }
 
 async function getVisitsUser(ymUid) {
-  let url = `https://api-metrika.yandex.net/stat/v1/data?ids=61404367&filters=ym:s:clientID==${ymUid}&metrics=ym:s:pageviews&dimensions=ym:s:dateTime,ym:s:startURLPath&date1=${lastPeriod}`;
 
+  console.log('start update user stats');
+
+  let url = `https://api-metrika.yandex.net/stat/v1/data?ids=61404367&filters=ym:s:clientID==${ymUid}&metrics=ym:s:pageviews&dimensions=ym:s:dateTime,ym:s:startURLPath&date1=${lastPeriod}`;
+  console.log(url);
+
+  var result;
   try {
     const response = await axios.get(url, ymRequestOptions);
-    const result = await response.data.data;
-
-    const [resDelete] = await db.query(`delete from stat_user where user = ?`, [
-      ymUid,
-    ]);
-
-    result.forEach((e) => {
-      let visit = {
-        url: e.dimensions[1].name,
-        user: ymUid,
-        date: e.dimensions[0].name,
-        views: e.metrics[0],
-      };
-      let sql = "insert into stat_user SET ?";
-      db.query(sql, visit, (err, res) => {
-        if (err) throw err;
-      });
-    });
+    result = await response.data.data;
 
   } catch (error) {
     if (error.response) {
@@ -160,6 +146,23 @@ async function getVisitsUser(ymUid) {
       console.log('unknown error');
     }
   }
+
+  const [resDelete] = await db.query(`delete from stat_user where user = ?`, [
+    ymUid,
+  ]);
+
+  result.forEach((e) => {
+    let visit = {
+      url: e.dimensions[1].name,
+      user: ymUid,
+      date: e.dimensions[0].name,
+      views: e.metrics[0],
+    };
+    let sql = "insert into stat_user SET ?";
+    db.query(sql, visit, (err, res) => {
+      if (err) throw err;
+    });
+  });
 
 }
 
@@ -181,7 +184,7 @@ async function getSuggestions() {
       union
       (SELECT 'popWeek' as type, url, og_title, og_description, og_image
     FROM datico.stat_links 
-    where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 1), url)>0)
+    where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 2), url)>0)
       `
   );
   // console.log(res);
@@ -189,7 +192,7 @@ async function getSuggestions() {
 }
 
 async function updateOgLinks() {
-  const [res] = await db.query(`SELECT id, url FROM datico.stat_links`);
+  const [res] = await db.query(`SELECT id, url FROM datico.stat_links WHERE og_image is null or og_image=''`);
   for (const e of res) {
     console.log(e);
     const og = await getOg(e.url);

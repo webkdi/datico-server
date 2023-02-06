@@ -2,7 +2,7 @@ const express = require ("express");
 const db = require("./Database")
 const router = express.Router();
 
-var ymUid = "1631455669534331916";
+var ymUid = "1671725728941382753";
 //data are current?
 async function updateStatIfNeeded() {
   const latest = await db.checkLatest(ymUid);
@@ -11,7 +11,7 @@ async function updateStatIfNeeded() {
   const nowTime = new Date();
   const diffUser = Math.floor((nowTime - latestDateUser) / 1000 / 60 / 60);
   const diffDay = Math.floor((nowTime - latestDateDay) / 1000 / 60 / 60);
-  console.log(nowTime, latestDateDay, diffDay, latestDateUser, diffUser);
+  console.log('now:',nowTime, 'yandex', latestDateDay, diffDay, 'user:', latestDateUser, diffUser);
 
   if (diffUser >= 1) {
     db.getVisitsUser(ymUid);
