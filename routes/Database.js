@@ -184,7 +184,7 @@ async function getSuggestions() {
       union
       (SELECT 'popWeek' as type, url, og_title, og_description, og_image
     FROM datico.stat_links 
-    where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 2), url)>0)
+    where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 1), url)>0)
       `
   );
   // console.log(res);
