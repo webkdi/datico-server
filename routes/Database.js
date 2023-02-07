@@ -126,8 +126,7 @@ async function getVisitsStatsWeek() {
 }
 
 async function getVisitsUser(ymUid) {
-
-  console.log('start update user stats');
+  console.log("start update user stats");
 
   let url = `https://api-metrika.yandex.net/stat/v1/data?ids=61404367&filters=ym:s:clientID==${ymUid}&metrics=ym:s:pageviews&dimensions=ym:s:dateTime,ym:s:startURLPath&date1=${lastPeriod}`;
   console.log(url);
@@ -136,14 +135,13 @@ async function getVisitsUser(ymUid) {
   try {
     const response = await axios.get(url, ymRequestOptions);
     result = await response.data.data;
-
   } catch (error) {
     if (error.response) {
       let { status, statusText } = error.response;
       console.log(status, statusText);
     } else {
       // response.status(404).send(error);
-      console.log('unknown error');
+      console.log("unknown error");
     }
   }
 
@@ -163,7 +161,6 @@ async function getVisitsUser(ymUid) {
       if (err) throw err;
     });
   });
-
 }
 
 async function getSuggestions() {
@@ -182,9 +179,12 @@ async function getSuggestions() {
     FROM datico.stat_links 
     where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 1), url)>0)
       union
-      (SELECT 'popWeek' as type, url, og_title, og_description, og_image
-    FROM datico.stat_links 
-    where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 1), url)>0)
+    (SELECT 'popWeek' AS type, a.url, og_title, og_description, og_image
+    FROM datico.stat_links a JOIN (
+      SELECT url FROM datico.stat_visits_day 
+      WHERE locate("/articles/",url)>0
+      order by visits desc limit 3
+    ) b ON a.url LIKE CONCAT('%',b.url,'%'))
       `
   );
   // console.log(res);
@@ -192,7 +192,9 @@ async function getSuggestions() {
 }
 
 async function updateOgLinks() {
-  const [res] = await db.query(`SELECT id, url FROM datico.stat_links WHERE og_image is null or og_image=''`);
+  const [res] = await db.query(
+    `SELECT id, url FROM datico.stat_links WHERE og_image is null or og_image=''`
+  );
   for (const e of res) {
     console.log(e);
     const og = await getOg(e.url);
