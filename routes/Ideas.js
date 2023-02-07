@@ -35,7 +35,7 @@ router.post("/update-og", async (req, res) => {
 });
 
 router.get("/get", async (req, res) => {
-  const check = await updateStatIfNeeded();
+  const check = updateStatIfNeeded();
   const ideas = await db.getSuggestions();
   res.send(ideas);
 });
