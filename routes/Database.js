@@ -129,7 +129,6 @@ async function getVisitsUser(ymUid) {
   console.log("start update user stats");
 
   let url = `https://api-metrika.yandex.net/stat/v1/data?ids=61404367&filters=ym:s:clientID==${ymUid}&metrics=ym:s:pageviews&dimensions=ym:s:dateTime,ym:s:startURLPath&date1=${lastPeriod}`;
-  console.log(url);
 
   var result;
   try {
@@ -164,8 +163,7 @@ async function getVisitsUser(ymUid) {
 }
 
 async function getSuggestions() {
-  const [res] = await db.query(
-    `
+  let sql = `
     (SELECT 'event'as type, url, og_title, og_description, og_image
       FROM datico.stat_links 
       where type='event' and dateof>NOW() order by dateof limit 1)
@@ -174,7 +172,7 @@ async function getSuggestions() {
       FROM datico.stat_links 
       where type='article' and og_image <>'' 
       order by rand() limit 1)
-	  union
+    union
     (SELECT 'popYesterday' as type, url, og_title, og_description, og_image
     FROM datico.stat_links 
     where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 1), url)>0)
@@ -185,10 +183,14 @@ async function getSuggestions() {
       WHERE locate("/articles/",url)>0
       order by visits desc limit 3
     ) b ON a.url LIKE CONCAT('%',b.url,'%'))
-      `
-  );
-  // console.log(res);
-  return res;
+  `;
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    await db.rollback();
+    console.log(err);
+  } 
 }
 
 async function updateOgLinks() {
