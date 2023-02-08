@@ -30,12 +30,12 @@ async function updateStatIfNeeded() {
 
 //SERVICING overnight: daily update of files
 router.post("/update-og", async (req, res) => {
+  const check = updateStatIfNeeded();
   const update = await db.updateOgLinks();
   res.status(200).send("data updated");
 });
 
 router.get("/get", async (req, res) => {
-  const check = updateStatIfNeeded();
   const ideas = await db.getSuggestions();
   res.send(ideas);
 });
