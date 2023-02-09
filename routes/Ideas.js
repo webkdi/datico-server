@@ -1,4 +1,4 @@
-const express = require ("express");
+const express = require("express");
 const db = require("./Database");
 const tg = require("../components/TelegramFunctions");
 const router = express.Router();
@@ -12,7 +12,16 @@ async function updateStatIfNeeded() {
   const nowTime = new Date();
   const diffUser = Math.floor((nowTime - latestDateUser) / 1000 / 60 / 60);
   const diffDay = Math.floor((nowTime - latestDateDay) / 1000 / 60 / 60);
-  console.log('now:',nowTime, 'yandex', latestDateDay, diffDay, 'user:', latestDateUser, diffUser);
+  console.log(
+    "now:",
+    nowTime,
+    "yandex",
+    latestDateDay,
+    diffDay,
+    "user:",
+    latestDateUser,
+    diffUser
+  );
 
   if (diffUser >= 1) {
     db.getVisitsUser(ymUid);
@@ -37,7 +46,13 @@ router.post("/update", async (req, res) => {
 });
 
 router.post("/get", async (req, res) => {
-  tg.sendToTelegram(req.body);
+
+  if (JSON.stringify(req.body) !== "{}") {
+    tg.sendToTelegram(req.body);
+  } else {
+    console.log("no data");
+  }
+
   const ideas = await db.getSuggestions();
   res.send(ideas);
 });

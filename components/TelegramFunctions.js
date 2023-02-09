@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
+var FormData = require('form-data');
 
 async function sendToTelegram(body) {
     const id = uuidv4();
