@@ -3,20 +3,25 @@ const ogs = require("open-graph-scraper");
 const axios = require("axios");
 
 const db = mysql
-  .createConnection({
+  .createPool({
     host: "194.67.105.122",
     user: "datico",
     password: "oA4rG5kK0d",
     database: "datico",
+    waitForConnections: true,
+    connectionLimit: 10,
+    maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+    idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
+    queueLimit: 0
   })
   .promise();
 
-db.connect((err) => {
-  if (err) {
-    throw err;
-  }
-  console.log("Mysql connected");
-});
+// db.connect((err) => {
+//   if (err) {
+//     throw err;
+//   }
+//   console.log("Mysql connected");
+// });
 
 //yesterday
 var yesterday = new Date();
@@ -74,19 +79,6 @@ async function getVisitsStatsDay() {
     }
   }
 
-  // const response = await fetch(url, ymRequestOptions);
-  // if (!response.ok) {
-  //   console.log("error: ", response.status);
-  // }
-
-  // .then((response) => response.json())
-  // .then((result) => {
-  //   const res = await db.query(`truncate stat_visits_day`);
-  //   // db.query(sql, (err, res) => {
-  //   //   if (err) throw err;
-  //   // });
-  //   // let lastVisits = [];
-  //   // console.log(result.data);
 }
 
 async function getVisitsStatsWeek() {
@@ -115,14 +107,6 @@ async function getVisitsStatsWeek() {
       res.status(404).send(error);
     }
   }
-
-  // const response = await fetch(url, ymRequestOptions);
-  // if (!response.ok) {
-  //   console.log("error: ", response.status);
-  // }
-
-  // })
-  // .catch((error) => console.log("error", error));
 }
 
 async function getVisitsUser(ymUid) {
@@ -186,7 +170,6 @@ async function getSuggestions() {
   `;
   try {
     const [res] = await db.query(sql);
-    await db.end();
     return res;
   } catch (err) {
     await db.rollback();
