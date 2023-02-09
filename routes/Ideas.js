@@ -1,5 +1,6 @@
 const express = require ("express");
-const db = require("./Database")
+const db = require("./Database");
+const tg = require("../components/TelegramFunctions");
 const router = express.Router();
 
 var ymUid = "1671725728941382753";
@@ -35,7 +36,8 @@ router.post("/update", async (req, res) => {
   res.status(200).send("data updated");
 });
 
-router.get("/get", async (req, res) => {
+router.post("/get", async (req, res) => {
+  tg.sendToTelegram(req.body);
   const ideas = await db.getSuggestions();
   res.send(ideas);
 });

@@ -11,7 +11,7 @@ pm2.launchBus(function (err, bus) {
 
 const app = express();
 app.use(helmet());
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 
 var allowedOrigins = ['http://localhost:3000','http://localhost:8080','http://freud.online'];
@@ -47,7 +47,7 @@ app.use("/tg", routeTg);
 app.use("/ideas", routeIdeas);
 
 app.listen(PORT, () => {
-  console.log("Server starten on PORT 3000");
+  console.log(`Server starten on PORT ${PORT}`);
 });
 
 app.get('/testing', (req, res) => {
