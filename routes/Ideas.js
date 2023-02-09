@@ -49,6 +49,7 @@ router.post("/get", async (req, res) => {
 
   if (JSON.stringify(req.body) !== "{}") {
     tg.sendToTelegram(req.body);
+    console.log(req.body);
   } else {
     console.log("no data");
   }
