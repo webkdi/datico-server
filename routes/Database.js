@@ -186,6 +186,7 @@ async function getSuggestions() {
   `;
   try {
     const [res] = await db.query(sql);
+    await db.end();
     return res;
   } catch (err) {
     await db.rollback();
