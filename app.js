@@ -11,10 +11,10 @@ pm2.launchBus(function (err, bus) {
 
 const app = express();
 app.use(helmet());
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 
-var allowedOrigins = ['http://localhost:3000','http://localhost:8080','http://freud.online'];
+var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','http://freud.online','https://freud.online'];
 app.use(cors({
   origin: function(origin, callback){
     // allow requests with no origin 
