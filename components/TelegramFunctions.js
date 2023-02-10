@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 var FormData = require('form-data');
+const axios = require("axios");
 
 async function sendToTelegram(body) {
     const id = uuidv4();
@@ -26,16 +27,17 @@ async function sendToTelegram(body) {
   
     let response;
     try {
-      response = await fetch(url, {
+      response = await axios(url, {
         method: "POST",
-        body: data,
+        data: data,
       });
     } catch (error) {
       stat = 400;
       return { status: stat, response: error };
     }
   
-    const result = await response.text();
+    // console.log(response.status, response.statusText, response.data.result);
+    const result = await response.data.result;
   
     if (!response.ok) {
       // console.log("error: ", response);
