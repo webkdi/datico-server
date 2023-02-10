@@ -14,7 +14,7 @@ app.use(helmet());
 const PORT = process.env.PORT || 10000;
 
 
-var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','http://freud.online','https://freud.online'];
+var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','https://freud.online','https://app.freud.online'];
 app.use(cors({
   origin: function(origin, callback){
     // allow requests with no origin 
@@ -29,9 +29,9 @@ app.use(cors({
   }
 }));
 
-app.use(cors({
-  origin: "http://localhost:3000",
-}));
+// app.use(cors({
+//   origin: "http://localhost:3000",
+// }));
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
