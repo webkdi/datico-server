@@ -11,7 +11,7 @@ pm2.launchBus(function (err, bus) {
 
 const app = express();
 app.use(helmet());
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 
 var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','http://freud.online','https://freud.online'];
