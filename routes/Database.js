@@ -208,6 +208,18 @@ async function getOg(url) {
   // console.log('response:', response); // This contains the HTML of page
 }
 
+async function getRandomQuote() {
+  let sql = `
+  SELECT * FROM datico.quotes ORDER BY RAND() LIMIT 1
+  `;
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  } 
+}
+
 module.exports = {
   checkLatest,
   getVisitsStatsDay,
@@ -215,6 +227,7 @@ module.exports = {
   getVisitsUser,
   getSuggestions,
   updateOgLinks,
+  getRandomQuote,
 };
 
 // console.log(module);

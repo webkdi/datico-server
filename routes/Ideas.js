@@ -59,4 +59,9 @@ router.post("/get", async (req, res) => {
   res.send(ideas);
 });
 
+router.get("/randomquote", async (req, res) => {
+  const quote = await db.getRandomQuote();
+  res.send(quote);
+});
+
 module.exports = router;
