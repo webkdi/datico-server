@@ -106,10 +106,13 @@ async function updateLinks() {
 
 //SERVICING overnight: daily update of files
 router.post("/", async (req, res) => {
+
+  console.log(Date().toString(), "update requested");
+
   const links = await updateLinks();
   const check = await updateStatIfNeeded();
   const update = await db.updateOgLinks();
-  console.log("data updated");
+  console.log(Date().toString(), "update executed");
   res.status(200).send("data updated");
 });
 

@@ -236,7 +236,33 @@ async function getSuggestions() {
   `;
   try {
     const [res] = await db.query(sql);
-    return res;
+
+    //remove dublicates, add header
+    const seen = new Set();
+    const uniqueObjects = res.filter((el) => {
+      const duplicate = seen.has(el.url);
+      seen.add(el.url);
+      switch (el.type) {
+        case 'event':
+          el.teaser='Ближайшая встреча';
+          break;
+        case 'articleRandom':
+          el.teaser='Может, Вам будет интересно';
+          break;
+        case 'popYesterday':
+          el.teaser='Самое популярное вчера';
+          break;
+        case 'popWeek':
+          el.teaser='Популярное на неделе';
+          break;
+        default:
+          el.teaser='Самое популярное';
+      }
+      return !duplicate;
+    });
+
+
+    return uniqueObjects;
   } catch (err) {
     // await db.rollback();
     console.log(err);

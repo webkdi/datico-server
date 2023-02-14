@@ -7,10 +7,10 @@ router.post("/get", async (req, res) => {
 
   if (JSON.stringify(req.body) !== "{}") {
     tg.sendToTelegram(req.body);
-    console.log(req.body);
+    console.log(Date().toString(),'get/ data received',JSON.stringify(req.body));
     // console.log(tgResponse);
   } else {
-    console.log("no data");
+    console.log(Date().toString(), "get / no data received");
   }
 
   const ideas = await db.getSuggestions();
