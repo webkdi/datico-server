@@ -12,16 +12,23 @@ const db = mysql
     connectionLimit: 10,
     maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
     idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-    queueLimit: 0
+    queueLimit: 0,
   })
   .promise();
 
-// db.connect((err) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log("Mysql connected");
-// });
+const dbFreud = mysql
+  .createPool({
+    host: "194.67.105.122",
+    user: "freud_remote",
+    password: "dH1dT4uE1p",
+    database: "freud",
+    waitForConnections: true,
+    connectionLimit: 10,
+    maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
+    idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
+    queueLimit: 0,
+  })
+  .promise();
 
 //yesterday
 var yesterday = new Date();
@@ -30,6 +37,64 @@ yesterday.setDate(yesterday.getDate() - 1);
 yesterday = yesterday.toISOString().split("T")[0]; //YYYY-MM-DD
 lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
+
+async function getFreudLinks() {
+  const [res] = await dbFreud.query(
+  `
+  SELECT
+  'event' AS type
+  ,CONCAT('https://freud.online/events/',a.cluster_id,'-',b.alias) AS url
+  ,a.start AS dateof
+  ,CAST(MD5(CONCAT(a.start,b.title,b.description,b.alias )) AS CHAR(99)) as hashcheck
+  FROM (
+      SELECT cluster_id, start
+      FROM freud.main_social_events_meta
+      WHERE start_gmt> CURRENT_TIME()
+  ) AS a JOIN freud.main_social_clusters AS b 
+  ON a.cluster_id=b.id
+  UNION
+  SELECT 
+  'article' AS type
+  ,CONCAT('https://freud.online/articles/',permalink) AS url
+  ,modified AS dateof
+  ,CAST(MD5(CONCAT(modified,title,permalink,intro,image,media)) AS CHAR(99)) AS hashcheck
+  FROM freud.main_easyblog_post
+  WHERE published=1
+  `
+  );
+  return res;
+}
+
+async function deleteLink(id) {
+  const [res] = await db.query(`delete from datico.stat_links where id = ?`, [
+    id,
+  ]);
+  return res;
+}
+
+async function createLink(object) {
+  const sql = `
+    INSERT INTO datico.stat_links(type, url, dateof, hashcheck) 
+    VALUES ('${object.type}', '${object.url}', '${object.dateof.toISOString()}', '${object.hashcheck}')`;
+  // console.log(sql);  
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getSavedLinks() {
+  let sql = "SELECT * FROM datico.stat_links";
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    // await db.rollback();
+    console.log(err);
+  }
+}
 
 async function checkLatest(ymUid) {
   const [res] = await db.query(
@@ -78,7 +143,6 @@ async function getVisitsStatsDay() {
       response.status(404).send(error);
     }
   }
-
 }
 
 async function getVisitsStatsWeek() {
@@ -162,10 +226,12 @@ async function getSuggestions() {
     where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 1), url)>0)
       union
     (SELECT 'popWeek' AS type, a.url, og_title, og_description, og_image
-    FROM datico.stat_links a JOIN (
-      SELECT url FROM datico.stat_visits_day 
-      WHERE locate("/articles/",url)>0
-      order by visits desc limit 3
+      FROM datico.stat_links a JOIN (
+        SELECT * FROM (
+            SELECT url FROM datico.stat_visits_week 
+            WHERE locate("/articles/",url)>0
+            order by visits desc limit 20
+        ) a ORDER BY RAND() LIMIT 3
     ) b ON a.url LIKE CONCAT('%',b.url,'%'))
   `;
   try {
@@ -174,15 +240,19 @@ async function getSuggestions() {
   } catch (err) {
     // await db.rollback();
     console.log(err);
-  } 
+  }
 }
 
 async function updateOgLinks() {
   const [res] = await db.query(
-    `SELECT id, url FROM datico.stat_links WHERE og_image is null or og_image=''`
+    `SELECT id, url FROM datico.stat_links 
+    WHERE 
+      (og_image='' and og_title='')`
+
   );
+  let i = 0;
+  const todo = res.length;
   for (const e of res) {
-    console.log(e);
     const og = await getOg(e.url);
     const ogData = {
       og_title: og.ogTitle,
@@ -195,6 +265,8 @@ async function updateOgLinks() {
     `,
       [ogData, e.id]
     );
+    i += 1;
+    console.log('update OG', e.id, e.url, 'сделано', i, 'из', todo);
   }
 }
 
@@ -217,7 +289,7 @@ async function getRandomQuote() {
     return res;
   } catch (err) {
     console.log(err);
-  } 
+  }
 }
 
 module.exports = {
@@ -228,6 +300,11 @@ module.exports = {
   getSuggestions,
   updateOgLinks,
   getRandomQuote,
+  getFreudLinks,
+  getSavedLinks,
+  createLink,
+  deleteLink,
+  getOg,
 };
 
 // console.log(module);

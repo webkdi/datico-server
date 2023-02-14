@@ -38,9 +38,11 @@ app.use(express.json());
 
 const routeTg = require("./routes/Telegram");
 const routeIdeas = require("./routes/Ideas");
+const routeUpdate = require("./routes/Update");
 
 app.use("/tg", routeTg);
 app.use("/ideas", routeIdeas);
+app.use("/update", routeUpdate);
 
 app.listen(PORT, () => {
   console.log(`Server starten on PORT ${PORT}`);
