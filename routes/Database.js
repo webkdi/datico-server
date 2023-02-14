@@ -40,7 +40,7 @@ lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
 async function getFreudLinks() {
   const [res] = await dbFreud.query(
-  `
+    `
   SELECT
   'event' AS type
   ,CONCAT('https://freud.online/events/',a.cluster_id,'-',b.alias) AS url
@@ -75,8 +75,10 @@ async function deleteLink(id) {
 async function createLink(object) {
   const sql = `
     INSERT INTO datico.stat_links(type, url, dateof, hashcheck) 
-    VALUES ('${object.type}', '${object.url}', '${object.dateof.toISOString()}', '${object.hashcheck}')`;
-  // console.log(sql);  
+    VALUES ('${object.type}', '${
+    object.url
+  }', '${object.dateof.toISOString()}', '${object.hashcheck}')`;
+  // console.log(sql);
   try {
     const [res] = await db.query(sql);
     return res;
@@ -237,30 +239,41 @@ async function getSuggestions() {
   try {
     const [res] = await db.query(sql);
 
-    //remove dublicates, add header
+    //remove url dublicates
     const seen = new Set();
-    const uniqueObjects = res.filter((el) => {
+    const uniqueUrl = res.filter((el) => {
       const duplicate = seen.has(el.url);
       seen.add(el.url);
-      switch (el.type) {
-        case 'event':
-          el.teaser='Ближайшая встреча';
-          break;
-        case 'articleRandom':
-          el.teaser='Может, Вам будет интересно';
-          break;
-        case 'popYesterday':
-          el.teaser='Самое популярное вчера';
-          break;
-        case 'popWeek':
-          el.teaser='Популярное на неделе';
-          break;
-        default:
-          el.teaser='Самое популярное';
-      }
       return !duplicate;
     });
-
+    //take only one entry per topic
+    seen.clear();
+    let uniqueObjects = uniqueUrl.filter((el) => {
+      const duplicate = seen.has(el.type);
+      seen.add(el.type);
+      return !duplicate;
+    });
+    //att teaser text
+    uniqueObjects.forEach((el) => {
+      switch (el.type) {
+        case "event":
+          el.teaser = "Ближайшая встреча";
+          break;
+        case "articleRandom":
+          el.teaser = "Может, Вам будет интересно";
+          break;
+        case "popYesterday":
+          el.teaser = "Самое популярное вчера";
+          break;
+        case "popWeek":
+          el.teaser = "Популярное на неделе";
+          break;
+        default:
+          el.teaser = "Самое популярное";
+      }
+    });
+    //random order
+    uniqueObjects.sort(() => Math.random() - 0.5)
 
     return uniqueObjects;
   } catch (err) {
@@ -274,7 +287,6 @@ async function updateOgLinks() {
     `SELECT id, url FROM datico.stat_links 
     WHERE 
       (og_image='' and og_title='')`
-
   );
   let i = 0;
   const todo = res.length;
@@ -292,7 +304,7 @@ async function updateOgLinks() {
       [ogData, e.id]
     );
     i += 1;
-    console.log('update OG', e.id, e.url, 'сделано', i, 'из', todo);
+    console.log("update OG", e.id, e.url, "сделано", i, "из", todo);
   }
 }
 
