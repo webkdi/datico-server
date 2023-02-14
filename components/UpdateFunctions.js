@@ -1,8 +1,4 @@
-const express = require("express");
-const db = require("./Database");
-const router = express.Router();
-const upd = require("../components/UpdateFunctions")
-
+const db = require("../routes/Database");
 
 var ymUid = "1671725728941382753";
 //data are current?
@@ -45,9 +41,7 @@ async function updateLinks() {
   const statLinks = await db.getSavedLinks();
 
   const linksCompare = freudLinks.map((newEv) => {
-    const oldFound = statLinks.filter(
-      (oldEv) => oldEv["url"] === newEv["url"]
-    );
+    const oldFound = statLinks.filter((oldEv) => oldEv["url"] === newEv["url"]);
     if (oldFound.length > 0) {
       newEv.id = oldFound[0].id;
       newEv.hashcheckOld = oldFound[0].hashcheck;
@@ -68,52 +62,49 @@ async function updateLinks() {
     return el.id > 0 && el.hashcheck === el.hashcheckOld;
   });
 
-
   let linksTest = linksCompare.filter((el) => {
-    // return el.id==1354; 
-    return el.id>1350;
+    // return el.id==1354;
+    return el.id > 1350;
   });
 
-  console.log("new:", linksNew.length, "delete: ", linksDelete.length, "unchanged: ", linksUnchanged.length);
+  console.log(
+    "new:",
+    linksNew.length,
+    "delete: ",
+    linksDelete.length,
+    "unchanged: ",
+    linksUnchanged.length
+  );
 
   linksNew.forEach((event) => {
     db.createLink(event);
-    console.log(
-      "n",
-      event.url.replace("https://freud.online/", "")
-    );
+    console.log("n", event.url.replace("https://freud.online/", ""));
   });
   linksDelete.forEach((event) => {
     db.deleteLink(event.id);
-    console.log(
-      "d",
-      event.id,
-      event.url.replace("https://freud.online/", "")
-    );
+    console.log("d", event.id, event.url.replace("https://freud.online/", ""));
   });
 
-  var urlInStat = new Set(freudLinks.map(f => f.url));
-  var deletedOnFreudSide = statLinks.filter(f => !urlInStat.has(f.url));
+  var urlInStat = new Set(freudLinks.map((f) => f.url));
+  var deletedOnFreudSide = statLinks.filter((f) => !urlInStat.has(f.url));
   deletedOnFreudSide.forEach((link) => {
     db.deleteLink(link.id);
-    console.log(
-      "rem",
-      link.id,
-      link.url.replace("https://freud.online/", "")
-    );
+    console.log("rem", link.id, link.url.replace("https://freud.online/", ""));
   });
-
 }
 
-
 //SERVICING overnight: daily update of files
-router.post("/", async (req, res) => {
+async function updateProcedure() {
+  console.log(Date().toString(), "update requested");
 
-  const updateAll = await upd.updateProcedure();
-  res.send(`data updated`);
-  
-  // updateAll.status(200).send("data updated");
+  const links = await updateLinks();
+  const check = await updateStatIfNeeded();
+  const update = await db.updateOgLinks();
+  console.log(Date().toString(), "update executed");
 
-});
+  return true;
+}
 
-module.exports = router;
+module.exports = {
+  updateProcedure,
+};

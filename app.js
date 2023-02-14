@@ -1,6 +1,8 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors= require("cors");
+var cron = require('node-cron');
+const upd = require("./components/UpdateFunctions")
 
 const pm2 = require("pm2");
 pm2.launchBus(function (err, bus) {
@@ -14,7 +16,7 @@ app.use(helmet());
 const PORT = process.env.PORT || 10000;
 
 
-var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','https://freud.online','https://app.freud.online'];
+var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','https://freud.online','https://app.freud.online','http://194.67.105.122'];
 app.use(cors({
   origin: function(origin, callback){
     // allow requests with no origin 
@@ -51,3 +53,22 @@ app.listen(PORT, () => {
 app.get('/testing', (req, res) => {
   res.send('Hello World!')
 })
+
+//updates
+var updateStats = cron.schedule('1 1 * * * *', () =>  {
+  console.log('cron running');
+  upd.updateProcedure();
+}, {
+  scheduled: false
+});
+updateStats.start();
+// # ┌────────────── second (optional)
+// # │ ┌──────────── minute
+// # │ │ ┌────────── hour
+// # │ │ │ ┌──────── day of month
+// # │ │ │ │ ┌────── month
+// # │ │ │ │ │ ┌──── day of week
+// # │ │ │ │ │ │
+// # │ │ │ │ │ │
+// # * * * * * *
+//  '*/15 * * * * *' every 15 seconds
