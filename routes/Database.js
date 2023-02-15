@@ -214,30 +214,36 @@ async function getVisitsUser(ymUid) {
 
 async function getSuggestions() {
   let sql = `
-    (SELECT 'event'as type, url, og_title, og_description, og_image
+  (
+    SELECT 'event'as type, url, og_title, og_description, og_image
       FROM datico.stat_links 
-      where type='event' and dateof>NOW() order by dateof limit 1)
-    union
-    (SELECT 'articleRandom', url, og_title, og_description, og_image
+    where type='event' and dateof>NOW() order by dateof limit 1
+    ) UNION (
+    SELECT 'articleRandom', url, og_title, og_description, og_image
       FROM datico.stat_links 
       where type='article' and og_image <>'' 
-      order by rand() limit 1)
-    union
-    (SELECT 'popYesterday' as type, url, og_title, og_description, og_image
-    FROM datico.stat_links 
-    where locate((SELECT url FROM stat_visits_day where url<>'/'order by visits desc limit 1), url)>0)
-      union
-    (SELECT 'popWeek' AS type, a.url, og_title, og_description, og_image
+      order by rand() limit 1
+    ) UNION (
+    SELECT 'popYesterday' AS type, a.url, og_title, og_description, og_image
       FROM datico.stat_links a JOIN (
-        SELECT * FROM (
-            SELECT url FROM datico.stat_visits_week 
-            WHERE locate("/articles/",url)>0
-            order by visits desc limit 20
-        ) a ORDER BY RAND() LIMIT 3
-    ) b ON a.url LIKE CONCAT('%',b.url,'%'))
+      SELECT url FROM datico.stat_visits_day
+          WHERE locate("/articles/",url)>0
+          order by visits desc limit 1
+      ) b ON a.url LIKE CONCAT('%',b.url,'%')
+    ) UNION (
+    SELECT 'popWeek' AS type, a.url, og_title, og_description, og_image
+        FROM datico.stat_links a JOIN (
+          SELECT * FROM (
+              SELECT url FROM datico.stat_visits_week 
+              WHERE locate("/articles/",url)>0
+              ORDER BY visits ASC LIMIT 10
+          ) a ORDER BY RAND() LIMIT 3
+      ) b ON a.url LIKE CONCAT('%',b.url,'%')
+    )
   `;
   try {
     const [res] = await db.query(sql);
+    console.log(res);
 
     //remove url dublicates
     const seen = new Set();
@@ -263,17 +269,17 @@ async function getSuggestions() {
           el.teaser = "Может, Вам будет интересно";
           break;
         case "popYesterday":
-          el.teaser = "Самое популярное вчера";
+          el.teaser = "Популярная статья сегодня";
           break;
         case "popWeek":
-          el.teaser = "Популярное на неделе";
+          el.teaser = "Самородок недели";
           break;
         default:
           el.teaser = "Самое популярное";
       }
     });
     //random order
-    uniqueObjects.sort(() => Math.random() - 0.5)
+    uniqueObjects.sort(() => Math.random() - 0.5);
 
     return uniqueObjects;
   } catch (err) {
