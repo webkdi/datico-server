@@ -243,7 +243,6 @@ async function getSuggestions() {
   `;
   try {
     const [res] = await db.query(sql);
-    console.log(res);
 
     //remove url dublicates
     const seen = new Set();
