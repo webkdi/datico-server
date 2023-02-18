@@ -68,22 +68,23 @@ function optimizeImage(path) {
   // Set the new width and height for the image
   const maxWidth = 800;
   const maxHeight = 600;
+  const quality = 60;
 
   // Use the sharp library to resize the image
   sharp(imagePath)
     .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
+    .jpeg({ quality: quality }) // or webp({ quality: quality }) for WebP format
     .toBuffer((err, buffer, info) => {
       if (err) {
         console.error(err);
       } else if (info.format) {
-        sharp(buffer)
-          .toFile(imagePath, (err, info) => {
-            if (err) {
-              console.error(err);
-            } else {
-              console.log(info);
-            }
-          });
+        sharp(buffer).toFile(imagePath, (err, info) => {
+          if (err) {
+            console.error(err);
+          } else {
+            console.log(info);
+          }
+        });
       } else {
         console.error(`Invalid input: ${imagePath} is not a valid image file`);
       }
