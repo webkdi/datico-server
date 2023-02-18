@@ -39,17 +39,17 @@ lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
 async function storeImageData(data) {
-  // const sql = `
-  //   INSERT INTO datico.stat_links(type, url, dateof, hashcheck) 
-  //   VALUES ('${object.type}', '${object.url}', '${object.dateof.toISOString()}', '${object.hashcheck}')`;
-  // // console.log(sql);
-  // try {
-  //   const [res] = await db.query(sql);
-  //   return res;
-  // } catch (err) {
-  //   console.log(err);
-  // }
-
+  const sql = `
+  INSERT IGNORE INTO table(path,name,type,size_before,hash)
+  VALUES ('${object.folder}', '${object.fileName}', '${object.fileType}', ${fileSizeInKB}, '${object.hash}')
+  `;
+  // console.log(sql);
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 async function getFreudLinks() {
@@ -385,6 +385,7 @@ module.exports = {
   deleteLink,
   getOg,
   getDaticoQuiz,
+  storeImageData,
 };
 
 // console.log(module);

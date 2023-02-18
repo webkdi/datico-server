@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const db = require("../routes/Database");
 
 const baseDir = "/var/www/dimitri.korenev/data/www/freud.online/";
 const searchDirs = ["media", "images"].map((dir) => path.join(baseDir, dir));
@@ -50,6 +51,9 @@ function getListOfImages() {
   });
   const json = JSON.stringify(fileList, null, 2);
   fs.writeFileSync("image_files.json", json);
+  fileList.slice(0,30).forEach((file) => {
+    db.storeImageData(file);
+  })
   return fileList;
 }
 
