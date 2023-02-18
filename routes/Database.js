@@ -38,6 +38,20 @@ yesterday = yesterday.toISOString().split("T")[0]; //YYYY-MM-DD
 lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
+async function storeImageData(data) {
+  // const sql = `
+  //   INSERT INTO datico.stat_links(type, url, dateof, hashcheck) 
+  //   VALUES ('${object.type}', '${object.url}', '${object.dateof.toISOString()}', '${object.hashcheck}')`;
+  // // console.log(sql);
+  // try {
+  //   const [res] = await db.query(sql);
+  //   return res;
+  // } catch (err) {
+  //   console.log(err);
+  // }
+
+}
+
 async function getFreudLinks() {
   const [res] = await dbFreud.query(
     `

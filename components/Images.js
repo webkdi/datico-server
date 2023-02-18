@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const baseDir = "/var/www/dimitri.korenev/data/www/freud.online/";
 const searchDirs = ["media", "images"].map((dir) => path.join(baseDir, dir));
@@ -27,11 +28,13 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
         if (fileSizeInKB > 20 && !filePath.includes('/administrator/')) {
+          const hash = crypto.createHash("sha256").update(filePath).digest("hex");
           fileList.push({
-            folder: dir,
+            filePath,
             fileName: file.name,
             fileType,
             fileSizeInKB,
+            hash,
           });
         }
       }
