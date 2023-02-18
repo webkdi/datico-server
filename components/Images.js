@@ -1,45 +1,38 @@
 const fs = require("fs");
 const path = require("path");
-const sharp = require("sharp");
 
 const searchDir = "/var/www/dimitri.korenev/data/www/freud.online/";
 
-function searchForImageFiles(dir, fileList) {
+function searchForImageFiles(dir, visited, fileList) {
   if (!fileList) {
     fileList = [];
   }
+  if (!visited) {
+    visited = new Set();
+  }
+  visited.add(dir);
   const files = fs.readdirSync(dir, { withFileTypes: true });
   files.forEach((file) => {
-    if (file.isDirectory() && !file.name.includes("administrator")) {
+    if (file.isDirectory()) {
       const subDir = path.join(dir, file.name);
-      searchForImageFiles(subDir, fileList);
-    } else if (
-      (file.name.endsWith(".jpg") || file.name.endsWith(".png")) &&
-      file.size > 30000
-    ) {
-      const filePath = path.join(dir, file.name);
-      const fileSizeInBytes = file.size;
-      const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
-      const fileType = path.extname(file.name);
-
-      const stats = fs.statSync(filePath);
-      sharp(filePath).metadata((err, metadata) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        const width = metadata.width;
-        const height = metadata.height;
-        if (width > 30) {
+      if (!visited.has(subDir)) {
+        searchForImageFiles(subDir, visited, fileList);
+      }
+    } else {
+      if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {
+        const filePath = path.join(dir, file.name);
+        const stats = fs.statSync(filePath);
+        const fileSizeInBytes = stats.size;
+        const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
+        const fileType = path.extname(file.name);
+        if (fileSizeInKB > 20 && !filePath.includes('/administrator/')) {
           fileList.push({
             filePath,
             fileType,
             fileSizeInKB,
-            width,
-            height,
           });
         }
-      });
+      }
     }
   });
   return fileList;
