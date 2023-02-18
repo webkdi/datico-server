@@ -28,7 +28,7 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
         if (fileSizeInKB > 20 && !filePath.includes('/administrator/')) {
-          const hash = crypto.createHash("sha256").update(filePath).digest("hex");
+          const hash = crypto.createHash("md5").update(filePath).digest("hex");
           fileList.push({
             filePath,
             fileName: file.name,
