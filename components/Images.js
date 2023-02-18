@@ -63,7 +63,7 @@ function getListOfImages() {
 
 function optimizeImage(input) {
   // Define the path to the image file
-  console.log(input.path);
+  console.log(input);
   const imagePath = path.path;
 
   // Set the new width and height for the image
