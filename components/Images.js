@@ -51,7 +51,7 @@ function getListOfImages() {
   });
   const json = JSON.stringify(fileList, null, 2);
   fs.writeFileSync("image_files.json", json);
-  fileList.slice(0,30).forEach((file) => {
+  fileList.forEach((file) => {
     db.storeImageData(file);
   })
   return fileList;
