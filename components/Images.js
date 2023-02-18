@@ -23,6 +23,10 @@ function searchForImageFiles(dir, fileList) {
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
 
+
+        console.log(filePath);
+
+
         const stats = fs.statSync(filePath);
         sharp(filePath).metadata((err, metadata) => {
           if (err) {
