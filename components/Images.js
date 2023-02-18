@@ -38,7 +38,6 @@ function searchForImageFiles(dir, visited, fileList) {
   return fileList;
 }
 
-
 function getListOfImages() {
   const fileList = searchForImageFiles(searchDir);
   const json = JSON.stringify(fileList, null, 2);
