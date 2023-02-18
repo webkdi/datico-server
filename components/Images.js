@@ -61,13 +61,14 @@ function getListOfImages() {
   return fileList;
 }
 
-function optimizeImage(path) {
+function optimizeImage(input) {
   // Define the path to the image file
+  console.log(input.path);
   const imagePath = path.path;
 
   // Set the new width and height for the image
-  const newWidth = 800;
-  const newHeight = 600;
+  const maxWidth = 800;
+  const maxHeight = 600;
 
   // Use the sharp library to resize the image
   sharp(imagePath)
