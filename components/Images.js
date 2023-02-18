@@ -66,8 +66,8 @@ function optimizeImage(path) {
   const imagePath = path;
 
   // Set the new width and height for the image
-  const maxWidth = 800;
-  const maxHeight = 600;
+  const maxWidth = 1280;
+  const maxHeight = 720;
   const quality = 60;
 
   // Use the sharp library to resize the image
