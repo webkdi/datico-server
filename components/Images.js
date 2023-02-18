@@ -17,13 +17,12 @@ function searchForImageFiles(dir, fileList) {
       } else if (
         (file.name.endsWith(".jpg") || file.name.endsWith(".png")) 
       ) {
-        console.log('here2',file.size);
         const filePath = path.join(dir, file.name);
-        const fileSizeInBytes = file.size;
+        const stats = fs.statSync(filePath);
+        const fileSizeInBytes = stats.size;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
 
-        const stats = fs.statSync(filePath);
         sharp(filePath).metadata((err, metadata) => {
           if (err) {
             console.log(err);
@@ -31,7 +30,7 @@ function searchForImageFiles(dir, fileList) {
           }
           const width = metadata.width;
           const height = metadata.height;
-          if (width > 30) {
+          if (fileSizeInKB > 30 && width > 30) { // check file size is > 30 KB
             fileList.push({
               filePath,
               fileType,
@@ -53,7 +52,6 @@ function getListOfImages() {
   const fileList = searchForImageFiles(searchDir);
   const json = JSON.stringify(fileList, null, 2);
   fs.writeFileSync("image_files.json", json);
-  // console.log('List of found image files:', fileList);
   return fileList;
 }
 
