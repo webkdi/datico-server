@@ -30,7 +30,6 @@ function searchForImageFiles(dir, visited, fileList) {
           fileList.push({
             folder: dir,
             fileName: file.name,
-            filePath,
             fileType,
             fileSizeInKB,
           });
