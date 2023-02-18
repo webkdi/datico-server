@@ -7,4 +7,9 @@ router.get("/", async (req, res) => {
   res.send(list);
 });
 
+router.post("/optimize", async (req, res) => {
+  const respond = await img.optimizeImage(req);
+  res.send(respond);
+});
+
 module.exports = router;

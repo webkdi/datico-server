@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 const db = require("../routes/Database");
+const sharp = require("sharp");
 
 const baseDir = "/var/www/dimitri.korenev/data/www/freud.online/";
 const searchDirs = ["media", "images"].map((dir) => path.join(baseDir, dir));
@@ -18,7 +19,10 @@ function searchForImageFiles(dir, visited, fileList) {
   files.forEach((file) => {
     if (file.isDirectory()) {
       const subDir = path.join(dir, file.name);
-      if (!visited.has(subDir) && searchDirs.some((searchDir) => subDir.startsWith(searchDir))) {
+      if (
+        !visited.has(subDir) &&
+        searchDirs.some((searchDir) => subDir.startsWith(searchDir))
+      ) {
         searchForImageFiles(subDir, visited, fileList);
       }
     } else {
@@ -28,7 +32,7 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileSizeInBytes = stats.size;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
-        if (fileSizeInKB > 20 && !filePath.includes('/administrator/')) {
+        if (fileSizeInKB > 20 && !filePath.includes("/administrator/")) {
           const hash = crypto.createHash("md5").update(filePath).digest("hex");
           fileList.push({
             filePath,
@@ -53,10 +57,31 @@ function getListOfImages() {
   fs.writeFileSync("image_files.json", json);
   fileList.forEach((file) => {
     db.storeImageData(file);
-  })
+  });
   return fileList;
+}
+
+function optimizeImage(path) {
+  // Define the path to the image file
+  const imagePath = path.path;
+
+  // Set the new width and height for the image
+  const newWidth = 800;
+  const newHeight = 600;
+
+  // Use the sharp library to resize the image
+  sharp(imagePath)
+    .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
+    .toFile(imagePath, (err, info) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(info);
+      }
+    });
 }
 
 module.exports = {
   getListOfImages,
+  optimizeImage,
 };
