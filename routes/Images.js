@@ -12,13 +12,13 @@ router.post("/optimize", async (req, res) => {
     const path = req.body.path;
     if (path.includes("freud.online/")) {
       const respond = await img.optimizeImage(path);
-      res.send("done");
+      res.send(respond);
     }
   } else {
     console.log(Date().toString(), "get / no data received");
   }
   // const respond = await img.optimizeImage(req);
-  res.send("no data");
+  // res.send("no data");
 });
 
 module.exports = router;
