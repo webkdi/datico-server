@@ -21,7 +21,8 @@ function searchForImageFiles(dir, visited, fileList) {
     } else {
       if (file.name.endsWith(".jpg") || file.name.endsWith(".png")) {
         const filePath = path.join(dir, file.name);
-        const fileSizeInBytes = file.size;
+        const stats = fs.statSync(filePath);
+        const fileSizeInBytes = stats.size;
         const fileSizeInKB = fileSizeInBytes / 1024;
         const fileType = path.extname(file.name);
         fileList.push({
