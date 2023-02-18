@@ -45,7 +45,7 @@ function getListOfImages() {
     fileList = fileList.concat(searchForImageFiles(dir));
   });
   const json = JSON.stringify(fileList, null, 2);
-  fs.writeFileSync("image_files.json", json);
+  fs.writeFileSync(path.join(baseDir, "image_files.json"), json);
   return fileList;
 }
 
