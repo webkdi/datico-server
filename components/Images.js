@@ -66,13 +66,15 @@ function optimizeImage(path) {
   const imagePath = path;
 
   // Set the new width and height for the image
-  const maxWidth = 1280;
-  const maxHeight = 720;
+  const maxWidth = 1200;
+  const maxHeight = 800;
   const quality = 60;
+  compressionLevel = 8;
 
   // Use the sharp library to resize the image
   sharp(imagePath)
     .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
+    .png({ compressionLevel: compressionLevel }) // Add PNG compression
     .jpeg({ quality: quality }) // or webp({ quality: quality }) for WebP format
     .toBuffer((err, buffer, info) => {
       if (err) {
@@ -82,8 +84,7 @@ function optimizeImage(path) {
           if (err) {
             console.error(err);
           } else {
-            console.log(info.size);
-            return info;
+            console.log(info);
           }
         });
       } else {
