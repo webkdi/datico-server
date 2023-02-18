@@ -16,7 +16,7 @@ function searchForImageFiles(dir, visited, fileList) {
   files.forEach((file) => {
     if (file.isDirectory()) {
       const subDir = path.join(dir, file.name);
-      if (!visited.has(subDir) && searchDirs.includes(subDir)) {
+      if (!visited.has(subDir)) {
         searchForImageFiles(subDir, visited, fileList);
       }
     } else {
@@ -26,7 +26,7 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileSizeInBytes = stats.size;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
-        if (fileSizeInKB > 20 && !filePath.includes('/administrator/')) {
+        if (fileSizeInKB > 20 && !filePath.includes('/administrator/') && searchDirs.includes(dir)) {
           fileList.push({
             filePath,
             fileType,
@@ -45,7 +45,7 @@ function getListOfImages() {
     fileList = fileList.concat(searchForImageFiles(dir));
   });
   const json = JSON.stringify(fileList, null, 2);
-  fs.writeFileSync(path.join(baseDir, "image_files.json"), json);
+  fs.writeFileSync("image_files.json", json);
   return fileList;
 }
 
