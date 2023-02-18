@@ -11,15 +11,15 @@ function searchForImageFiles(dir, fileList) {
   try {
     const files = fs.readdirSync(dir, { withFileTypes: true });
     files.forEach((file) => {
-      console.log('Here1');
       if (file.isDirectory() && !file.name.includes("administrator")) {
-        console.log('Here2');
         const subDir = path.join(dir, file.name);
         searchForImageFiles(subDir, fileList);
+        console.log('here1',subDir);
       } else if (
         (file.name.endsWith(".jpg") || file.name.endsWith(".png")) &&
         file.size > 30000
       ) {
+        console.log('here2',file.size);
         const filePath = path.join(dir, file.name);
         const fileSizeInBytes = file.size;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
