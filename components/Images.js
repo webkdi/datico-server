@@ -1,52 +1,55 @@
 const fs = require("fs");
 const path = require("path");
-const Jimp = require("jimp");
+const sharp = require("sharp");
 
 const searchDir = "/var/www/dimitri.korenev/data/www/freud.online/";
 
-async function searchForImageFiles(dir, visited, fileList) {
+function searchForImageFiles(dir, fileList) {
   if (!fileList) {
     fileList = [];
   }
-  if (!visited) {
-    visited = new Set();
-  }
-  visited.add(dir);
   const files = fs.readdirSync(dir, { withFileTypes: true });
-  for (const file of files) {
+  files.forEach((file) => {
     if (file.isDirectory() && !file.name.includes("administrator")) {
       const subDir = path.join(dir, file.name);
-      if (!visited.has(subDir)) {
-        await searchForImageFiles(subDir, visited, fileList);
-      }
-    } else if (file.isFile() && (file.name.endsWith(".jpg") || file.name.endsWith(".png"))) {
+      searchForImageFiles(subDir, fileList);
+    } else if (
+      (file.name.endsWith(".jpg") || file.name.endsWith(".png")) &&
+      file.size > 30000
+    ) {
       const filePath = path.join(dir, file.name);
-      const stats = fs.statSync(filePath);
-      const fileSizeInBytes = stats.size;
+      const fileSizeInBytes = file.size;
       const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
-      if (fileSizeInKB > 30) {
-        const image = await Jimp.read(filePath);
-        const width = image.bitmap.width;
-        const height = image.bitmap.height;
+      const fileType = path.extname(file.name);
+
+      const stats = fs.statSync(filePath);
+      sharp(filePath).metadata((err, metadata) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        const width = metadata.width;
+        const height = metadata.height;
         if (width > 30) {
           fileList.push({
             filePath,
-            fileType: path.extname(file.name),
+            fileType,
             fileSizeInKB,
             width,
-            height
+            height,
           });
         }
-      }
+      });
     }
-  }
+  });
   return fileList;
 }
 
-async function getListOfImages() {
-  const fileList = await searchForImageFiles(searchDir);
+function getListOfImages() {
+  const fileList = searchForImageFiles(searchDir);
   const json = JSON.stringify(fileList, null, 2);
   fs.writeFileSync("image_files.json", json);
+  // console.log('List of found image files:', fileList);
   return fileList;
 }
 
