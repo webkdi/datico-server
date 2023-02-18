@@ -16,7 +16,7 @@ function searchForImageFiles(dir, visited, fileList) {
   files.forEach((file) => {
     if (file.isDirectory()) {
       const subDir = path.join(dir, file.name);
-      if (!visited.has(subDir)) {
+      if (!visited.has(subDir) && searchDirs.some((searchDir) => subDir.startsWith(searchDir))) {
         searchForImageFiles(subDir, visited, fileList);
       }
     } else {
@@ -26,7 +26,7 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileSizeInBytes = stats.size;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
-        if (fileSizeInKB > 20 && !filePath.includes('/administrator/') && searchDirs.includes(dir)) {
+        if (fileSizeInKB > 20 && !filePath.includes('/administrator/')) {
           fileList.push({
             filePath,
             fileType,
