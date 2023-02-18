@@ -1,9 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const homeDir =
-  process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-const searchDir = path.join(homeDir, "/");
+const searchDir = "/var/www/dimitri.korenev/data/www/freud.online/";
 
 function searchForImageFiles(dir, visited, fileList) {
   if (!fileList) {
