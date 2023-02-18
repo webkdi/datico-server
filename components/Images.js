@@ -82,7 +82,8 @@ function optimizeImage(path) {
           if (err) {
             console.error(err);
           } else {
-            console.log(info);
+            console.log(info.size);
+            return info;
           }
         });
       } else {
