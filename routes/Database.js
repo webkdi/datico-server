@@ -40,10 +40,10 @@ lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
 async function storeImageData(file) {
   const sql = `
-  INSERT IGNORE INTO table(path,name,type,size_before,hash)
+  INSERT IGNORE INTO datico.serv_images (path,name,type,size_before,hash)
   VALUES ('${file.filePath}', '${file.fileName}', '${file.fileType}', ${file.fileSizeInKB}, '${file.hash}')
   `;
-  // console.log(sql);
+  console.log(sql);
   try {
     const [res] = await db.query(sql);
     return res;
