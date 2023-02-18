@@ -28,6 +28,8 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileType = path.extname(file.name);
         if (fileSizeInKB > 20 && !filePath.includes('/administrator/')) {
           fileList.push({
+            folder: dir,
+            fileName: file.name,
             filePath,
             fileType,
             fileSizeInKB,
