@@ -11,7 +11,9 @@ function searchForImageFiles(dir, fileList) {
   try {
     const files = fs.readdirSync(dir, { withFileTypes: true });
     files.forEach((file) => {
+      console.log('Here1');
       if (file.isDirectory() && !file.name.includes("administrator")) {
+        console.log('Here2');
         const subDir = path.join(dir, file.name);
         searchForImageFiles(subDir, fileList);
       } else if (
@@ -22,10 +24,6 @@ function searchForImageFiles(dir, fileList) {
         const fileSizeInBytes = file.size;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
-
-
-        console.log(filePath);
-
 
         const stats = fs.statSync(filePath);
         sharp(filePath).metadata((err, metadata) => {
