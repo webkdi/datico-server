@@ -23,13 +23,15 @@ function searchForImageFiles(dir, visited, fileList) {
         const filePath = path.join(dir, file.name);
         const stats = fs.statSync(filePath);
         const fileSizeInBytes = stats.size;
-        const fileSizeInKB = fileSizeInBytes / 1024;
+        const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
-        fileList.push({
-          filePath,
-          fileType,
-          fileSizeInKB,
-        });
+        if (fileSizeInKB > 10) {
+          fileList.push({
+            filePath,
+            fileType,
+            fileSizeInKB,
+          });
+        }
       }
     }
   });
