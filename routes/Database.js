@@ -38,10 +38,10 @@ yesterday = yesterday.toISOString().split("T")[0]; //YYYY-MM-DD
 lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
-async function storeImageData(data) {
+async function storeImageData(file) {
   const sql = `
   INSERT IGNORE INTO table(path,name,type,size_before,hash)
-  VALUES ('${object.folder}', '${object.fileName}', '${object.fileType}', ${fileSizeInKB}, '${object.hash}')
+  VALUES ('${file.filePath}', '${file.fileName}', '${file.fileType}', ${file.fileSizeInKB}, '${file.hash}')
   `;
   // console.log(sql);
   try {
