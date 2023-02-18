@@ -14,10 +14,8 @@ function searchForImageFiles(dir, fileList) {
       if (file.isDirectory() && !file.name.includes("administrator")) {
         const subDir = path.join(dir, file.name);
         searchForImageFiles(subDir, fileList);
-        console.log('here1',subDir);
       } else if (
-        (file.name.endsWith(".jpg") || file.name.endsWith(".png")) &&
-        file.size > 30000
+        (file.name.endsWith(".jpg") || file.name.endsWith(".png")) 
       ) {
         console.log('here2',file.size);
         const filePath = path.join(dir, file.name);
