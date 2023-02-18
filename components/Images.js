@@ -25,7 +25,7 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileSizeInBytes = stats.size;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
-        if (fileSizeInKB > 10) {
+        if (fileSizeInKB > 10 && !filePath.includes('/administrator/')) {
           fileList.push({
             filePath,
             fileType,
@@ -37,6 +37,7 @@ function searchForImageFiles(dir, visited, fileList) {
   });
   return fileList;
 }
+
 
 function getListOfImages() {
   const fileList = searchForImageFiles(searchDir);
