@@ -70,23 +70,24 @@ function optimizeImage(path) {
   const maxHeight = 600;
 
   // Use the sharp library to resize the image
-  sharp(imagePath, (err, info) => {
-    if (err) {
-      console.error(err);
-    } else if (info.format) {
-      sharp(imagePath)
-        .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
-        .toFile(imagePath, (err, info) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(info);
-          }
-        });
-    } else {
-      console.error(`Invalid input: ${imagePath} is not a valid image file`);
-    }
-  });
+  sharp(imagePath)
+    .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
+    .toBuffer((err, buffer, info) => {
+      if (err) {
+        console.error(err);
+      } else if (info.format) {
+        sharp(buffer)
+          .toFile(imagePath, (err, info) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log(info);
+            }
+          });
+      } else {
+        console.error(`Invalid input: ${imagePath} is not a valid image file`);
+      }
+    });
 }
 
 module.exports = {
