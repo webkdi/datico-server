@@ -65,6 +65,28 @@ async function getFreudLinks() {
   return res;
 }
 
+async function getDaticoQuiz() {
+  const sql = `
+  SELECT a.id_question
+  ,a.question_long
+  -- ,a.question_short
+  ,b.id_answer
+  -- ,b.answer_short
+  ,b.answer_long
+  ,b.picture_url
+  FROM datico.dt_q_questions AS a
+  JOIN datico.dt_q_answers AS b 
+  ON a.id_question=b.id_question
+  `;
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+
+}
+
 async function deleteLink(id) {
   const [res] = await db.query(`delete from datico.stat_links where id = ?`, [
     id,
@@ -348,6 +370,7 @@ module.exports = {
   createLink,
   deleteLink,
   getOg,
+  getDaticoQuiz,
 };
 
 // console.log(module);

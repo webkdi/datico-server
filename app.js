@@ -4,6 +4,7 @@ const cors= require("cors");
 var cron = require('node-cron');
 const upd = require("./components/UpdateFunctions")
 
+
 const pm2 = require("pm2");
 pm2.launchBus(function (err, bus) {
   bus.on("log:err", function (e) {
@@ -41,10 +42,14 @@ app.use(express.json());
 const routeTg = require("./routes/Telegram");
 const routeIdeas = require("./routes/Ideas");
 const routeUpdate = require("./routes/Update");
+const routeDatico = require("./routes/Datico");
+const routeImages = require("./routes/Images");
 
 app.use("/tg", routeTg);
 app.use("/ideas", routeIdeas);
 app.use("/update", routeUpdate);
+app.use("/datico", routeDatico);
+app.use("/images", routeImages);
 
 app.listen(PORT, () => {
   console.log(`Server starten on PORT ${PORT}`);
@@ -61,7 +66,7 @@ var updateStats = cron.schedule('1 1 * * * *', () =>  {
 }, {
   scheduled: false
 });
-updateStats.start();
+// updateStats.start();
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute
 // # │ │ ┌────────── hour

@@ -106,7 +106,7 @@ async function updateLinks() {
 }
 
 
-//SERVICING overnight: daily update of files
+//SERVICING overnight: daily update of filesош
 router.post("/", async (req, res) => {
 
   const updateAll = await upd.updateProcedure();

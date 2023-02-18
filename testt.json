@@ -1,0 +1,25 @@
+[
+  {
+    "id_question": 2002,
+    "question_short": "победа или участие",
+    "answers": {
+      "2002010": { "id_answer": 2002010, "answer_short": "участие" },
+      "2002020": { "id_answer": 2002020, "answer_short": "победа" }
+    }
+  },
+  {
+    "id_question": 2004,
+    "question_short": "долго разговаривать",
+    "answers": {
+      "2004100": { "id_answer": 2004100, "answer_short": "с немногими" },
+      "2004200": { "id_answer": 2004200, "answer_short": "долго" }
+    }
+  },
+  {
+    "id_question": 2005,
+    "question_short": "кто кого представляет",
+    "answers": {
+      "2005100": { "id_answer": 2005100, "answer_short": "меня представляют" }
+    }
+  }
+]
