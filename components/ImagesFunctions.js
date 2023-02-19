@@ -63,44 +63,45 @@ function searchForImageFilesExecute() {
 }
 
 function optimizeImage(path, password) {
+  return new Promise((resolve, reject) => {
+    if (!password) {
+      reject("password is required!");
+      return;
+    } else if (password !== process.env.PRIVATE_APP_PASSWORD) {
+      reject("password is wrong!");
+      return;
+    }
 
-  if (!password) {
-    return "password is required!";
-  } else if (password !== process.env.PRIVATE_APP_PASSWORD) {
-    return ("password is wrong!");
-  }
+    const maxWidth = 1200;
+    const maxHeight = 800;
+    const quality = 60;
+    const compressionLevel = 8;
 
-  // Define the path to the image file
-  const imagePath = path;
+    sharp(path)
+      .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
+      .png({ compressionLevel: compressionLevel })
+      .jpeg({ quality: quality })
+      .toBuffer((err, buffer, info) => {
+        if (err) {
+          reject(err);
+          return;
+        }
 
-  // Set the new width and height for the image
-  const maxWidth = 1200;
-  const maxHeight = 800;
-  const quality = 60;
-  compressionLevel = 8;
-
-  // Use the sharp library to resize the image
-  sharp(imagePath)
-    .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
-    .png({ compressionLevel: compressionLevel }) // Add PNG compression
-    .jpeg({ quality: quality }) // or webp({ quality: quality }) for WebP format
-    .toBuffer((err, buffer, info) => {
-      if (err) {
-        console.error(err);
-      } else if (info.format) {
-        sharp(buffer).toFile(imagePath, (err, info) => {
-          if (err) {
-            console.error(err);
-          } else {
-            console.log(info);
-            return info;
-          }
-        });
-      } else {
-        console.error(`Invalid input: ${imagePath} is not a valid image file`);
-      }
-    });
+        if (info.format) {
+          sharp(buffer).toFile(path, (err, info) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve(info);
+          });
+        } else {
+          reject(`Invalid input: ${path} is not a valid image file`);
+        }
+      });
+  });
 }
+
 
 function deleteFile(filePath, password) {
 

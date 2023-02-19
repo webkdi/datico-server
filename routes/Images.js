@@ -10,7 +10,6 @@ router.get("/update_list", async (req, res) => {
 });
 
 router.post("/optimize", async (req, res) => {
-  console.log(req.body);
   if (JSON.stringify(req.body) !== "{}") {
     const path = req.body.path;
     const password = req.body.password;
@@ -25,8 +24,17 @@ router.post("/optimize", async (req, res) => {
       res.send("'path' is strange");
     } else {
       // perform optimization and send response
-      const respond = await img.optimizeImage(path, password);
-      res.send(respond);
+
+      img.optimizeImage(path, password)
+      .then((info) => {
+        console.log("OK:", info);
+        res.send(info);
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        res.status(500).send({ message: err.message, stack: err.stack });
+      });
+      
     }
   } else {
     res.send(Date().toString() + " no data received");
