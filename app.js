@@ -68,14 +68,15 @@ var updateStats = cron.schedule('1 35 * * * *', () =>  {
   scheduled: false
 });
 updateStats.start();
+
 //optimize new images
-var updateStats = cron.schedule('1 5 1 * * *', () =>  {
+var updateImages = cron.schedule('1 5 1 * * *', () =>  {
   console.log('cron optimize images running');
   img.dailyImageService();
 }, {
   scheduled: false
 });
-updateStats.start();
+updateImages.start();
 
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute
