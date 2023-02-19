@@ -49,13 +49,15 @@ function searchForImageFiles(dir, visited, fileList) {
   return fileList;
 }
 
-function searchForImageFilesExecute() {
+async function searchForImageFilesExecute() {
   let fileList = [];
   searchDirs.forEach((dir) => {
     fileList = fileList.concat(searchForImageFiles(dir));
   });
   const json = JSON.stringify(fileList, null, 2);
   fs.writeFileSync("image_files.json", json);
+
+  const truncate = await db.truncateImageData();
   fileList.forEach((file) => {
     db.storeImageData(file);
   });
@@ -122,17 +124,19 @@ function deleteFile(filePath, password) {
   });
 }
 
-async function getListOfImages(path) {
+async function getListOfImages() {
   const images = await db.getImagesList();
 
   images.forEach((obj) => {
-    const url = obj.path.replace('/var/www/dimitri.korenev/data/www/', 'https://');
+    const url = obj.path.replace(
+      "/var/www/dimitri.korenev/data/www/",
+      "https://"
+    );
     obj.url = url;
     delete obj.name;
   });
-  
-  return images;
 
+  return images;
 }
 
 module.exports = {

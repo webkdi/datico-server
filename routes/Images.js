@@ -25,16 +25,16 @@ router.post("/optimize", async (req, res) => {
     } else {
       // perform optimization and send response
 
-      img.optimizeImage(path, password)
-      .then((info) => {
-        console.log("OK:", info);
-        res.send(info);
-      })
-      .catch((err) => {
-        console.error("Error:", err);
-        res.status(500).send({ message: err.message, stack: err.stack });
-      });
-
+      img
+        .optimizeImage(path, password)
+        .then((info) => {
+          console.log("OK:", info);
+          res.send(info);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+          res.status(500).send({ message: err.message, stack: err.stack });
+        });
     }
   } else {
     res.send(Date().toString() + " no data received");
@@ -57,16 +57,16 @@ router.post("/delete", async (req, res) => {
     } else {
       // perform optimization and send response
 
-      img.deleteFile(path, password)
-      .then(() => {
-        console.log('File deleted successfully!');
-        res.send('File deleted successfully!');
-      })
-      .catch((err) => {
-        console.error(`Error in deleting file: ${err}`);
-        res.status(500).send(`Error in deleting file: ${err}`);
-      });
-      
+      img
+        .deleteFile(path, password)
+        .then(() => {
+          console.log("File deleted successfully!");
+          res.send("File deleted successfully!");
+        })
+        .catch((err) => {
+          console.error(`Error in deleting file: ${err}`);
+          res.status(500).send(`Error in deleting file: ${err}`);
+        });
     }
   } else {
     res.send(Date().toString() + " no data received");
@@ -84,19 +84,25 @@ router.get("/do_job", async (req, res) => {
     const password = req.body.password;
     if (password !== process.env.PRIVATE_APP_PASSWORD) {
       res.send("password is wrong!");
+    } else {
+      //do jobs
+
+      const list = await img.getListOfImages();
+
+      const filtered = list.filter(
+        (obj) =>
+          obj.size_before > 50 && obj.path.includes("com_easysocial/comments")
+      );
+
+      // filtered.forEach((obj) => img.deleteFile(obj.path));
+
+      res.send(filtered);
     }
   } else {
     res.send("no password provided!");
   }
 
-  // const filtered = quote.filter( obj =>
-  //   obj.size_before > 50
-  //   && obj.path.includes("com_easysocial/comments")
-  //   );
-
-  //   filtered.forEach(obj => img.deleteFile(obj.path));
-
-  // res.send(filtered);
+  
 });
 
 module.exports = router;

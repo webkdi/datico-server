@@ -40,6 +40,18 @@ yesterday = yesterday.toISOString().split("T")[0]; //YYYY-MM-DD
 lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
+async function truncateImageData() {
+  const sql = `
+  TRUNCATE TABLE serv_images
+  `;
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function storeImageData(file) {
   const sql = `
   INSERT IGNORE INTO datico.serv_images (path,name,type,size_before,hash)
@@ -52,6 +64,8 @@ async function storeImageData(file) {
     console.log(err);
   }
 }
+
+
 async function getImagesList() {
   const sql = `
   SELECT path, name, type, size_before
@@ -400,6 +414,7 @@ module.exports = {
   getDaticoQuiz,
   storeImageData,
   getImagesList,
+  truncateImageData,
 };
 
 // console.log(module);
