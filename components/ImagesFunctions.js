@@ -33,7 +33,7 @@ function searchForImageFiles(dir, visited, fileList) {
         const fileSizeInBytes = stats.size;
         const fileModifiedTime = stats.mtime.toISOString();
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
-        const fileType = path.extname(file.name);
+        const fileType = path.extname(file.name).substring(1);
         if (fileSizeInKB > 20 && !filePath.includes("/administrator/")) {
           const hash = crypto.createHash("md5").update(filePath).digest("hex");
           fileList.push({
@@ -60,7 +60,7 @@ async function searchForImageFilesExecute() {
   fs.writeFileSync("image_files.json", json);
 
   const truncate = await db.truncateImageData();
-  fileList.slice(0,10).forEach((file) => {
+  fileList.forEach((file) => {
     db.storeImageData(file);
   });
   return fileList;
