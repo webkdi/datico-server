@@ -94,7 +94,6 @@ router.get("/do_job", async (req, res) => {
 
       const filtered = await list.filter(
         (obj) => obj.size_before > 150
-        // && obj.path.includes("images/easyblog_articles/674/wonder-woman-chained-1")
       );
 
       const result = filtered.reduce(
@@ -143,6 +142,11 @@ router.get("/do_job", async (req, res) => {
   } else {
     res.send("no password provided!");
   }
+});
+
+router.get("/temp", async (req, res) => {
+  const list = await img.dailyImageService();
+  res.send(list);
 });
 
 module.exports = router;

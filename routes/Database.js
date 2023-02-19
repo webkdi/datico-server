@@ -68,7 +68,7 @@ async function storeImageData(file) {
 
 async function getImagesList() {
   const sql = `
-  SELECT path, name, type, size_before
+  SELECT path, name, type, size_before, updated
   FROM datico.serv_images order by size_before desc
   `;
   try {
@@ -417,4 +417,3 @@ module.exports = {
   truncateImageData,
 };
 
-// console.log(module);
