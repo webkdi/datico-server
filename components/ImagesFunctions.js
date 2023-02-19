@@ -84,7 +84,7 @@ function optimizeImage(path, password) {
         adaptiveFiltering: true,
         force: true,
         quality: 100,
-        colors: 256,
+        colors: 64,
         dither: 0.5, // set dither to a value between 0.0 and 1.0
         trellisQuantisation: true,
         quantisationPosterize: 2,

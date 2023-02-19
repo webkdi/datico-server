@@ -91,8 +91,8 @@ router.get("/do_job", async (req, res) => {
 
       const filtered = await list.filter(
         (obj) =>
-          obj.size_before > 300 &&
-          obj.path.includes("images/easyblog_articles/255/")
+          obj.size_before > 300 
+          && obj.path.includes("images/easyblog_articles/196/b")
       );
 
       const url = "https://app.freud.online/images/optimize";
