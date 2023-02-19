@@ -1,3 +1,4 @@
+require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
@@ -61,7 +62,14 @@ function searchForImageFilesExecute() {
   return fileList;
 }
 
-function optimizeImage(path) {
+function optimizeImage(path, password) {
+
+  if (!password) {
+    return "password is required!";
+  } else if (password !== process.env.PRIVATE_APP_PASSWORD) {
+    return ("password is wrong!");
+  }
+
   // Define the path to the image file
   const imagePath = path;
 
@@ -94,6 +102,24 @@ function optimizeImage(path) {
     });
 }
 
+function deleteFile(filePath, password) {
+
+  if (!password) {
+    return "password is required!";
+  } else if (password !== process.env.PRIVATE_APP_PASSWORD) {
+    return ("password is wrong!");
+  }
+
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error(`Error deleting file: ${err}`);
+      return;
+    }
+    console.log(`File deleted: ${filePath}`);
+    return 
+  });
+}
+
 async function getListOfImages(path) {
   const images = await db.getImagesList();
 
@@ -105,16 +131,6 @@ async function getListOfImages(path) {
   
   return images;
 
-}
-
-function deleteFile(filePath) {
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error(`Error deleting file: ${err}`);
-      return;
-    }
-    console.log(`File deleted: ${filePath}`);
-  });
 }
 
 module.exports = {

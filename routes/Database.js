@@ -1,13 +1,15 @@
+require("dotenv").config();
+
 const mysql = require("mysql2");
 const ogs = require("open-graph-scraper");
 const axios = require("axios");
 
 const db = mysql
   .createPool({
-    host: "194.67.105.122",
-    user: "datico",
-    password: "oA4rG5kK0d",
-    database: "datico",
+    host: process.env.DB_DATICO_HOST,
+    user: process.env.DB_DATICO_USER,
+    password: process.env.DB_DATICO_PASSWORD,
+    database: process.env.DB_DATICO_DATICO,
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
