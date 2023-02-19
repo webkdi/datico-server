@@ -89,40 +89,54 @@ router.get("/do_job", async (req, res) => {
 
       const list = await img.getListOfImages();
 
+      // ob Kompression notwendig ist oder nicht. LAUCHER!
+      const execute = false;
+
       const filtered = await list.filter(
-        (obj) =>
-          obj.size_before > 300 
-          && obj.path.includes("images/easyblog_articles/196/b")
+        (obj) => obj.size_before > 150
+        // && obj.path.includes("images/easyblog_articles/674/wonder-woman-chained-1")
       );
+
+      const result = filtered.reduce(
+        (accumulator, image) => {
+          return {
+            totalSize: accumulator.totalSize + image.size_before,
+            count: accumulator.count + 1,
+          };
+        },
+        { totalSize: 0, count: 0 }
+      );
+      console.log("Large_files: ",result.totalSize, result.count); // prints the sum of all size_before properties
 
       const url = "https://app.freud.online/images/optimize";
       const password = process.env.PRIVATE_APP_PASSWORD;
 
-      filtered.forEach(async (obj) => {
-        const body = {
-          password: password,
-          path: obj.path,
-        };
+      execute &&
+        filtered.forEach(async (obj) => {
+          const body = {
+            password: password,
+            path: obj.path,
+          };
 
-        try {
-          const response = await fetch(url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(body),
-          });
+          try {
+            const response = await fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(body),
+            });
 
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+
+            const data = await response.json();
+            console.log(data); // do something with the response data
+          } catch (error) {
+            console.error("Error:", error);
           }
-
-          const data = await response.json();
-          console.log(data); // do something with the response data
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      });
+        });
 
       res.send(filtered);
     }
