@@ -79,8 +79,17 @@ function optimizeImage(path, password) {
 
     sharp(path)
       .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
-      // .png({ compressionLevel: compressionLevel })
-      .png({ compressionLevel: 9, adaptiveFiltering: true, force: true, palette: true, quality: 100, compressionSpeed: 1 })
+      .png({
+        compressionLevel: 9,
+        adaptiveFiltering: true,
+        force: true,
+        quality: 100,
+        colors: 256,
+        dither: true,
+        trellisQuantisation: true,
+        quantisationPosterize: 2,
+        background: { r: 255, g: 255, b: 255, alpha: 0 }
+      })
       .jpeg({ quality: 60 })
       .toBuffer((err, buffer, info) => {
         if (err) {

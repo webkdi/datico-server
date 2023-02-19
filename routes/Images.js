@@ -98,31 +98,31 @@ router.get("/do_job", async (req, res) => {
       const url = "https://app.freud.online/images/optimize";
       const password = process.env.PRIVATE_APP_PASSWORD;
 
-      // filtered.forEach(async (obj) => {
-      //   const body = {
-      //     password: password,
-      //     path: obj.path,
-      //   };
+      filtered.forEach(async (obj) => {
+        const body = {
+          password: password,
+          path: obj.path,
+        };
 
-      //   try {
-      //     const response = await fetch(url, {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify(body),
-      //     });
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
+          });
 
-      //     if (!response.ok) {
-      //       throw new Error("Network response was not ok");
-      //     }
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
 
-      //     const data = await response.json();
-      //     console.log(data); // do something with the response data
-      //   } catch (error) {
-      //     console.error("Error:", error);
-      //   }
-      // });
+          const data = await response.json();
+          console.log(data); // do something with the response data
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      });
 
       res.send(filtered);
     }
