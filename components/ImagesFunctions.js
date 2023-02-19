@@ -85,10 +85,10 @@ function optimizeImage(path, password) {
         force: true,
         quality: 100,
         colors: 256,
-        dither: "FloydSteinberg",
+        dither: 0.5, // set dither to a value between 0.0 and 1.0
         trellisQuantisation: true,
         quantisationPosterize: 2,
-        background: { r: 255, g: 255, b: 255, alpha: 0 },
+        background: { r: 255, g: 255, b: 255, alpha: 0 }
       })
       .jpeg({ quality: 60 })
       .toBuffer((err, buffer, info) => {
