@@ -57,6 +57,7 @@ async function storeImageData(file) {
   INSERT IGNORE INTO datico.serv_images (path,name,type,size_before,hash,updated)
   VALUES ('${file.filePath}', '${file.fileName}', '${file.fileType}', ${file.fileSizeInKB}, '${file.hash}', '${file.fileModifiedTime}')
   `;
+  console.log(sql);
   try {
     const [res] = await db.query(sql);
     return res;

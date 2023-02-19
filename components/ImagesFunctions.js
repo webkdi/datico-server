@@ -60,7 +60,7 @@ async function searchForImageFilesExecute() {
   fs.writeFileSync("image_files.json", json);
 
   const truncate = await db.truncateImageData();
-  fileList.forEach((file) => {
+  fileList.slice(0,10).forEach((file) => {
     db.storeImageData(file);
   });
   return fileList;
