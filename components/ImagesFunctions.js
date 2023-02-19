@@ -201,40 +201,42 @@ async function getListOfImages() {
 }
 
 async function dailyImageService() {
-  // const imageList = await searchForImageFilesExecute();
-  const imageList = [
-    {
-      "filePath": "/var/www/dimitri.korenev/data/www/freud.online/images/easyblog_articles/127/b2ap3_amp_handmade-791693_1920.jpg",
-      "fileName": "b2ap3_amp_handmade-791693_1920.jpg",
-      "fileType": "jpg",
-      "fileSizeInKB": 57,
-      "fileModifiedTime": "2023-02-17T15:26:23.526Z",
-      "hash": "5837cd680ca642a441f1343b92f40964"
-    },
-    {
-      "filePath": "/var/www/dimitri.korenev/data/www/freud.online/images/easyblog_articles/127/b2ap3_large_handmade-791693_1920.jpg",
-      "fileName": "b2ap3_large_handmade-791693_1920.jpg",
-      "fileType": "jpg",
-      "fileSizeInKB": 63,
-      "fileModifiedTime": "2023-02-19T15:34:56.886Z",
-      "hash": "0d6fd5b5f482da62d0a9d9aff016f335"
-    },
-  ];
+  // const imageList = [
+  //   {
+  //     "filePath": "/var/www/dimitri.korenev/data/www/freud.online/images/easyblog_articles/127/b2ap3_amp_handmade-791693_1920.jpg",
+  //     "fileName": "b2ap3_amp_handmade-791693_1920.jpg",
+  //     "fileType": "jpg",
+  //     "fileSizeInKB": 57,
+  //     "fileModifiedTime": "2023-02-17T15:26:23.526Z",
+  //     "hash": "5837cd680ca642a441f1343b92f40964"
+  //   },
+  //   {
+  //     "filePath": "/var/www/dimitri.korenev/data/www/freud.online/images/easyblog_articles/127/b2ap3_large_handmade-791693_1920.jpg",
+  //     "fileName": "b2ap3_large_handmade-791693_1920.jpg",
+  //     "fileType": "jpg",
+  //     "fileSizeInKB": 63,
+  //     "fileModifiedTime": "2023-02-19T15:34:56.886Z",
+  //     "hash": "0d6fd5b5f482da62d0a9d9aff016f335"
+  //   },
+  // ];
+
+  const imageList = await searchForImageFilesExecute();
 
   if (imageList.length > 0) {
-
-    var past = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000); // 2 days in milliseconds
+    var past = new Date(Date.now() - 26 * 60 * 60 * 1000); // 24 +1 hours days in milliseconds
     const latestNewImages = imageList.filter((obj) => {
       const fileModifiedDate = new Date(obj.fileModifiedTime);
       console.log(past, fileModifiedDate);
-      return fileModifiedDate > past && obj.fileSizeInKB > 1;
+      return fileModifiedDate > past && obj.fileSizeInKB > 60;
     });
 
     latestNewImages.forEach(async (image) => {
-      const update = await optimizeImage(image.filePath, process.env.PRIVATE_APP_PASSWORD);
-    })
+      const update = await optimizeImage(
+        image.filePath,
+        process.env.PRIVATE_APP_PASSWORD
+      );
+    });
     return `optimized ${latestNewImages.length} images`;
-
   } else {
     return "no new images";
   }
