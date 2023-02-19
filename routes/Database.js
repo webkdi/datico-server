@@ -6,10 +6,10 @@ const axios = require("axios");
 
 const db = mysql
   .createPool({
-    host: process.env.DB_DATICO_HOST,
+    host: process.env.DB_HOST,
     user: process.env.DB_DATICO_USER,
     password: process.env.DB_DATICO_PASSWORD,
-    database: process.env.DB_DATICO_DATICO,
+    database: process.env.DB_DATICO_DB,
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
@@ -20,10 +20,10 @@ const db = mysql
 
 const dbFreud = mysql
   .createPool({
-    host: "194.67.105.122",
-    user: "freud_remote",
-    password: "dH1dT4uE1p",
-    database: "freud",
+    host: process.env.DB_HOST,
+    user: process.env.DB_FREUD_USER,
+    password: process.env.DB_FREUD_PASSWORD,
+    database: process.env.DB_FREUD_DB,
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`

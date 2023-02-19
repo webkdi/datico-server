@@ -60,7 +60,7 @@ app.get('/testing', (req, res) => {
 })
 
 //updates
-var updateStats = cron.schedule('1 */10 * * * *', () =>  {
+var updateStats = cron.schedule('1 35 * * * *', () =>  {
   console.log('cron running');
   upd.updateProcedure();
 }, {
