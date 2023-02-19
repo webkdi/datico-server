@@ -85,10 +85,10 @@ function optimizeImage(path, password) {
         force: true,
         quality: 100,
         colors: 64,
-        dither: 0.5, // set dither to a value between 0.0 and 1.0
+        dither: 0.5,
         trellisQuantisation: true,
         quantisationPosterize: 2,
-        background: { r: 255, g: 255, b: 255, alpha: 0 }
+        background: { r: 255, g: 255, b: 255, alpha: 0 },
       })
       .jpeg({ quality: 60 })
       .toBuffer((err, buffer, info) => {
@@ -98,17 +98,76 @@ function optimizeImage(path, password) {
         }
 
         if (info.format) {
-          sharp(buffer).toFile(path, (err, info) => {
-            if (err) {
-              reject(err);
-              return;
-            }
-            resolve(info);
-          });
+          if (info.format === "png") {
+            sharp(buffer)
+              .resize(maxWidth*0.7, maxHeight*0.7, { fit: sharp.fit.inside })
+              .png({
+                compressionLevel: 9,
+                adaptiveFiltering: true,
+                force: true,
+                quality: 100,
+                colors: 64,
+                dither: 0.5,
+                trellisQuantisation: true,
+                quantisationPosterize: 2,
+                background: { r: 255, g: 255, b: 255, alpha: 0 },
+              })
+              .toFile(path, (err, info) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                resolve(info);
+              });
+          } else if (info.format === "jpeg") {
+            sharp(buffer)
+              .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
+              .jpeg({ quality: 60 })
+              .toFile(path, (err, info) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
+                resolve(info);
+              });
+          }
         } else {
           reject(`Invalid input: ${path} is not a valid image file`);
         }
       });
+
+    // sharp(path)
+    //   .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
+    //   .png({
+    //     compressionLevel: 9,
+    //     adaptiveFiltering: true,
+    //     force: true,
+    //     quality: 100,
+    //     colors: 64,
+    //     dither: 0.5, // set dither to a value between 0.0 and 1.0
+    //     trellisQuantisation: true,
+    //     quantisationPosterize: 2,
+    //     background: { r: 255, g: 255, b: 255, alpha: 0 },
+    //   })
+    //   .jpeg({ quality: 60 })
+    //   .toBuffer((err, buffer, info) => {
+    //     if (err) {
+    //       reject(err);
+    //       return;
+    //     }
+
+    //     if (info.format) {
+    //       sharp(buffer).toFile(path, (err, info) => {
+    //         if (err) {
+    //           reject(err);
+    //           return;
+    //         }
+    //         resolve(info);
+    //       });
+    //     } else {
+    //       reject(`Invalid input: ${path} is not a valid image file`);
+    //     }
+    //   });
   });
 }
 
