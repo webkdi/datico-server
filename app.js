@@ -3,6 +3,7 @@ const helmet = require("helmet");
 const cors= require("cors");
 var cron = require('node-cron');
 const upd = require("./components/UpdateFunctions")
+const img = require("./components/ImagesFunctions");
 
 
 const pm2 = require("pm2");
@@ -61,8 +62,16 @@ app.get('/testing', (req, res) => {
 
 //updates
 var updateStats = cron.schedule('1 35 * * * *', () =>  {
-  console.log('cron running');
+  console.log('cron undate stat running running');
   upd.updateProcedure();
+}, {
+  scheduled: false
+});
+updateStats.start();
+//optimize new images
+var updateStats = cron.schedule('*/30 * * * * *', () =>  {
+  console.log('cron optimize images running');
+  img.dailyImageService();
 }, {
   scheduled: false
 });

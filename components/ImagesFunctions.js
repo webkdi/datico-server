@@ -226,11 +226,10 @@ async function dailyImageService() {
     var past = new Date(Date.now() - 26 * 60 * 60 * 1000); // 24 +1 hours days in milliseconds
     const latestNewImages = imageList.filter((obj) => {
       const fileModifiedDate = new Date(obj.fileModifiedTime);
-      console.log(past, fileModifiedDate);
       return fileModifiedDate > past && obj.fileSizeInKB > 60;
     });
 
-    latestNewImages.forEach(async (image) => {
+    latestNewImages.slice(0,20).forEach(async (image) => {
       const update = await optimizeImage(
         image.filePath,
         process.env.PRIVATE_APP_PASSWORD
