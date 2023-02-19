@@ -34,6 +34,38 @@ router.post("/optimize", async (req, res) => {
         console.error("Error:", err);
         res.status(500).send({ message: err.message, stack: err.stack });
       });
+
+    }
+  } else {
+    res.send(Date().toString() + " no data received");
+  }
+});
+
+router.post("/delete", async (req, res) => {
+  if (JSON.stringify(req.body) !== "{}") {
+    const path = req.body.path;
+    const password = req.body.password;
+
+    if (!path) {
+      res.send("no 'path' to file");
+    } else if (!password) {
+      res.send("'password' missing!");
+    } else if (password !== process.env.PRIVATE_APP_PASSWORD) {
+      res.send("'password' is wrong!");
+    } else if (!path.includes("freud.online/")) {
+      res.send("'path' is strange");
+    } else {
+      // perform optimization and send response
+
+      img.deleteFile(path, password)
+      .then(() => {
+        console.log('File deleted successfully!');
+        res.send('File deleted successfully!');
+      })
+      .catch((err) => {
+        console.error(`Error in deleting file: ${err}`);
+        res.status(500).send(`Error in deleting file: ${err}`);
+      });
       
     }
   } else {

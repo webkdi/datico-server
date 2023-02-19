@@ -102,22 +102,23 @@ function optimizeImage(path, password) {
   });
 }
 
-
 function deleteFile(filePath, password) {
-
-  if (!password) {
-    return "password is required!";
-  } else if (password !== process.env.PRIVATE_APP_PASSWORD) {
-    return ("password is wrong!");
-  }
-
-  fs.unlink(filePath, (err) => {
-    if (err) {
-      console.error(`Error deleting file: ${err}`);
-      return;
+  return new Promise((resolve, reject) => {
+    if (!password) {
+      return reject("Password is required!");
+    } else if (password !== process.env.PRIVATE_APP_PASSWORD) {
+      return reject("Wrong password!");
     }
-    console.log(`File deleted: ${filePath}`);
-    return 
+
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(`Error deleting file: ${err}`);
+        return reject(`Error deleting file: ${err}`);
+      } else {
+        console.log(`File deleted: ${filePath}`);
+        return resolve();
+      }
+    });
   });
 }
 
