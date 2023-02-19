@@ -223,13 +223,13 @@ async function dailyImageService() {
   const imageList = await searchForImageFilesExecute();
 
   if (imageList.length > 0) {
-    var past = new Date(Date.now() - 26 * 60 * 60 * 1000); // 24 +1 hours days in milliseconds
+    var past = new Date(Date.now() - 25 * 60 * 60 * 1000); // 24 +1 hours days in milliseconds
     const latestNewImages = imageList.filter((obj) => {
       const fileModifiedDate = new Date(obj.fileModifiedTime);
       return fileModifiedDate > past && obj.fileSizeInKB > 60;
     });
 
-    latestNewImages.slice(0,20).forEach(async (image) => {
+    latestNewImages.forEach(async (image) => {
       const update = await optimizeImage(
         image.filePath,
         process.env.PRIVATE_APP_PASSWORD

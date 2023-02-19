@@ -144,9 +144,4 @@ router.get("/do_job", async (req, res) => {
   }
 });
 
-router.get("/temp", async (req, res) => {
-  const list = await img.dailyImageService();
-  res.send(list);
-});
-
 module.exports = router;
