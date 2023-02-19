@@ -48,7 +48,7 @@ function searchForImageFiles(dir, visited, fileList) {
   return fileList;
 }
 
-function getListOfImages() {
+function searchForImageFilesExecute() {
   let fileList = [];
   searchDirs.forEach((dir) => {
     fileList = fileList.concat(searchForImageFiles(dir));
@@ -85,6 +85,7 @@ function optimizeImage(path) {
             console.error(err);
           } else {
             console.log(info);
+            return info;
           }
         });
       } else {
@@ -93,7 +94,32 @@ function optimizeImage(path) {
     });
 }
 
+async function getListOfImages(path) {
+  const images = await db.getImagesList();
+
+  images.forEach((obj) => {
+    const url = obj.path.replace('/var/www/dimitri.korenev/data/www/', 'https://');
+    obj.url = url;
+    delete obj.name;
+  });
+  
+  return images;
+
+}
+
+function deleteFile(filePath) {
+  fs.unlink(filePath, (err) => {
+    if (err) {
+      console.error(`Error deleting file: ${err}`);
+      return;
+    }
+    console.log(`File deleted: ${filePath}`);
+  });
+}
+
 module.exports = {
-  getListOfImages,
+  searchForImageFilesExecute,
   optimizeImage,
+  getListOfImages,
+  deleteFile,
 };

@@ -66,7 +66,8 @@ var updateStats = cron.schedule('1 32 * * * *', () =>  {
 }, {
   scheduled: false
 });
-// updateStats.start();
+updateStats.start();
+
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute
 // # │ │ ┌────────── hour

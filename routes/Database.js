@@ -50,6 +50,18 @@ async function storeImageData(file) {
     console.log(err);
   }
 }
+async function getImagesList() {
+  const sql = `
+  SELECT path, name, type, size_before
+  FROM datico.serv_images order by size_before desc
+  `;
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+}
 
 async function getFreudLinks() {
   const [res] = await dbFreud.query(
@@ -385,6 +397,7 @@ module.exports = {
   getOg,
   getDaticoQuiz,
   storeImageData,
+  getImagesList,
 };
 
 // console.log(module);
