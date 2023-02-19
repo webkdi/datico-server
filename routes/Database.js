@@ -54,8 +54,8 @@ async function truncateImageData() {
 
 async function storeImageData(file) {
   const sql = `
-  INSERT IGNORE INTO datico.serv_images (path,name,type,size_before,hash)
-  VALUES ('${file.filePath}', '${file.fileName}', '${file.fileType}', ${file.fileSizeInKB}, '${file.hash}')
+  INSERT IGNORE INTO datico.serv_images (path,name,type,size_before,hash,updated)
+  VALUES ('${file.filePath}', '${file.fileName}', '${file.fileType}', ${file.fileSizeInKB}, '${file.hash}', '${file.fileModifiedTime}')
   `;
   try {
     const [res] = await db.query(sql);

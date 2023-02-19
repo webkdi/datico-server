@@ -31,6 +31,7 @@ function searchForImageFiles(dir, visited, fileList) {
         const filePath = path.join(dir, file.name);
         const stats = fs.statSync(filePath);
         const fileSizeInBytes = stats.size;
+        const fileModifiedTime = stats.mtime;
         const fileSizeInKB = Math.round(fileSizeInBytes / 1024);
         const fileType = path.extname(file.name);
         if (fileSizeInKB > 20 && !filePath.includes("/administrator/")) {
@@ -40,6 +41,7 @@ function searchForImageFiles(dir, visited, fileList) {
             fileName: file.name,
             fileType,
             fileSizeInKB,
+            fileModifiedTime,
             hash,
           });
         }
