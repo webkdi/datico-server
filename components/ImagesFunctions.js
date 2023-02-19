@@ -75,14 +75,13 @@ function optimizeImage(path, password) {
     }
 
     const maxWidth = 1200;
-    const maxHeight = 800;
-    const quality = 60;
-    const compressionLevel = 8;
+    const maxHeight = 700;
 
     sharp(path)
       .resize(maxWidth, maxHeight, { fit: sharp.fit.inside })
-      .png({ compressionLevel: compressionLevel })
-      .jpeg({ quality: quality })
+      // .png({ compressionLevel: compressionLevel })
+      .png({ compressionLevel: 9, adaptiveFiltering: true, force: true, palette: true, quality: 100, compressionSpeed: 1 })
+      .jpeg({ quality: 60 })
       .toBuffer((err, buffer, info) => {
         if (err) {
           reject(err);

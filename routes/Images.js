@@ -89,20 +89,46 @@ router.get("/do_job", async (req, res) => {
 
       const list = await img.getListOfImages();
 
-      const filtered = list.filter(
+      const filtered = await list.filter(
         (obj) =>
-          obj.size_before > 50 && obj.path.includes("com_easysocial/comments")
+          obj.size_before > 300 &&
+          obj.path.includes("images/easyblog_articles/255/")
       );
 
-      // filtered.forEach((obj) => img.deleteFile(obj.path));
+      const url = "https://app.freud.online/images/optimize";
+      const password = process.env.PRIVATE_APP_PASSWORD;
+
+      // filtered.forEach(async (obj) => {
+      //   const body = {
+      //     password: password,
+      //     path: obj.path,
+      //   };
+
+      //   try {
+      //     const response = await fetch(url, {
+      //       method: "POST",
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: JSON.stringify(body),
+      //     });
+
+      //     if (!response.ok) {
+      //       throw new Error("Network response was not ok");
+      //     }
+
+      //     const data = await response.json();
+      //     console.log(data); // do something with the response data
+      //   } catch (error) {
+      //     console.error("Error:", error);
+      //   }
+      // });
 
       res.send(filtered);
     }
   } else {
     res.send("no password provided!");
   }
-
-  
 });
 
 module.exports = router;
