@@ -398,6 +398,45 @@ async function getRandomQuote() {
   }
 }
 
+
+async function fbReportLatestUpdate() {
+  const sql = `SELECT MAX(update_id) AS lastUpdateId FROM datico.serv_telegram`;
+  try {
+    const [res] = await db.query(sql);
+    return res[0].lastUpdateId;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function fbReportTrucate() {
+  const sql = `
+  truncate table datico.serv_telegram
+  `;
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function fbReportInsert(update_id,type,file_path,message,page_id) {
+  const sql = `
+  INSERT IGNORE INTO datico.serv_telegram (update_id,type,file_path,message,page_id)
+  VALUES (${update_id}, '${type}', '${file_path}', '${message}', ${page_id})
+  `;
+
+  // console.log(sql);
+
+  try {
+    const [res] = await db.query(sql);
+    return;
+  } catch (err) {
+    console.log(update_id, 'error in INSERT IGNORE INTO datico.serv_telegram');
+  }
+}
+
 module.exports = {
   checkLatest,
   getVisitsStatsDay,
@@ -415,5 +454,8 @@ module.exports = {
   storeImageData,
   getImagesList,
   truncateImageData,
+  fbReportTrucate,
+  fbReportInsert,
+  fbReportLatestUpdate,
 };
 
