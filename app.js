@@ -4,6 +4,7 @@ const cors= require("cors");
 var cron = require('node-cron');
 const upd = require("./components/UpdateFunctions")
 const img = require("./components/ImagesFunctions");
+const tg = require("./components/TelegramFunctions");
 
 
 const pm2 = require("pm2");
@@ -77,6 +78,16 @@ var updateImages = cron.schedule('1 5 1 * * *', () =>  {
   scheduled: false
 });
 updateImages.start();
+
+//optimize new images
+var reportTgToFb = cron.schedule('1 * * * * *', () =>  {
+  tg.infoDefRepost();
+}, {
+  scheduled: false
+});
+reportTgToFb.start();
+
+// tg.infoDefRepost();
 
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute
