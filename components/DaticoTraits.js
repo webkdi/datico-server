@@ -6,7 +6,7 @@ async function getNewQuestions() {
  const output = [];
 let currentQuestion = null;
 let questionCount = 0;
-const limit = 2;
+const limit = 50;
 
 input.forEach((item) => {
   if (currentQuestion === null || currentQuestion.id_question !== item.id_question) {
@@ -16,6 +16,7 @@ input.forEach((item) => {
     currentQuestion = {
       id_question: item.id_question,
       question_long: item.question_long,
+      psycho: item.psycho,
       answers: []
     };
     output.push(currentQuestion);
@@ -24,6 +25,9 @@ input.forEach((item) => {
   currentQuestion.answers.push({
     id_answer: item.id_answer,
     answer_long: item.answer_long,
+    trait: item.trait,
+    code: item.code,
+    grade: item.grade,
     picture_url: item.picture_url || null
   });
 });

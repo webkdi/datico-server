@@ -110,14 +110,20 @@ async function getDaticoQuiz() {
   const sql = `
   SELECT a.id_question
   ,a.question_long
+  ,a.psycho
   -- ,a.question_short
   ,b.id_answer
   -- ,b.answer_short
   ,b.answer_long
+  ,b.trait
+  ,c.code
+  ,b.grade
   ,b.picture_url
   FROM datico.dt_q_questions AS a
   JOIN datico.dt_q_answers AS b 
   ON a.id_question=b.id_question
+  JOIN datico.dt_p_trait AS c 
+  ON b.trait=c.trait
   `;
   try {
     const [res] = await db.query(sql);
