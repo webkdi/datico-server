@@ -110,6 +110,7 @@ async function getDaticoQuiz() {
   const sql = `
   SELECT a.id_question
   ,a.question_long
+  ,a.id_question
   ,a.psycho
   -- ,a.question_short
   ,b.id_answer
