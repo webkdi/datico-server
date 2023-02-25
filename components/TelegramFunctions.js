@@ -41,7 +41,8 @@ async function sendToTelegram(body) {
   const result = await response.data.result;
 
   if (!response.ok) {
-    console.log("error: ", response);
+    // console.log("error: ", response);
+    console.log("error in Telegram connection");
     stat = 400;
   }
   return { status: stat, response: result };

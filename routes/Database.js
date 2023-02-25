@@ -65,7 +65,6 @@ async function storeImageData(file) {
   }
 }
 
-
 async function getImagesList() {
   const sql = `
   SELECT path, name, type, size_before, updated
@@ -132,7 +131,6 @@ async function getDaticoQuiz() {
   } catch (err) {
     console.log(err);
   }
-
 }
 
 async function deleteLink(id) {
@@ -288,73 +286,91 @@ async function getSuggestions() {
     SELECT 'event'as type, url, og_title, og_description, og_image
     FROM datico.stat_links 
     WHERE type='event' AND dateof>NOW() ORDER BY dateof LIMIT 1
-    ) UNION (
-    SELECT 'articleRandom', url, og_title, og_description, og_image
+  ) UNION (
+    SELECT 'random', url, og_title, og_description, og_image
     FROM datico.stat_links 
-   	WHERE type='article' AND og_image <>'' 
+    WHERE type='article' AND og_image <>'' 
     ORDER BY RAND() limit 1
-    ) UNION (
-    SELECT 'popYesterday' AS type, a.url, og_title, og_description, og_image
+  ) UNION (
+    SELECT 'popular' AS type, a.url, og_title, og_description, og_image
     FROM datico.stat_links a JOIN (
       SELECT url FROM datico.stat_visits_day
-      WHERE locate("/articles/",url)>0
-      ORDER BY visits DESC LIMIT  1
+          WHERE url<>'/'
+      ORDER BY visits DESC LIMIT 10
     ) b ON a.url LIKE CONCAT('%',b.url,'%')
-    ) UNION (
-    SELECT 'popWeek' AS type, a.url, og_title, og_description, og_image
+  ) UNION (
+    SELECT 'newby' AS type, a.url, og_title, og_description, og_image
     FROM datico.stat_links a JOIN (
-		SELECT * FROM (
-			SELECT url FROM datico.stat_visits_week 
-            WHERE locate("/articles/",url)>0
-            ORDER BY visits ASC LIMIT 10
-        ) a ORDER BY RAND() LIMIT 3
-	  ) b ON a.url LIKE CONCAT('%',b.url,'%')
+      SELECT url FROM datico.stat_visits_week 
+      WHERE locate("/articles/",url)>0
+      ORDER BY visits ASC LIMIT 5
+    ) b ON a.url LIKE CONCAT('%',b.url,'%')
   )
   `;
-  try {
-    const [res] = await db.query(sql);
+  // try {
+  const [res] = await db.query(sql);
 
-    //remove url dublicates
-    const seen = new Set();
-    const uniqueUrl = res.filter((el) => {
-      const duplicate = seen.has(el.url);
-      seen.add(el.url);
-      return !duplicate;
-    });
-    //take only one entry per topic
-    seen.clear();
-    let uniqueObjects = uniqueUrl.filter((el) => {
-      const duplicate = seen.has(el.type);
-      seen.add(el.type);
-      return !duplicate;
-    });
-    //att teaser text
-    uniqueObjects.forEach((el) => {
-      switch (el.type) {
-        case "event":
-          el.teaser = "Ближайшая встреча";
-          break;
-        case "articleRandom":
-          el.teaser = "Может, Вам будет интересно";
-          break;
-        case "popYesterday":
-          el.teaser = "Популярная статья сегодня";
-          break;
-        case "popWeek":
-          el.teaser = "Самородок недели";
-          break;
-        default:
-          el.teaser = "Самое популярное";
-      }
-    });
-    //random order
-    uniqueObjects.sort(() => Math.random() - 0.5);
+  //remove url dublicates
+  const seen = new Set();
+  const uniqueUrl = res.filter((el) => {
+    const duplicate = seen.has(el.url);
+    seen.add(el.url);
+    return !duplicate;
+  });
 
-    return uniqueObjects;
-  } catch (err) {
-    // await db.rollback();
-    console.log(err);
-  }
+  //take only one entry per topic
+  // seen.clear();
+  // let uniqueObjects = uniqueUrl.filter((el) => {
+  //   const duplicate = seen.has(el.type);
+  //   seen.add(el.type);
+  //   return !duplicate;
+  // });
+
+  //take RANDOM per type
+  var uniqueObjects = {};
+  uniqueUrl.forEach((item) => {
+    if (!uniqueObjects[item.type]) {
+      uniqueObjects[item.type] = item;
+    } else if (Math.random() >= 0.5) {
+      uniqueObjects[item.type] = item;
+    }
+  });
+
+  uniqueObjects = Object.keys(uniqueObjects).map((key) => uniqueObjects[key]);
+
+  console.log(uniqueObjects);
+
+  //att teaser text
+  uniqueObjects.forEach((el) => {
+    switch (el.type) {
+      case "event":
+        el.teaser = "Ближайшая встреча";
+        break;
+      case "random":
+        el.teaser = "Может, Вам будет интересно";
+        break;
+      case "popular":
+        el.teaser = "Популярная статья сегодня";
+        break;
+      case "newby":
+        el.teaser = "Самородок недели";
+        break;
+      default:
+        el.teaser = "Самое популярное";
+    }
+  });
+  //random order
+  uniqueObjects.sort(() => Math.random() - 0.5);
+
+  return uniqueObjects;
+  // } catch (err) {
+  //   if (err.status === 200) {
+  //     return true;
+  //   } else {
+  //     console.log('Error in sql get ideas');
+  //     return false;
+  //   }
+  // }
 }
 
 async function updateOgLinks() {
@@ -405,7 +421,6 @@ async function getRandomQuote() {
   }
 }
 
-
 async function fbReportLatestUpdate() {
   const sql = `SELECT MAX(update_id) AS lastUpdateId FROM datico.serv_telegram`;
   try {
@@ -428,7 +443,7 @@ async function fbReportTrucate() {
   }
 }
 
-async function fbReportInsert(update_id,type,file_path,message,page_id) {
+async function fbReportInsert(update_id, type, file_path, message, page_id) {
   const sql = `
   INSERT IGNORE INTO datico.serv_telegram (update_id,type,file_path,message,page_id)
   VALUES (${update_id}, '${type}', '${file_path}', '${message}', ${page_id})
@@ -440,7 +455,7 @@ async function fbReportInsert(update_id,type,file_path,message,page_id) {
     const [res] = await db.query(sql);
     return;
   } catch (err) {
-    console.log(update_id, 'error in INSERT IGNORE INTO datico.serv_telegram');
+    console.log(update_id, "error in INSERT IGNORE INTO datico.serv_telegram");
   }
 }
 
@@ -465,4 +480,3 @@ module.exports = {
   fbReportInsert,
   fbReportLatestUpdate,
 };
-
