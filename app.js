@@ -46,12 +46,14 @@ const routeIdeas = require("./routes/Ideas");
 const routeUpdate = require("./routes/Update");
 const routeDatico = require("./routes/Datico");
 const routeImages = require("./routes/Images");
+const openai = require("./routes/OpenAi");
 
 app.use("/tg", routeTg);
 app.use("/ideas", routeIdeas);
 app.use("/update", routeUpdate);
 app.use("/datico", routeDatico);
 app.use("/images", routeImages);
+app.use("/openai", openai);
 
 app.listen(PORT, () => {
   console.log(`Server starten on PORT ${PORT}`);
@@ -68,7 +70,7 @@ var updateStats = cron.schedule('1 35 * * * *', () =>  {
 }, {
   scheduled: false
 });
-updateStats.start();
+// updateStats.start();
 
 //optimize new images
 var updateImages = cron.schedule('1 5 1 * * *', () =>  {
@@ -77,7 +79,7 @@ var updateImages = cron.schedule('1 5 1 * * *', () =>  {
 }, {
   scheduled: false
 });
-updateImages.start();
+// updateImages.start();
 
 //optimize new images
 var reportTgToFb = cron.schedule('1 * * * * *', () =>  {
@@ -85,7 +87,7 @@ var reportTgToFb = cron.schedule('1 * * * * *', () =>  {
 }, {
   scheduled: false
 });
-reportTgToFb.start();
+// reportTgToFb.start();
 
 // tg.infoDefRepost();
 

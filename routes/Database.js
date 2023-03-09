@@ -40,6 +40,141 @@ yesterday = yesterday.toISOString().split("T")[0]; //YYYY-MM-DD
 lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
 
+async function getDaticoUserAnswersOrCreateNew(device, sex) {
+  var sql = `
+    SELECT answersDone, traitJson
+    FROM datico.dt_user where deviceId=?
+    `;
+  const [rows, fields] = await db.query(sql, [device]);
+  // console.log(fields.map(field => field.name));
+
+  if (rows.length === 0) {
+    //no user exists -> create user
+
+    var trait = {
+      //dummy structure of personality, for string storage in DB
+      attitude: {
+        previous: 0,
+        current: 0,
+        intro: {
+          single: 0,
+          total: 0,
+        },
+        extra: {
+          single: 0,
+          total: 0,
+        },
+        questions: {
+          single: 0,
+          total: 0,
+        },
+        delta: 0,
+        sum: 0,
+      },
+      position: {
+        previous: 0,
+        current: 0,
+        active: {
+          single: 0,
+          total: 0,
+        },
+        passive: {
+          single: 0,
+          total: 0,
+        },
+        questions: {
+          single: 0,
+          total: 0,
+        },
+        delta: 0,
+        sum: 0,
+      },
+      temp: {
+        questions: 0,
+        sum: 0,
+        code: 0,
+        sangva: {
+          sum: 0,
+          pc_direct: 0,
+          pc_derived: 0,
+        },
+        mela: {
+          sum: 0,
+          pc_direct: 0,
+          pc_derived: 0,
+        },
+        flegma: {
+          sum: 0,
+          pc_direct: 0,
+          pc_derived: 0,
+        },
+        hole: {
+          sum: 0,
+          pc_direct: 0,
+          pc_derived: 0,
+        },
+      },
+      ego: {
+        previous: 0,
+        current: 0,
+        questions: 0,
+        nat: 0,
+        psy: 0,
+        log: 0,
+      },
+      group: 0,
+      right: 0,
+      questions: {
+        done: 0,
+        remaining: 0,
+        total: 0,
+      },
+      level: {
+        previous: 0,
+        current: 0,
+      },
+      sex: sex,
+      trait: 0,
+      desc: "something",
+      matches: [],
+    };
+
+    var dummyTrait = JSON.stringify(trait);
+
+    var sql = `INSERT IGNORE INTO datico.dt_user (deviceId, sex, traitJson) 
+    VALUES ('${device}', '${sex}', '${dummyTrait}')`;
+    // console.log(sql);
+    const [result] = await db.query(sql);
+
+    if (result.affectedRows > 0) {
+      return [];
+    } else {
+      console.log("error getting datico user");
+      return [];
+    }
+  } else {
+    return rows[0];
+  }
+}
+
+async function storeDaticoUserAnswers(device, answers) {
+  const answersString = JSON.stringify(answers);
+  var sql = `
+    UPDATE datico.dt_user
+    SET answersDone = ?
+    WHERE deviceId = ?
+    `;
+
+  const [result] = await db.query(sql, [answersString, device]);
+
+  if (result.affectedRows > 0) {
+    return true;
+  } else {
+    console.log("error storing");
+    return false;
+  }
+}
+
 async function truncateImageData() {
   const sql = `
   TRUNCATE TABLE serv_images
@@ -124,6 +259,20 @@ async function getDaticoQuiz() {
   ON a.id_question=b.id_question
   JOIN datico.dt_p_trait AS c 
   ON b.trait=c.trait
+  `;
+  try {
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getDaticoTraitCodes() {
+  const sql = `
+  SELECT *
+  FROM datico.dt_p_trait
+  ORDER BY psycho
   `;
   try {
     const [res] = await db.query(sql);
@@ -449,13 +598,91 @@ async function fbReportInsert(update_id, type, file_path, message, page_id) {
   VALUES (${update_id}, '${type}', '${file_path}', '${message}', ${page_id})
   `;
 
-  // console.log(sql);
+  console.log(sql);
 
   try {
     const [res] = await db.query(sql);
     return;
   } catch (err) {
     console.log(update_id, "error in INSERT IGNORE INTO datico.serv_telegram");
+  }
+}
+
+async function chatCreateDevice(deviceId) {
+  const sql = `
+  INSERT IGNORE INTO datico.chat_device (device_id)
+  VALUES ('${deviceId}')
+  `;
+
+  try {
+    const [res] = await db.query(sql);
+    return;
+  } catch (err) {
+    console.log(update_id, "error in Device Id store");
+  }
+}
+
+async function chatStoreMessage(deviceId, step, message, uniqueId) {
+  var sql = '';
+  if (step == 1 ) { // is a question
+    sql = `
+    INSERT IGNORE INTO datico.chat_messages (device_id, question, hashkey)
+    VALUES ('${deviceId}','${message}','${uniqueId}')
+    `;
+  } else {
+    sql = `
+    UPDATE datico.chat_messages 
+    SET answer =  '${message}'
+    WHERE hashkey='${uniqueId}'
+    `;
+  }
+
+  try {
+    const [res] = await db.query(sql);
+    return;
+  } catch (err) {
+    console.log(deviceId, "error in message storage");
+  }
+}
+
+async function chatGetUserTokens(deviceId) {
+  // const sql=`
+  // SELECT tokens, messages, status, timestamp, count(device_id) as devices
+  // FROM datico.chat_device
+  // WHERE device_id='${deviceId}'
+  // GROUP BY tokens, messages
+  // `;
+  // console.log(sql);
+  try {
+    const [res] = await db.query(
+      `
+      SELECT tokens, messages, status, timestamp, count(device_id) as devices
+      FROM datico.chat_device
+      WHERE device_id=?
+      GROUP BY tokens, messages
+      `,
+      [deviceId]
+    );
+    return res;
+  } catch (err) {
+    console.log(deviceId, "error storing tokens");
+  }
+}
+
+async function chatIncreaseUserTokens(deviceId, messageCount, tokens, status) {
+  const sql = `
+  UPDATE datico.chat_device 
+  SET tokens=${tokens}, 
+  messages=${messageCount},
+  status=${status}
+  WHERE device_id='${deviceId}'
+  `;
+  try {
+    const [res] = await db.query(sql);
+    // console.log('tokens update', res);
+    return res;
+  } catch (err) {
+    console.log(deviceId, "error read tokens");
   }
 }
 
@@ -479,4 +706,11 @@ module.exports = {
   fbReportTrucate,
   fbReportInsert,
   fbReportLatestUpdate,
+  getDaticoUserAnswersOrCreateNew,
+  storeDaticoUserAnswers,
+  getDaticoTraitCodes,
+  chatCreateDevice,
+  chatStoreMessage,
+  chatGetUserTokens,
+  chatIncreaseUserTokens,
 };
