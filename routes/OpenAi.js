@@ -41,26 +41,16 @@ router.post("/", async (req, res) => {
     }
 
     if (status == 2) {
-      const waitingPeriodMs = 3 * 60 * 60 * 1000;  // 3 часа
-      // const waitingPeriodMs = 60 * 1000;
+      var waitingMinutes = parseInt(process.env.OPENAI_LIMIT_WAITING_MINUTES); 
+      //3 * 60 * 60 * 1000; // 3 часа
+      const newTimestamp = new Date(timestamp.getTime() + (waitingMinutes * 60 * 1000));
 
-      const futureTimestamp = new Date(Date.parse(timestamp) + waitingPeriodMs);
+      // calculate the minutes from now till the new date
       const waitMinutes = Math.floor(
-        (futureTimestamp - new Date()) / 1000 / 60
+        (newTimestamp.getTime() - Date.now()) / (1000 * 60)
       );
 
-      // const now = new Date();
-      // const timestampDate = new Date(timestamp);
-
-      // add hours to the timestamp using the setTime() method
-      // const newTimestamp = new Date(
-      //   timestamp.setTime(timestamp.getTime() + waitingPeriodMs)
-      // );
-
-      // convert the new timestamp back to a string in ISO 8601 format
-      // const newTimestampString = newTimestamp.toISOString();
-
-      if (waitMinutes>0) {
+      if (waitMinutes > 0) {
         // "24 hours have not yet passed since the timestamp."
         res.status(200).send({
           bot: "",
@@ -83,7 +73,7 @@ router.post("/", async (req, res) => {
       // prompt: prompt,
       messages: messages,
       temperature: 0.7,
-      max_tokens: 2048,
+      max_tokens: 1000,
       top_p: 1,
       frequency_penalty: 0.5,
       presence_penalty: 0.5,
@@ -97,7 +87,6 @@ router.post("/", async (req, res) => {
     messageCount += 1;
 
     let answer = await response.data.choices[0].message.content;
-    let role = await response.data.choices[0].message.role;
     // if (answer.charAt(0) === "\n") {
     //   answer = answer.slice(1);
     // }
@@ -123,7 +112,8 @@ router.post("/", async (req, res) => {
 
 function getStatus(tokens) {
   var status = 1; //continue
-  if (tokens > 2000) {
+  var limit = process.env.OPENAI_TOKEN_LIMIT;
+  if (tokens > limit) {
     //limit exseeded
     status = 2; //one day break
   }
