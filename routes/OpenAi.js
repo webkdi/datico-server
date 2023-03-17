@@ -75,8 +75,10 @@ router.post("/", async (req, res) => {
       // waitMinutes=1;
       if (waitMinutes > 0) {
         // "24 hours have not yet passed since the timestamp."
+        
         //add something to read
         const ideas = await db.getSuggestions();
+
         res.status(200).send({
           bot: "",
           status: 3, // stop communicating!
