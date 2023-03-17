@@ -59,7 +59,7 @@ router.post("/", async (req, res) => {
 
     }
 
-    status = 2;
+    // status = 2;
     if (status == 2) {
       var waitingMinutes = parseInt(process.env.OPENAI_LIMIT_WAITING_MINUTES);
       //3 * 60 * 60 * 1000; // 3 часа
@@ -72,7 +72,7 @@ router.post("/", async (req, res) => {
         (newTimestamp.getTime() - Date.now()) / (1000 * 60)
       );
 
-      waitMinutes=1;
+      // waitMinutes=1;
       if (waitMinutes > 0) {
         // "24 hours have not yet passed since the timestamp."
         //add something to read
