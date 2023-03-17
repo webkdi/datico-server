@@ -131,7 +131,6 @@ router.get("/do_job", async (req, res) => {
             }
 
             const data = await response.json();
-            console.log(data); // do something with the response data
           } catch (error) {
             console.error("Error:", error);
           }

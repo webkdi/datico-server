@@ -295,7 +295,6 @@ async function createLink(object) {
     VALUES ('${object.type}', '${
     object.url
   }', '${object.dateof.toISOString()}', '${object.hashcheck}')`;
-  // console.log(sql);
   try {
     const [res] = await db.query(sql);
     return res;
@@ -486,8 +485,6 @@ async function getSuggestions() {
   });
 
   uniqueObjects = Object.keys(uniqueObjects).map((key) => uniqueObjects[key]);
-
-  console.log(uniqueObjects);
 
   //att teaser text
   uniqueObjects.forEach((el) => {

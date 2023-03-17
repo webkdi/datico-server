@@ -5,7 +5,7 @@ var cron = require('node-cron');
 const upd = require("./components/UpdateFunctions")
 const img = require("./components/ImagesFunctions");
 const tg = require("./components/TelegramFunctions");
-
+require("dotenv").config();
 
 const pm2 = require("pm2");
 pm2.launchBus(function (err, bus) {
@@ -70,6 +70,7 @@ var updateStats = cron.schedule('1 35 * * * *', () =>  {
 }, {
   scheduled: false
 });
+if (process.env.THIS_VERSION === 'LIVE') {updateStats.start();}
 // updateStats.start();
 
 //optimize new images
@@ -79,7 +80,7 @@ var updateImages = cron.schedule('1 5 1 * * *', () =>  {
 }, {
   scheduled: false
 });
-// updateImages.start();
+if (process.env.THIS_VERSION === 'LIVE') {updateImages.start();}
 
 //optimize new images
 var reportTgToFb = cron.schedule('1 * * * * *', () =>  {
@@ -87,9 +88,8 @@ var reportTgToFb = cron.schedule('1 * * * * *', () =>  {
 }, {
   scheduled: false
 });
+if (process.env.THIS_VERSION === 'LIVE') {reportTgToFb.start();}
 // reportTgToFb.start();
-
-// tg.infoDefRepost();
 
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute

@@ -1,10 +1,10 @@
 const express = require("express");
 require("dotenv").config();
-const { Configuration, OpenAIApi } = require("openai");
 const router = express.Router();
 const db = require("./Database");
 const { v4: uuidv4 } = require("uuid");
 
+const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -12,14 +12,31 @@ const openai = new OpenAIApi(configuration);
 
 router.post("/", async (req, res) => {
   try {
-    const { messages, deviceId } = req.body;
+    var { messages, deviceId } = req.body;
+
+    //needed ony for testing
+    if (!messages) {
+      messages = [
+        {
+          role: "assistant",
+          content:
+            "Добрый день, мое имя - Зигмунд Фрейд, и я специализируюсь на психоанализе. Что вы хотели бы обсудить со мной?",
+        },
+        { role: "user", content: "sdsd" },
+      ];
+    }
 
     const systemMessage = {
       role: "user",
       content:
         "Act as Sigmund Freud, famous founder of psychoanalysis. Use psychoanalytic language. Answer only in Russian language.",
     };
-    messages.unshift(systemMessage);
+
+    if (Array.isArray(messages)) {
+      messages.unshift(systemMessage);
+    } else {
+      messages = [systemMessage];
+    }
 
     const question = messages.slice(-1)[0].content;
 
@@ -28,7 +45,7 @@ router.post("/", async (req, res) => {
     var tokens = 0;
     var messageCount = 0;
     var status = 1;
-    var timestamp = "2023-03-07T18:36:59.000Z";
+    var timestamp = new Date("2023-03-07T18:36:59.000Z");
 
     if (userStat.length == 0) {
       //device nicht existiert
@@ -37,25 +54,34 @@ router.post("/", async (req, res) => {
       tokens = userStat[0].tokens; // сколько израсходовал
       messageCount = userStat[0].messages;
       status = userStat[0].status;
-      timestamp = userStat[0].timestamp;
+      // timestamp = userStat[0].timestamp;
+      if (userStat[0].timestamp) {timestamp = new Date(userStat[0].timestamp);}
+
     }
 
+    status = 2;
     if (status == 2) {
-      var waitingMinutes = parseInt(process.env.OPENAI_LIMIT_WAITING_MINUTES); 
+      var waitingMinutes = parseInt(process.env.OPENAI_LIMIT_WAITING_MINUTES);
       //3 * 60 * 60 * 1000; // 3 часа
-      const newTimestamp = new Date(timestamp.getTime() + (waitingMinutes * 60 * 1000));
+      const newTimestamp = new Date(
+        timestamp.getTime() + waitingMinutes * 60 * 1000
+      );
 
       // calculate the minutes from now till the new date
-      const waitMinutes = Math.floor(
+      var waitMinutes = Math.floor(
         (newTimestamp.getTime() - Date.now()) / (1000 * 60)
       );
 
+      waitMinutes=1;
       if (waitMinutes > 0) {
         // "24 hours have not yet passed since the timestamp."
+        //add something to read
+        const ideas = await db.getSuggestions();
         res.status(200).send({
           bot: "",
           status: 3, // stop communicating!
           wait: waitMinutes,
+          ideas,
         });
         return;
       }
@@ -65,7 +91,6 @@ router.post("/", async (req, res) => {
     await db.chatStoreMessage(deviceId, 1, question, uniqueId);
 
     // const prompt = `Act as Sigmund Freud, founder of psychoanalysis. Answer in Russian only: "${messages}"`;
-    // console.log(prompt);
 
     const params = {
       // model: "text-davinci-003",
