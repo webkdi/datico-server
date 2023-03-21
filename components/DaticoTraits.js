@@ -1,4 +1,4 @@
-const db = require("../routes/Database");
+const db = require("./Databases/Database");
 
 async function getNewQuestions(device, sex, answers) {
   var answersStored = [],
@@ -293,7 +293,7 @@ async function getTrait(answers, trait) {
     trait.ego.current +
     trait.group +
     trait.right;
-  trait.desc = codes.filter(c => c.code === trait.trait)[0].trait;
+  trait.desc = codes.filter((c) => c.code === trait.trait)[0].trait;
   const traitWithMatches = await getMatches(trait, codes);
 
   console.log(traitWithMatches);

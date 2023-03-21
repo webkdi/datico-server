@@ -2,7 +2,7 @@ require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
-const db = require("../routes/Database");
+const db = require("./Databases/Database");
 const sharp = require("sharp");
 
 const baseDir = "/var/www/dimitri.korenev/data/www/freud.online/";

@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
 const router = express.Router();
-const db = require("./Database");
+const db = require("../components/Databases/Database");
 const { v4: uuidv4 } = require("uuid");
 
 const { Configuration, OpenAIApi } = require("openai");
@@ -55,8 +55,9 @@ router.post("/", async (req, res) => {
       messageCount = userStat[0].messages;
       status = userStat[0].status;
       // timestamp = userStat[0].timestamp;
-      if (userStat[0].timestamp) {timestamp = new Date(userStat[0].timestamp);}
-
+      if (userStat[0].timestamp) {
+        timestamp = new Date(userStat[0].timestamp);
+      }
     }
 
     // status = 2;
@@ -75,7 +76,7 @@ router.post("/", async (req, res) => {
       // waitMinutes=1;
       if (waitMinutes > 0) {
         // "24 hours have not yet passed since the timestamp."
-        
+
         //add something to read
         const ideas = await db.getSuggestions();
 

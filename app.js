@@ -83,7 +83,7 @@ var updateImages = cron.schedule('1 5 1 * * *', () =>  {
 if (process.env.THIS_VERSION === 'LIVE') {updateImages.start();}
 
 //optimize new images
-var reportTgToFb = cron.schedule('1 * * * * *', () =>  {
+var reportTgToFb = cron.schedule('15 1 * * * *' , () =>  {
   tg.infoDefRepost();
 }, {
   scheduled: false

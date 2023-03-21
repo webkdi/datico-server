@@ -1,36 +1,7 @@
-require("dotenv").config();
-
 const mysql = require("mysql2");
+const { db, dbFreud } = require("./Connections.js");
 const ogs = require("open-graph-scraper");
 const axios = require("axios");
-
-const db = mysql
-  .createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_DATICO_USER,
-    password: process.env.DB_DATICO_PASSWORD,
-    database: process.env.DB_DATICO_DB,
-    waitForConnections: true,
-    connectionLimit: 10,
-    maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
-    idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-    queueLimit: 0,
-  })
-  .promise();
-
-const dbFreud = mysql
-  .createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_FREUD_USER,
-    password: process.env.DB_FREUD_PASSWORD,
-    database: process.env.DB_FREUD_DB,
-    waitForConnections: true,
-    connectionLimit: 10,
-    maxIdle: 10, // max idle connections, the default value is the same as `connectionLimit`
-    idleTimeout: 60000, // idle connections timeout, in milliseconds, the default value 60000
-    queueLimit: 0,
-  })
-  .promise();
 
 //yesterday
 var yesterday = new Date();
@@ -39,6 +10,24 @@ yesterday.setDate(yesterday.getDate() - 1);
 yesterday = yesterday.toISOString().split("T")[0]; //YYYY-MM-DD
 lastPeriod.setMonth(lastPeriod.getMonth() - 3);
 lastPeriod = lastPeriod.toISOString().split("T")[0]; //YYYY-MM-DD
+
+async function storeDaticoUserAnswers(device, answers) {
+  const answersString = JSON.stringify(answers);
+  var sql = `
+    UPDATE datico.dt_user
+    SET answersDone = ?
+    WHERE deviceId = ?
+    `;
+
+  const [result] = await db.query(sql, [answersString, device]);
+
+  if (result.affectedRows > 0) {
+    return true;
+  } else {
+    console.log("error storing");
+    return false;
+  }
+}
 
 async function getDaticoUserAnswersOrCreateNew(device, sex) {
   var sql = `
@@ -157,23 +146,7 @@ async function getDaticoUserAnswersOrCreateNew(device, sex) {
   }
 }
 
-async function storeDaticoUserAnswers(device, answers) {
-  const answersString = JSON.stringify(answers);
-  var sql = `
-    UPDATE datico.dt_user
-    SET answersDone = ?
-    WHERE deviceId = ?
-    `;
 
-  const [result] = await db.query(sql, [answersString, device]);
-
-  if (result.affectedRows > 0) {
-    return true;
-  } else {
-    console.log("error storing");
-    return false;
-  }
-}
 
 async function truncateImageData() {
   const sql = `
@@ -567,43 +540,6 @@ async function getRandomQuote() {
   }
 }
 
-async function fbReportLatestUpdate() {
-  const sql = `SELECT MAX(update_id) AS lastUpdateId FROM datico.serv_telegram`;
-  try {
-    const [res] = await db.query(sql);
-    return res[0].lastUpdateId;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function fbReportTrucate() {
-  const sql = `
-  truncate table datico.serv_telegram
-  `;
-  try {
-    const [res] = await db.query(sql);
-    return res;
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function fbReportInsert(update_id, type, file_path, message, page_id) {
-  const sql = `
-  INSERT IGNORE INTO datico.serv_telegram (update_id,type,file_path,message,page_id)
-  VALUES (${update_id}, '${type}', '${file_path}', '${message}', ${page_id})
-  `;
-
-  console.log(sql);
-
-  try {
-    const [res] = await db.query(sql);
-    return;
-  } catch (err) {
-    console.log(update_id, "error in INSERT IGNORE INTO datico.serv_telegram");
-  }
-}
 
 async function chatCreateDevice(deviceId) {
   const sql = `
@@ -700,9 +636,6 @@ module.exports = {
   storeImageData,
   getImagesList,
   truncateImageData,
-  fbReportTrucate,
-  fbReportInsert,
-  fbReportLatestUpdate,
   getDaticoUserAnswersOrCreateNew,
   storeDaticoUserAnswers,
   getDaticoTraitCodes,

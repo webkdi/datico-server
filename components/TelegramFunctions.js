@@ -2,7 +2,8 @@ const { v4: uuidv4 } = require("uuid");
 var FormData = require("form-data");
 const axios = require("axios");
 require("dotenv").config();
-const db = require("../routes/Database");
+// const db = require("./Databases/Database");
+const db = require("./Databases/refTelegram");
 
 async function sendToTelegram(body) {
   const id = uuidv4();
@@ -66,157 +67,153 @@ async function infoDefRepost() {
   var messages = [];
   var unknown = [];
 
-  axios(telegramAPIEndpoint)
-    .then((response) => response.data)
-    .then((data) => {
-      var updates = data.result;
-      updates = updates.filter(
-        (obj) =>
-          obj.channel_post &&
-          (obj.channel_post.chat.title === "FB_InfoDefenseDEUTSCH" ||
-            obj.channel_post.chat.title === "InfodefenseFRANCEbis")
-      );
+  const response = await axios(telegramAPIEndpoint);
+  const data = response.data;
 
-      updates.length > 0 &&
-        updates.forEach((ms) => {
-          if (ms.channel_post) {
-            var asset = {};
-            if (ms.channel_post.text && ms.channel_post.text.length > 0) {
-              asset.message = ms.channel_post.text;
-              asset.type = "text";
-            } else if (ms.channel_post.photo && ms.channel_post.caption) {
-              asset.files = ms.channel_post.photo;
-              asset.message = ms.channel_post.caption;
-              asset.type = "image";
-            } else if (ms.channel_post.photo && !ms.channel_post.caption) {
-              asset.files = ms.channel_post.photo;
-              asset.message = '';
-              asset.type = "image";
-            } else if (ms.channel_post.video) {
-              asset.files = ms.channel_post.video;
-              asset.message = ms.channel_post.caption;
-              asset.type = "video";
-            } else {
-              unknown.push(ms);
-            }
-            if (Object.keys(asset).length > 0) {
-              asset.chat_id = ms.channel_post.chat.id;
-              asset.chat_name = ms.channel_post.chat.title;
-              asset.update_id = ms.update_id;
-              messages.push(asset);
-            }
-          }
-        });
+  let updates = data.result;
+  updates = updates.filter(
+    (obj) =>
+      obj.channel_post &&
+      (obj.channel_post.chat.title === "FB_InfoDefenseDEUTSCH" ||
+        obj.channel_post.chat.title === "InfodefenseFRANCEbis")
+  );
 
-      messages
-        .filter((ms) => ms && ms.files)
-        .forEach((ms) => {
-          if (ms.type === "image") {
-            ms.file_fileId = ms.files[ms.files.length - 1].file_id;
-          } else if (ms.type === "video") {
-            ms.file_fileId = ms.files.file_id;
-          }
-          delete ms.files;
-        });
+  if (updates.length === 0) {
+    const now = new Date();
+    console.log(`${now}: No new updates. Skipped`);
+    return;
+  }
 
-    })
-    .then(async () => {
-      const messagesWithFileId = messages.filter(
-        (message) => message.file_fileId
-      );
-
-      for (const message of messagesWithFileId) {
-        const fileData = await getFile(message.file_fileId, telegramBotToken);
-        if (typeof fileData !== "undefined" && fileData) {
-          message.file_path = `https://api.telegram.org/file/bot${telegramBotToken}/${fileData}`;
+  await Promise.all(
+    updates.map(async (ms) => {
+      const newRow = await db.insertIgnore(ms.update_id);
+      if (newRow === 0) {
+        console.log(`Update ${ms.update_id} exists already. Ignored`);
+        return; //entry already exists
+      }
+      if (ms.channel_post) {
+        var asset = {};
+        if (ms.channel_post.text && ms.channel_post.text.length > 0) {
+          asset.message = ms.channel_post.text;
+          asset.type = "text";
+        } else if (ms.channel_post.photo && ms.channel_post.caption) {
+          asset.files = ms.channel_post.photo;
+          asset.message = ms.channel_post.caption;
+          asset.type = "image";
+        } else if (ms.channel_post.photo && !ms.channel_post.caption) {
+          asset.files = ms.channel_post.photo;
+          asset.message = "";
+          asset.type = "image";
+        } else if (ms.channel_post.video) {
+          asset.files = ms.channel_post.video;
+          asset.message = ms.channel_post.caption;
+          asset.type = "video";
         } else {
-          message.file_path = "";
+          unknown.push(ms);
         }
-      }
-
-    })
-    .then(async () => {
-      messages = messages.filter((obj) => {
-        if (obj.type === "text") {
-          return true; // include objects with "type" of "text"
-        } else if (obj.type === "image" || obj.type === "video") {
-          // return true;
-          return obj.file_path ? true : false; // include objects with "type" of "image" or "video" and a "file_path" property
-        } else {
-          return false; // exclude objects with unrecognized "type"
-        }
-      });
-
-      for (let i = 0; i < messages.length; i++) {
-        if (typeof messages[i].message !== "undefined") {
-          messages[i].message = messages[i].message.replace(
-            /📱 InfoDefenseDEUTSCH\n📱 InfoDefense/g,
-            ""
-          );
-        } else {
-          messages[i].message = "";
-        }
-
-        messages[i].message = messages[i].message.replace("\n\n", "\n");
-        messages[i].message = messages[i].message.replace("'", "''");
-
-        //Make sends filepath as link for text
-        if (messages[i].type === "text") {
-          const urls = messages[i].message.match(urlRegex);
-          if (urls && urls.length > 0) {
-            messages[i].file_path = urls[0];
-          }
-        }
-
-        var gap = "\n\n";
-        if (messages[i].message.length == 0) {
-          gap = "";
-        }
-        if (messages[i].chat_name == "FB_InfoDefenseDEUTSCH") {
-          messages[
-            i
-          ].message += `${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
-          messages[i].repost_to = 105288955734641;
-        } else if (messages[i].chat_name == "InfodefenseFRANCEbis") {
-          messages[
-            i
-          ].message += `${gap}Plus et sans censure dans Telegram:\n🇫🇷 https://t.me/infodefFRANCE`;
-          messages[i].repost_to = 102131486075155;
+        if (Object.keys(asset).length > 0) {
+          asset.chat_id = ms.channel_post.chat.id;
+          asset.chat_name = ms.channel_post.chat.title;
+          asset.update_id = ms.update_id;
+          messages.push(asset);
         }
       }
     })
-    .then(async () => {
-      //store in DB
-      if (messages.length > 0) {
-        const truncate = await db.fbReportTrucate();
-        messages.forEach(async (ms) => {
-          const store = await db.fbReportInsert(
-            ms.update_id,
-            ms.type,
-            ms.file_path,
-            ms.message,
-            ms.repost_to
-          );
-        });
+  );
+
+  messages
+    .filter((ms) => ms && ms.files)
+    .forEach((ms) => {
+      if (ms.type === "image") {
+        ms.file_fileId = ms.files[ms.files.length - 1].file_id;
+      } else if (ms.type === "video") {
+        ms.file_fileId = ms.files.file_id;
       }
-    })
-    .then(async () => {
-      if (messages.length > 0) {
-        messages.forEach(async (ms) => {       
-          if (ms.update_id !== update_id_latest) {  // shon geliefert
-            const sent = await sendToMakeForFb(
-              ms.type,
-              ms.file_path,
-              ms.message,
-              ms.repost_to
-            );
-          } 
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
+      delete ms.files;
     });
+
+  const messagesWithFileId = messages.filter((message) => message.file_fileId);
+  for (const message of messagesWithFileId) {
+    const fileData = await getFile(message.file_fileId, telegramBotToken);
+    if (typeof fileData !== "undefined" && fileData) {
+      message.file_path = `https://api.telegram.org/file/bot${telegramBotToken}/${fileData}`;
+    } else {
+      message.file_path = "";
+    }
+  }
+
+  messages = messages.filter((obj) => {
+    if (obj.type === "text") {
+      return true; // include objects with "type" of "text"
+    } else if (obj.type === "image" || obj.type === "video") {
+      // return true;
+      return obj.file_path ? true : false; // include objects with "type" of "image" or "video" and a "file_path" property
+    } else {
+      return false; // exclude objects with unrecognized "type"
+    }
+  });
+
+  for (let i = 0; i < messages.length; i++) {
+    if (typeof messages[i].message !== "undefined") {
+      messages[i].message = messages[i].message.replace(
+        /📱 InfoDefenseDEUTSCH\n📱 InfoDefense/g,
+        ""
+      );
+    } else {
+      messages[i].message = "";
+    }
+
+    messages[i].message = messages[i].message.replace("\n\n", "\n");
+    messages[i].message = messages[i].message.replace("'", "''");
+
+    //Make sends filepath as link for text
+    if (messages[i].type === "text") {
+      const urls = messages[i].message.match(urlRegex);
+      if (urls && urls.length > 0) {
+        messages[i].file_path = urls[0];
+      }
+    }
+
+    var gap = "\n\n";
+    if (messages[i].message.length == 0) {
+      gap = "";
+    }
+    if (messages[i].chat_name == "FB_InfoDefenseDEUTSCH") {
+      messages[
+        i
+      ].message += `${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
+      messages[i].repost_to = 105288955734641;
+    } else if (messages[i].chat_name == "InfodefenseFRANCEbis") {
+      messages[
+        i
+      ].message += `${gap}Plus et sans censure dans Telegram:\n🇫🇷 https://t.me/infodefFRANCE`;
+      messages[i].repost_to = 102131486075155;
+    }
+  }
+
+  //store in DB
+  messages.forEach(async (ms) => {
+    const store = await db.fbReportUpdate(
+      ms.update_id,
+      ms.type,
+      ms.file_path,
+      ms.message,
+      ms.repost_to
+    );
+  });
+  const truncate = await db.fbReportClean();
+  
+  messages.forEach(async (ms) => {
+    if (ms.update_id !== update_id_latest) {
+      // shon geliefert
+      const sent = await sendToMakeForFb(
+        ms.type,
+        ms.file_path,
+        ms.message,
+        ms.repost_to
+      );
+    }
+  });
 }
 
 async function sendToMakeForFb(type, filepath, message, page_id) {
@@ -246,7 +243,7 @@ async function sendToMakeForFb(type, filepath, message, page_id) {
       console.log(response.status);
       return response.status;
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("There was a problem with the POST request");
     });
 }
@@ -272,7 +269,6 @@ async function getFile(file_Id, telegramBotToken) {
       console.log(file_Id, error);
     }
   }
-
 }
 
 module.exports = {

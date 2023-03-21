@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const img = require("../components/ImagesFunctions");
-const db = require("./Database");
+const db = require("../components/Databases/Database");
 const router = express.Router();
 
 router.get("/update_list", async (req, res) => {
@@ -92,9 +92,7 @@ router.get("/do_job", async (req, res) => {
       // ob Kompression notwendig ist oder nicht. LAUCHER!
       const execute = false;
 
-      const filtered = await list.filter(
-        (obj) => obj.size_before > 150
-      );
+      const filtered = await list.filter((obj) => obj.size_before > 150);
 
       const result = filtered.reduce(
         (accumulator, image) => {
@@ -105,7 +103,7 @@ router.get("/do_job", async (req, res) => {
         },
         { totalSize: 0, count: 0 }
       );
-      console.log("Large_files: ",result.totalSize, result.count); // prints the sum of all size_before properties
+      console.log("Large_files: ", result.totalSize, result.count); // prints the sum of all size_before properties
 
       const url = "https://app.freud.online/images/optimize";
       const password = process.env.PRIVATE_APP_PASSWORD;
