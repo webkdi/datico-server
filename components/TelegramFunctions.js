@@ -53,7 +53,7 @@ async function sendToTelegram(body) {
 
 async function infoDefRepost() {
 
-  console.log(`${now}: Start of cron infoDefRepost`);
+  // console.log(`${now}: Start of cron infoDefRepost`);
 
   const telegramBotToken = process.env.TG_BOT_TOKEN_INFODEFENSE_BOT;
 
