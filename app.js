@@ -5,6 +5,7 @@ var cron = require('node-cron');
 const upd = require("./components/UpdateFunctions")
 const img = require("./components/ImagesFunctions");
 const tg = require("./components/TelegramFunctions");
+const sb = require("./components/SaleBot");
 require("dotenv").config();
 
 const pm2 = require("pm2");
@@ -19,7 +20,7 @@ app.use(helmet());
 const PORT = process.env.PORT || 10000;
 
 
-var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','https://freud.online','https://app.freud.online','http://194.67.105.122'];
+var allowedOrigins = ['http://localhost:3000','http://localhost:3001','http://localhost:8080','https://freud.online','https://app.freud.online','http://194.67.105.122','http://89.108.103.129'];
 app.use(cors({
   origin: function(origin, callback){
     // allow requests with no origin 
@@ -101,3 +102,5 @@ if (process.env.THIS_VERSION === 'LIVE') {reportTgToFb.start();}
 // # │ │ │ │ │ │
 // # * * * * * *
 //  '*/15 * * * * *' every 15 seconds
+
+let newSbClient = sb.newWebHook(12);

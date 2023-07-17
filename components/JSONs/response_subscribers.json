@@ -1,0 +1,1694 @@
+[
+  {
+    "id": 228805573,
+    "tag": null,
+    "created_at": 1689516643,
+    "name": "Julia K",
+    "vk_id": "5274492230",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "callback_query_id": "4207027560727710238" }
+  },
+  {
+    "id": 228732280,
+    "tag": "bp_meet",
+    "created_at": 1689498254,
+    "name": "Svetlana Weihs",
+    "vk_id": "6383631455058675",
+    "group": "108264128925046",
+    "client_type": 3,
+    "variables": {
+      "email": "svetlanaweihs@gmail.com",
+      "facebook_client_source": "SHORTLINK",
+      "phone": "436645336056"
+    }
+  },
+  {
+    "id": 228487956,
+    "tag": "bp_meet",
+    "created_at": 1689433451,
+    "name": "Natalia Brunner",
+    "vk_id": "5510798209022751",
+    "group": "108264128925046",
+    "client_type": 3,
+    "variables": {
+      "email": "nataliabrunner77@gmail.com",
+      "phone": "436608087389"
+    }
+  },
+  {
+    "id": 228471484,
+    "tag": "bp_meet",
+    "created_at": 1689432538,
+    "name": "Ivan Petrov",
+    "vk_id": "5858218183",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "phone": "4369911128403" }
+  },
+  {
+    "id": 228418298,
+    "tag": null,
+    "created_at": 1689426883,
+    "name": "4367761220351",
+    "vk_id": "4367761220351",
+    "group": "81540",
+    "client_type": 6,
+    "variables": { "wa_bot": "436505611261" }
+  },
+  {
+    "id": 228327682,
+    "tag": null,
+    "created_at": 1689414231,
+    "name": "Светлана",
+    "vk_id": "436645336056",
+    "group": "81540",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436505611261" }
+  },
+  {
+    "id": 228322618,
+    "tag": null,
+    "created_at": 1689412588,
+    "name": "Patrik Poppel",
+    "vk_id": "4369912645688",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "wa_bot": "436605752835" }
+  },
+  {
+    "id": 228214062,
+    "tag": null,
+    "created_at": 1689365928,
+    "name": "Marina Pytel",
+    "vk_id": "1462566149",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "6281673782145807247",
+      "custom_status_code": "200",
+      "email": "marina75@gmx.at",
+      "phone": "436603714444"
+    }
+  },
+  {
+    "id": 228208072,
+    "tag": null,
+    "created_at": 1689364491,
+    "name": "436603714444",
+    "vk_id": "436603714444",
+    "group": "81540",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436505611261" }
+  },
+  {
+    "id": 228173937,
+    "tag": "bp_meet",
+    "created_at": 1689357269,
+    "name": "Мarina Defonso",
+    "vk_id": "939293243",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "4034233762383187290",
+      "custom_status_code": "200",
+      "email": "marina.mlacker@gmail.com",
+      "phone": "436607082883",
+      "tg_username": "@marinadefonso"
+    }
+  },
+  {
+    "id": 228173160,
+    "tag": null,
+    "created_at": 1689357055,
+    "name": "Julia Schi",
+    "vk_id": "5479700076",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "5088388546225623024",
+      "custom_status_code": "200",
+      "email": "jul-se@yandex.ru",
+      "email_stripe": "jul-se@yandex.ru",
+      "name_stripe": "Iuliia Schimpf",
+      "phone": "4367761834100",
+      "phone_stripe": "None",
+      "stripe_callback_data": "{\"id\":\"cs_live_a1DfwJmO2Z8KJSb5G471TFkOTXvjkUfiIHO3svMPtx9490cGdf15dMOIXc\",\"object\":\"checkout.session\",\"after_expiration\":null,\"allow_promotion_codes\":null,\"amount_subtotal\":800,\"amount_total\":800,\"automatic_tax\":{\"enabled\":false,\"status\":null},\"billing_address_collection\":null,\"cancel_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/fail?order_id=228173160--7108\",\"client_reference_id\":\"228173160--7108\",\"consent\":null,\"consent_collection\":null,\"created\":1689346387,\"currency\":\"eur\",\"currency_conversion\":null,\"custom_fields\":[],\"custom_text\":{\"shipping_address\":null,\"submit\":null},\"customer\":\"cus_OGK4PJyW9PDEi4\",\"customer_creation\":\"if_required\",\"customer_details\":{\"address\":{\"city\":null,\"country\":\"AT\",\"line1\":null,\"line2\":null,\"postal_code\":null,\"state\":null},\"email\":\"jul-se@yandex.ru\",\"name\":\"Iuliia Schimpf\",\"phone\":null,\"tax_exempt\":\"none\",\"tax_ids\":[]},\"customer_email\":null,\"expires_at\":1689432787,\"invoice\":\"in_1NTnQ8AP19WOtJXbTr6r5Czr\",\"invoice_creation\":{\"enabled\":true,\"invoice_data\":{\"account_tax_ids\":null,\"custom_fields\":null,\"description\":\"228173160--7108\",\"footer\":null,\"metadata\":{},\"rendering_options\":null}},\"livemode\":true,\"locale\":\"ru\",\"metadata\":{},\"mode\":\"payment\",\"payment_intent\":\"pi_3NTnQ3AP19WOtJXb1VWF2J59\",\"payment_link\":null,\"payment_method_collection\":\"always\",\"payment_method_options\":{},\"payment_method_types\":[\"card\",\"eps\"],\"payment_status\":\"paid\",\"phone_number_collection\":{\"enabled\":false},\"recovered_from\":null,\"setup_intent\":null,\"shipping_address_collection\":null,\"shipping_cost\":null,\"shipping_details\":null,\"shipping_options\":[],\"status\":\"complete\",\"submit_type\":null,\"subscription\":null,\"success_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/success?order_id=228173160--7108\",\"total_details\":{\"amount_discount\":0,\"amount_shipping\":0,\"amount_tax\":0},\"url\":null}"
+    }
+  },
+  {
+    "id": 228168976,
+    "tag": "bp_meet",
+    "created_at": 1689356710,
+    "name": "Андрей Потапов",
+    "vk_id": "5796218394",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "6447824370426155778",
+      "custom_status_code": "200",
+      "email": "andrewhite0987@gmail.com",
+      "phone": "4368184986059"
+    }
+  },
+  {
+    "id": 228165433,
+    "tag": null,
+    "created_at": 1689355831,
+    "name": "Dimitry Dem",
+    "vk_id": "6069315483",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "7620767435687522571",
+      "custom_status_code": "200",
+      "email": "dimitry.dementev@gmail.com",
+      "phone": "436604083505"
+    }
+  },
+  {
+    "id": 228155050,
+    "tag": null,
+    "created_at": 1689353505,
+    "name": "436604083505",
+    "vk_id": "436604083505",
+    "group": "81540",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436505611261" }
+  },
+  {
+    "id": 228063003,
+    "tag": null,
+    "created_at": 1689343614,
+    "name": "4367761834100",
+    "vk_id": "4367761834100",
+    "group": "81540",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436505611261" }
+  },
+  {
+    "id": 227943261,
+    "tag": null,
+    "created_at": 1689329081,
+    "name": "Marina",
+    "vk_id": "282689723",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "1214143117013663060",
+      "custom_status_code": "200",
+      "email": "marinasonvilla@gmail.com",
+      "phone": "436645536016"
+    }
+  },
+  {
+    "id": 227817699,
+    "tag": "bp_meet",
+    "created_at": 1689283632,
+    "name": "Irina Grasmik",
+    "vk_id": "6314995851911966",
+    "group": "108264128925046",
+    "client_type": 3,
+    "variables": {
+      "custom_status_code": "200",
+      "facebook_client_source": "SHORTLINK"
+    }
+  },
+  {
+    "id": 227817191,
+    "tag": null,
+    "created_at": 1689283506,
+    "name": "Irina Grasmik",
+    "vk_id": "5893162486",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "6864196076666141905",
+      "custom_status_code": "200"
+    }
+  },
+  {
+    "id": 227808859,
+    "tag": "bp_meet",
+    "created_at": 1689281925,
+    "name": "Елена",
+    "vk_id": "110058883",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "472699304902267661",
+      "custom_status_code": "200",
+      "email": "elena@degano.info",
+      "phone": "3934878978 55",
+      "tg_username": "@FamesArtiumMagister"
+    }
+  },
+  {
+    "id": 227779055,
+    "tag": "bp_meet",
+    "created_at": 1689275144,
+    "name": "Zanna Kruglova",
+    "vk_id": "6167672376653655",
+    "group": "108264128925046",
+    "client_type": 3,
+    "variables": {
+      "custom_status_code": "200",
+      "email": "timurcik25@inbox.lv",
+      "facebook_client_source": "SHORTLINK",
+      "phone": "4368120800203"
+    }
+  },
+  {
+    "id": 227775571,
+    "tag": null,
+    "created_at": 1689274335,
+    "name": "Клиент 07.13 18:52",
+    "vk_id": "qj6pvradl1f",
+    "group": "264222",
+    "client_type": 5,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227770177,
+    "tag": "bp_meet",
+    "created_at": 1689273106,
+    "name": "Natallia Netschai",
+    "vk_id": "5622519271184271",
+    "group": "108264128925046",
+    "client_type": 3,
+    "variables": {
+      "custom_status_code": "200",
+      "email": "Natallia.niachai@gmail.com",
+      "phone": "+436802127600"
+    }
+  },
+  {
+    "id": 227763082,
+    "tag": null,
+    "created_at": 1689271543,
+    "name": "Larissa Sobolenko",
+    "vk_id": "1371836989",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "5891995006004501056",
+      "custom_status_code": "200",
+      "email": "mag.larisa2012@mail.ru",
+      "email_stripe": "mag.larisa2012@mail.ru",
+      "name_stripe": "MAG. L. SOBOLENKO-TSCHEPURA",
+      "phone": "436605572791",
+      "phone_stripe": "None",
+      "stripe_callback_data": "{\"id\":\"cs_live_a1IXk2VGyKRDYRSxVUsL5x2uwOkW0XoSOeJSz4XwKwkiwEKsfOG8Y0kvtD\",\"object\":\"checkout.session\",\"after_expiration\":null,\"allow_promotion_codes\":null,\"amount_subtotal\":800,\"amount_total\":800,\"automatic_tax\":{\"enabled\":false,\"status\":null},\"billing_address_collection\":null,\"cancel_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/fail?order_id=227763082--5069\",\"client_reference_id\":\"227763082--5069\",\"consent\":null,\"consent_collection\":null,\"created\":1689261635,\"currency\":\"eur\",\"currency_conversion\":null,\"custom_fields\":[],\"custom_text\":{\"shipping_address\":null,\"submit\":null},\"customer\":\"cus_OFxF6ycZNTmeWo\",\"customer_creation\":\"if_required\",\"customer_details\":{\"address\":{\"city\":null,\"country\":\"AT\",\"line1\":null,\"line2\":null,\"postal_code\":null,\"state\":null},\"email\":\"mag.larisa2012@mail.ru\",\"name\":\"MAG. L. SOBOLENKO-TSCHEPURA\",\"phone\":null,\"tax_exempt\":\"none\",\"tax_ids\":[]},\"customer_email\":null,\"expires_at\":1689348035,\"invoice\":\"in_1NTRKkAP19WOtJXblhC0GGbz\",\"invoice_creation\":{\"enabled\":true,\"invoice_data\":{\"account_tax_ids\":null,\"custom_fields\":null,\"description\":\"227763082--5069\",\"footer\":null,\"metadata\":{},\"rendering_options\":null}},\"livemode\":true,\"locale\":\"ru\",\"metadata\":{},\"mode\":\"payment\",\"payment_intent\":\"pi_3NTRKiAP19WOtJXb0XrRvFvp\",\"payment_link\":null,\"payment_method_collection\":\"always\",\"payment_method_options\":{},\"payment_method_types\":[\"card\",\"eps\"],\"payment_status\":\"paid\",\"phone_number_collection\":{\"enabled\":false},\"recovered_from\":null,\"setup_intent\":null,\"shipping_address_collection\":null,\"shipping_cost\":null,\"shipping_details\":null,\"shipping_options\":[],\"status\":\"complete\",\"submit_type\":null,\"subscription\":null,\"success_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/success?order_id=227763082--5069\",\"total_details\":{\"amount_discount\":0,\"amount_shipping\":0,\"amount_tax\":0},\"url\":null}"
+    }
+  },
+  {
+    "id": 227750851,
+    "tag": null,
+    "created_at": 1689268461,
+    "name": "Aliona",
+    "vk_id": "2123140871",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227748964,
+    "tag": "bp_meet",
+    "created_at": 1689268033,
+    "name": "Dimitri Korenev",
+    "vk_id": "5956018414509141",
+    "group": "108264128925046",
+    "client_type": 3,
+    "variables": {
+      "custom_status_code": "200",
+      "facebook_client_source": "SHORTLINK"
+    }
+  },
+  {
+    "id": 227748651,
+    "tag": null,
+    "created_at": 1689267963,
+    "name": "Elena K. 🇷🇺💕",
+    "vk_id": "5365208979",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "4596653031057984948",
+      "custom_status_code": "200",
+      "email": "Sara.korol@mail.ru"
+    }
+  },
+  {
+    "id": 227734592,
+    "tag": null,
+    "created_at": 1689265231,
+    "name": "victoria",
+    "vk_id": "2095534638",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227734386,
+    "tag": null,
+    "created_at": 1689265190,
+    "name": "Vse Ye",
+    "vk_id": "1395942301",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "5995526531325385620",
+      "custom_status_code": "200",
+      "email": "v.yelfimov@gmail.com",
+      "phone": "4368181404812"
+    }
+  },
+  {
+    "id": 227734101,
+    "tag": null,
+    "created_at": 1689265127,
+    "name": "436605752835",
+    "vk_id": "436605752835",
+    "group": "81540",
+    "client_type": 6,
+    "variables": {
+      "custom_status_code": "200",
+      "email": "dimitri.korenev@gmail.com",
+      "name": "Дмитрий Коренев",
+      "phone": "436605752835",
+      "wa_bot": "436505611261"
+    }
+  },
+  {
+    "id": 227730051,
+    "tag": null,
+    "created_at": 1689264641,
+    "name": "Vadimych",
+    "vk_id": "560970024",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200", "tg_username": "@crzite_mrnce" }
+  },
+  {
+    "id": 227705196,
+    "tag": null,
+    "created_at": 1689262517,
+    "name": "Басем",
+    "vk_id": "5154901714",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "3693390205438097693",
+      "custom_status_code": "200",
+      "email": "basem.sadek@yahoo.de",
+      "phone": "436764753281"
+    }
+  },
+  {
+    "id": 227699019,
+    "tag": null,
+    "created_at": 1689261436,
+    "name": "Sergej Kormout",
+    "vk_id": "300122185",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "1289014972143257441",
+      "custom_status_code": "200",
+      "email": "s.kormout@gmail.com",
+      "phone": "436763132072",
+      "tg_username": "@kotMatroskin666"
+    }
+  },
+  {
+    "id": 227698757,
+    "tag": null,
+    "created_at": 1689261376,
+    "name": "Elvira Stempien",
+    "vk_id": "5230774744",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227676049,
+    "tag": null,
+    "created_at": 1689260865,
+    "name": "Ксения",
+    "vk_id": "5277496444",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "4219930558813108015",
+      "custom_status_code": "200",
+      "email": "kseniya.porokhnova@gmail.com",
+      "tg_username": "@fresieg"
+    }
+  },
+  {
+    "id": 227634022,
+    "tag": null,
+    "created_at": 1689259587,
+    "name": "Elina",
+    "vk_id": "1078195092",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227633823,
+    "tag": null,
+    "created_at": 1689259546,
+    "name": "Slavko Kalaba",
+    "vk_id": "773926581",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "3323989355873480553",
+      "custom_status_code": "200",
+      "email": "s.kalaba@mail.ru",
+      "phone": "436604012126",
+      "tg_username": "@Slavasorabia"
+    }
+  },
+  {
+    "id": 227631473,
+    "tag": null,
+    "created_at": 1689259187,
+    "name": "Emilija",
+    "vk_id": "2118802349",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227630219,
+    "tag": null,
+    "created_at": 1689259093,
+    "name": "Marina Pauser",
+    "vk_id": "1413832775",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227629945,
+    "tag": null,
+    "created_at": 1689259071,
+    "name": "Konstantin Schmidt",
+    "vk_id": "1558542685",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227628457,
+    "tag": null,
+    "created_at": 1689258967,
+    "name": "Natalia Scharaeva",
+    "vk_id": "1515594412",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200", "tg_username": "@Natalia_B_S" }
+  },
+  {
+    "id": 227608083,
+    "tag": null,
+    "created_at": 1689255538,
+    "name": "120363135210556001",
+    "vk_id": "120363135210556001",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227585686,
+    "tag": null,
+    "created_at": 1689253197,
+    "name": "41793200858-1545397439",
+    "vk_id": "41793200858-1545397439",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227584687,
+    "tag": null,
+    "created_at": 1689253008,
+    "name": "79149261137",
+    "vk_id": "79149261137",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227580264,
+    "tag": "bp_meet",
+    "created_at": 1689252114,
+    "name": "Natallia ( Psychologin)🇦🇹🇧🇾🇷🇺 Наталья Нечай (Психолог)",
+    "vk_id": "1166304692",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "5009240511805243656",
+      "custom_status_code": "200",
+      "email": "natallia.niachai@gmail.com",
+      "phone": "436802127600"
+    }
+  },
+  {
+    "id": 227566096,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Basem Sadek",
+    "vk_id": "436764753281",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566095,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Елена Мартысевич",
+    "vk_id": "4369911707634",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566094,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Olga",
+    "vk_id": "4368184092803",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566093,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Наташа",
+    "vk_id": "79777631190",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566091,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Елисей",
+    "vk_id": "436603837733",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566090,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Natalia Scharaeva",
+    "vk_id": "4369919588750",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566089,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Ксения Порокхнова",
+    "vk_id": "436765112091",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566088,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Elina",
+    "vk_id": "4369910539328",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227566087,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Olga Kolodziej",
+    "vk_id": "436767113145",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566086,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Sergej Kormout",
+    "vk_id": "436763132072",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227566085,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Larissa Sobolenko",
+    "vk_id": "436605572791",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566084,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Надежда Nadezhda",
+    "vk_id": "4306802368424",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566083,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Julia",
+    "vk_id": "436769075665",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566082,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Тамара Иванова",
+    "vk_id": "436502624318",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566081,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Aliona Frolova",
+    "vk_id": "436764283535",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566080,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Antonia Bolek",
+    "vk_id": "436706063676",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566079,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Marina",
+    "vk_id": "436645536016",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227566078,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Lisa Nikitina",
+    "vk_id": "43069911225105",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566077,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Michael Müller",
+    "vk_id": "436766428020",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566076,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Vsevolod Yelfimov",
+    "vk_id": "4368181404812",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566075,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Eleonora Gafarova",
+    "vk_id": "4369917269369",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227566074,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Irina Grasmik",
+    "vk_id": "4369918914657",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227566073,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Yuri Yegorov",
+    "vk_id": "436781218757",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566072,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Ellina Yusupova",
+    "vk_id": "79160229393",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566071,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Konstantin Schmidt",
+    "vk_id": "436646315785",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566070,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Viktoria Beljaeva",
+    "vk_id": "436643957937",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227566069,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Marina Pauser",
+    "vk_id": "436504906786",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436605752835" }
+  },
+  {
+    "id": 227566068,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Anna Nikitina",
+    "vk_id": "14036049235",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566067,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Dmitry Dementev",
+    "vk_id": "4306604083505",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566066,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Elena Koll",
+    "vk_id": "393386502279",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566065,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Jenny River",
+    "vk_id": "436641577762",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566064,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Radik Kabajew",
+    "vk_id": "436603873355",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566063,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Natallia Niachai",
+    "vk_id": "436802127600",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566062,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Zanna Kruglova",
+    "vk_id": "4368120800203",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566061,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Emilija Malach",
+    "vk_id": "436606566722",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227566060,
+    "tag": null,
+    "created_at": 1689238686,
+    "name": "Natalia Brunner",
+    "vk_id": "436608087389",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200" }
+  },
+  {
+    "id": 227565045,
+    "tag": null,
+    "created_at": 1689249269,
+    "name": "Дмитрий Тестовый",
+    "vk_id": "6361615601",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "8876186883561511581",
+      "custom_status_code": "200",
+      "email": "dimitri.korenev@gmail.com",
+      "name": "Дмитрий Коренев",
+      "phone": "436605752835"
+    }
+  },
+  {
+    "id": 227564886,
+    "tag": null,
+    "created_at": 1689249229,
+    "name": "Дмитрий Тестовый",
+    "vk_id": "436505611261",
+    "group": "81508",
+    "client_type": 6,
+    "variables": {
+      "custom_status_code": "200",
+      "email": "dimitri.korenev@gmail.com",
+      "name": "Дмитрий Коренев",
+      "phone": "436605752835",
+      "wa_bot": "436605752835"
+    }
+  },
+  {
+    "id": 227413149,
+    "tag": null,
+    "created_at": 1689227929,
+    "name": "Дмитрий",
+    "vk_id": "436605752835",
+    "group": "81508",
+    "client_type": 6,
+    "variables": { "custom_status_code": "200", "wa_bot": "436505611261" }
+  },
+  {
+    "id": 227086330,
+    "tag": null,
+    "created_at": 1689166784,
+    "name": "Тамара Иванова",
+    "vk_id": "tamyfriend@yandex.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086323,
+    "tag": null,
+    "created_at": 1689166783,
+    "name": "Наташа М",
+    "vk_id": "tatka201075@yandex.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086314,
+    "tag": null,
+    "created_at": 1689166782,
+    "name": "Ксения Порокхно ва",
+    "vk_id": "kseniya.porokhnova@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086312,
+    "tag": null,
+    "created_at": 1689166781,
+    "name": "Елисей",
+    "vk_id": "eliseykorot@yandex.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086308,
+    "tag": null,
+    "created_at": 1689166780,
+    "name": "Zanna Kruglova",
+    "vk_id": "timurcik25@inbox.lv",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086301,
+    "tag": null,
+    "created_at": 1689166780,
+    "name": "Yuri Yegorov",
+    "vk_id": "yegorov60@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086291,
+    "tag": null,
+    "created_at": 1689166778,
+    "name": "Viktoria Beljaeva",
+    "vk_id": "vikaher@yahoo.de",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086284,
+    "tag": null,
+    "created_at": 1689166777,
+    "name": "Sergej Kormout",
+    "vk_id": "matroskin@gmx.at",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086280,
+    "tag": null,
+    "created_at": 1689166776,
+    "name": "Radik Kabajew",
+    "vk_id": "rkabajew@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086254,
+    "tag": null,
+    "created_at": 1689166772,
+    "name": "Michael Müller",
+    "vk_id": "muellermichael95@gmx.ch",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086248,
+    "tag": null,
+    "created_at": 1689166771,
+    "name": "Marina Pauser",
+    "vk_id": "m.pauser@gmx.at",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086235,
+    "tag": null,
+    "created_at": 1689166769,
+    "name": "Lisa Nikitina",
+    "vk_id": "liza-art@mail.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086222,
+    "tag": null,
+    "created_at": 1689166768,
+    "name": "Konstantin Schmidt",
+    "vk_id": "kschmidt75@gmx.de",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086214,
+    "tag": null,
+    "created_at": 1689166767,
+    "name": "Julia K",
+    "vk_id": "juhoo@gmx.net",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086206,
+    "tag": null,
+    "created_at": 1689166766,
+    "name": "Jenny River",
+    "vk_id": "almeirano@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086194,
+    "tag": null,
+    "created_at": 1689166763,
+    "name": "Elina",
+    "vk_id": "elina.petrovska1972@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086190,
+    "tag": null,
+    "created_at": 1689166762,
+    "name": "Eleonora Gafarova",
+    "vk_id": "camomile_st@mail.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086187,
+    "tag": null,
+    "created_at": 1689166762,
+    "name": "Elena Koll",
+    "vk_id": "helena.x@libero.it",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086182,
+    "tag": null,
+    "created_at": 1689166761,
+    "name": "Anastasia Zhi",
+    "vk_id": "zhizhimontova@mail.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086181,
+    "tag": null,
+    "created_at": 1689166761,
+    "name": "Dmitry Dementev",
+    "vk_id": "dmitry-dem@rambler.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086170,
+    "tag": null,
+    "created_at": 1689166759,
+    "name": "Anna Nikitina",
+    "vk_id": "dmn.ananik@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086157,
+    "tag": null,
+    "created_at": 1689166757,
+    "name": "Aliona Frolova",
+    "vk_id": "e-fro@yandex.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086155,
+    "tag": null,
+    "created_at": 1689166757,
+    "name": "zhizhimontova05011995@gmail.com",
+    "vk_id": "zhizhimontova05011995@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086147,
+    "tag": null,
+    "created_at": 1689166756,
+    "name": "viktoria.herkel@yahoo.de",
+    "vk_id": "viktoria.herkel@yahoo.de",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086142,
+    "tag": null,
+    "created_at": 1689166755,
+    "name": "v.yelfimov@gmail.com",
+    "vk_id": "v.yelfimov@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086138,
+    "tag": null,
+    "created_at": 1689166754,
+    "name": "sviatlanasubbotina@gmail.com",
+    "vk_id": "sviatlanasubbotina@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086134,
+    "tag": null,
+    "created_at": 1689166754,
+    "name": "solofelt.lidiya@gmail.com",
+    "vk_id": "solofelt.lidiya@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086130,
+    "tag": null,
+    "created_at": 1689166753,
+    "name": "skorpi1011@gmail.com",
+    "vk_id": "skorpi1011@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086125,
+    "tag": null,
+    "created_at": 1689166752,
+    "name": "siperevalov@mail.ru",
+    "vk_id": "siperevalov@mail.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086121,
+    "tag": null,
+    "created_at": 1689166751,
+    "name": "risesea@yandex.ru",
+    "vk_id": "risesea@yandex.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086113,
+    "tag": null,
+    "created_at": 1689166751,
+    "name": "pristauer@yahoo.de",
+    "vk_id": "pristauer@yahoo.de",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086106,
+    "tag": null,
+    "created_at": 1689166750,
+    "name": "poceidon21@gmail.com",
+    "vk_id": "poceidon21@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086104,
+    "tag": null,
+    "created_at": 1689166749,
+    "name": "olga.buturlina@gmx.at",
+    "vk_id": "olga.buturlina@gmx.at",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086099,
+    "tag": null,
+    "created_at": 1689166748,
+    "name": "nataliabrunner77@gmail.com",
+    "vk_id": "nataliabrunner77@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086096,
+    "tag": null,
+    "created_at": 1689166747,
+    "name": "natalia.scharaeva@chello.at",
+    "vk_id": "natalia.scharaeva@chello.at",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086089,
+    "tag": null,
+    "created_at": 1689166747,
+    "name": "nata.karl52@gmail.com",
+    "vk_id": "nata.karl52@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086081,
+    "tag": null,
+    "created_at": 1689166746,
+    "name": "n.malinovskaya55@gmail.com",
+    "vk_id": "n.malinovskaya55@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086078,
+    "tag": null,
+    "created_at": 1689166745,
+    "name": "musatova09@mail.ru",
+    "vk_id": "musatova09@mail.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086073,
+    "tag": null,
+    "created_at": 1689166744,
+    "name": "multikids2013@gmail.com",
+    "vk_id": "multikids2013@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086070,
+    "tag": null,
+    "created_at": 1689166744,
+    "name": "marinasonvilla@gmail.com",
+    "vk_id": "marinasonvilla@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086066,
+    "tag": null,
+    "created_at": 1689166743,
+    "name": "marina.mlacker@gmail.com",
+    "vk_id": "marina.mlacker@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086058,
+    "tag": null,
+    "created_at": 1689166742,
+    "name": "maria@level76.at",
+    "vk_id": "maria@level76.at",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086053,
+    "tag": null,
+    "created_at": 1689166741,
+    "name": "mag.larisa2012@mail.ru",
+    "vk_id": "mag.larisa2012@mail.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086048,
+    "tag": null,
+    "created_at": 1689166741,
+    "name": "lenirodax@yahoo.com",
+    "vk_id": "lenirodax@yahoo.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086043,
+    "tag": null,
+    "created_at": 1689166740,
+    "name": "leckaja.irina@gmail.com",
+    "vk_id": "leckaja.irina@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086037,
+    "tag": null,
+    "created_at": 1689166739,
+    "name": "klimchukf@gmail.com",
+    "vk_id": "klimchukf@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086035,
+    "tag": null,
+    "created_at": 1689166738,
+    "name": "ivtan69@mail.ru",
+    "vk_id": "ivtan69@mail.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086032,
+    "tag": null,
+    "created_at": 1689166737,
+    "name": "itbyurlo@gmail.com",
+    "vk_id": "itbyurlo@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086029,
+    "tag": null,
+    "created_at": 1689166737,
+    "name": "irina.turanski@gmail.com",
+    "vk_id": "irina.turanski@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086026,
+    "tag": null,
+    "created_at": 1689166736,
+    "name": "irina.gottlib@hotmail.com",
+    "vk_id": "irina.gottlib@hotmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086022,
+    "tag": null,
+    "created_at": 1689166735,
+    "name": "ipb09@yahoo.com",
+    "vk_id": "ipb09@yahoo.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086018,
+    "tag": null,
+    "created_at": 1689166734,
+    "name": "info@freud.online",
+    "vk_id": "info@freud.online",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086011,
+    "tag": null,
+    "created_at": 1689166733,
+    "name": "gromovanv@gmail.com",
+    "vk_id": "gromovanv@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086007,
+    "tag": null,
+    "created_at": 1689166732,
+    "name": "fraudoc007@gmail.com",
+    "vk_id": "fraudoc007@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086005,
+    "tag": null,
+    "created_at": 1689166731,
+    "name": "ellina1602@gmail.com",
+    "vk_id": "ellina1602@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227086000,
+    "tag": null,
+    "created_at": 1689166731,
+    "name": "elena.frolova@chello.at",
+    "vk_id": "elena.frolova@chello.at",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227085996,
+    "tag": null,
+    "created_at": 1689166730,
+    "name": "eduard.hochweis@yandex.com",
+    "vk_id": "eduard.hochweis@yandex.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227085991,
+    "tag": null,
+    "created_at": 1689166729,
+    "name": "dok.romanov@gmail.com",
+    "vk_id": "dok.romanov@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227085983,
+    "tag": null,
+    "created_at": 1689166728,
+    "name": "bittkin@yahoo.de",
+    "vk_id": "bittkin@yahoo.de",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227085980,
+    "tag": null,
+    "created_at": 1689166727,
+    "name": "antonia.bolek@gmx.at",
+    "vk_id": "antonia.bolek@gmx.at",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227085976,
+    "tag": null,
+    "created_at": 1689166726,
+    "name": "alonettahell2018@gmail.com",
+    "vk_id": "alonettahell2018@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227085438,
+    "tag": null,
+    "created_at": 1689166621,
+    "name": "alexeycheko@gmail.com",
+    "vk_id": "alexeycheko@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 227068215,
+    "tag": null,
+    "created_at": 1689164143,
+    "name": "Файлообменник",
+    "vk_id": "-1001714776593",
+    "group": "freud_online_bot",
+    "client_type": 1,
+    "variables": {
+      "client_message_id": "674",
+      "custom_status_code": "200",
+      "message_from": "949111227",
+      "message_from_name": "Dimitri Korenev",
+      "message_from_username": "@freud_online"
+    }
+  },
+  {
+    "id": 227053428,
+    "tag": null,
+    "created_at": 1689161432,
+    "name": "Наталья Нечай",
+    "vk_id": "natallia.niachai@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {
+      "email": "natallia.niachai@gmail.com",
+      "name": "Наталья Нечай",
+      "phone": "436001112233"
+    }
+  },
+  {
+    "id": 226963878,
+    "tag": null,
+    "created_at": 1689155927,
+    "name": "Dimitri Korenev",
+    "vk_id": "dimitri.korenev@gmail.com",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {
+      "email": "dimitri.korenev@gmail.com",
+      "name": "Дмитрий Коренев",
+      "phone": "436605752835"
+    }
+  },
+  {
+    "id": 226654735,
+    "tag": null,
+    "created_at": 1689100476,
+    "name": "Mail Delivery System",
+    "vk_id": "mailer-daemon@89-108-103-129.cloudvps.regruhosting.ru",
+    "group": "info@mail.polk.uno",
+    "client_type": 14,
+    "variables": {}
+  },
+  {
+    "id": 226595437,
+    "tag": "bp_meet",
+    "created_at": 1689091548,
+    "name": "Михаил",
+    "vk_id": "596783439",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "2563165357379200608",
+      "custom_status_code": "200",
+      "email": "Muelermichael95@gmx.ch",
+      "phone": "436766428020"
+    }
+  },
+  {
+    "id": 226457257,
+    "tag": "bp_meet",
+    "created_at": 1689069862,
+    "name": "Dimitri Korenev",
+    "vk_id": "949111227",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": {
+      "callback_query_id": "4076401684407305274",
+      "custom_status_code": "200",
+      "email": "dimitri.korenev@gmail.com",
+      "email_stripe": "dimitri.korenev@gmail.com",
+      "name": "Дмитрий Коренев",
+      "name_stripe": "Dimitri Korenev",
+      "phone": "436605752835",
+      "phone_stripe": "None",
+      "stripe_callback_data": "{\"id\":\"cs_test_a1iVq76Hk24K8yoTWUjqfP1ErH14BHqlyJz6BpepT3jApmam1T8aBsH4te\",\"object\":\"checkout.session\",\"after_expiration\":null,\"allow_promotion_codes\":null,\"amount_subtotal\":800,\"amount_total\":800,\"automatic_tax\":{\"enabled\":false,\"status\":null},\"billing_address_collection\":null,\"cancel_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/fail?order_id=226457257--9147\",\"client_reference_id\":\"226457257--9147\",\"consent\":null,\"consent_collection\":null,\"created\":1689074039,\"currency\":\"eur\",\"currency_conversion\":null,\"custom_fields\":[],\"custom_text\":{\"shipping_address\":null,\"submit\":null},\"customer\":\"cus_OF8oCvlUj8R8Oy\",\"customer_creation\":\"if_required\",\"customer_details\":{\"address\":{\"city\":null,\"country\":\"AT\",\"line1\":null,\"line2\":null,\"postal_code\":null,\"state\":null},\"email\":\"dimitri.korenev@gmail.com\",\"name\":\"Dimitri Korenev\",\"phone\":null,\"tax_exempt\":\"none\",\"tax_ids\":[]},\"customer_email\":null,\"expires_at\":1689160439,\"invoice\":\"in_1NSeWUAP19WOtJXbWiepcRX4\",\"invoice_creation\":{\"enabled\":true,\"invoice_data\":{\"account_tax_ids\":null,\"custom_fields\":null,\"description\":\"226457257--9147\",\"footer\":null,\"metadata\":{},\"rendering_options\":null}},\"livemode\":false,\"locale\":\"ru\",\"metadata\":{},\"mode\":\"payment\",\"payment_intent\":\"pi_3NSeWSAP19WOtJXb2c0IJ74q\",\"payment_link\":null,\"payment_method_collection\":\"always\",\"payment_method_options\":{},\"payment_method_types\":[\"card\"],\"payment_status\":\"paid\",\"phone_number_collection\":{\"enabled\":false},\"recovered_from\":null,\"setup_intent\":null,\"shipping_address_collection\":null,\"shipping_cost\":null,\"shipping_details\":null,\"shipping_options\":[],\"status\":\"complete\",\"submit_type\":null,\"subscription\":null,\"success_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/success?order_id=226457257--9147\",\"total_details\":{\"amount_discount\":0,\"amount_shipping\":0,\"amount_tax\":0},\"url\":null}",
+      "tg_username": "@freud_online"
+    }
+  },
+  {
+    "id": 226281917,
+    "tag": "bp_meet",
+    "created_at": 1689037294,
+    "name": "Julia",
+    "vk_id": "1352203031",
+    "group": "VPolkBot",
+    "client_type": 1,
+    "variables": { "custom_status_code": "200", "phone": "436503019897" }
+  },
+  {
+    "id": 226273208,
+    "tag": null,
+    "created_at": 1689033587,
+    "name": "Иван Тодоренко",
+    "vk_id": "1637154816",
+    "group": "freud_online_bot",
+    "client_type": 1,
+    "variables": {
+      "custom_status_code": "200",
+      "tg_username": "@ivantodorenko"
+    }
+  }
+]
