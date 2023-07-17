@@ -85,14 +85,14 @@ var updateImages = cron.schedule('1 30 2 * * 6', () =>  {
 if (process.env.THIS_VERSION === 'LIVE') {updateImages.start();}
 
 //Telefram Reposting
-// var reportTgToFb = cron.schedule('15 1 * * * *' , () =>  {
-var reportTgToFb = cron.schedule('*/15 * * * * *' , () =>  {
+var reportTgToFb = cron.schedule('15 1 * * * *' , () =>  {
+// var reportTgToFb = cron.schedule('*/15 * * * * *' , () =>  {
   tg.infoDefRepost();
 }, {
   scheduled: false
 });
 if (process.env.THIS_VERSION === 'LIVE') {reportTgToFb.start();}
-reportTgToFb.start();
+// reportTgToFb.start();
 
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute
