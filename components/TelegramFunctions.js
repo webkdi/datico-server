@@ -5,6 +5,8 @@ require("dotenv").config();
 // const db = require("./Databases/Database");
 const db = require("./Databases/refTelegram");
 
+const now = new Date();
+
 async function sendToTelegram(body) {
   const id = uuidv4();
 
@@ -50,6 +52,9 @@ async function sendToTelegram(body) {
 }
 
 async function infoDefRepost() {
+
+  console.log(`${now}: Start of cron infoDefRepost`);
+
   const telegramBotToken = process.env.TG_BOT_TOKEN_INFODEFENSE_BOT;
 
   //letzten Update erkennen
@@ -84,7 +89,6 @@ async function infoDefRepost() {
   );
 
   if (updates.length === 0) {
-    const now = new Date();
     console.log(`${now}: No new updates. Skipped`);
     return;
   }

@@ -81,7 +81,7 @@ var updateStats = cron.schedule(
   "1 35 * * * *",
   () => {
     console.log("cron undate stat running running");
-    upd.updateProcedure();
+   upd .updateProcedure();
   },
   {
     scheduled: false,
@@ -110,7 +110,8 @@ if (process.env.THIS_VERSION === "LIVE") {
 
 //Telefram Reposting
 var reportTgToFb = cron.schedule(
-  "15 1 * * * *",
+  // "15 1 * * * *",
+  '*/15 * * * * *',
   () => {
     // var reportTgToFb = cron.schedule('*/15 * * * * *' , () =>  {
     tg.infoDefRepost();
