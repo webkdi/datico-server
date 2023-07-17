@@ -75,7 +75,8 @@ if (process.env.THIS_VERSION === 'LIVE') {updateStats.start();}
 // updateStats.start();
 
 //optimize new images
-var updateImages = cron.schedule('1 5 1 * * *', () =>  {
+//once per week on every Saturday at 2:30 am
+var updateImages = cron.schedule('1 30 2 * * 6', () =>  {
   console.log('cron optimize images running');
   img.dailyImageService();
 }, {
@@ -83,14 +84,15 @@ var updateImages = cron.schedule('1 5 1 * * *', () =>  {
 });
 if (process.env.THIS_VERSION === 'LIVE') {updateImages.start();}
 
-//optimize new images
-var reportTgToFb = cron.schedule('15 1 * * * *' , () =>  {
+//Telefram Reposting
+// var reportTgToFb = cron.schedule('15 1 * * * *' , () =>  {
+var reportTgToFb = cron.schedule('*/15 * * * * *' , () =>  {
   tg.infoDefRepost();
 }, {
   scheduled: false
 });
 if (process.env.THIS_VERSION === 'LIVE') {reportTgToFb.start();}
-// reportTgToFb.start();
+reportTgToFb.start();
 
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute
@@ -102,5 +104,3 @@ if (process.env.THIS_VERSION === 'LIVE') {reportTgToFb.start();}
 // # │ │ │ │ │ │
 // # * * * * * *
 //  '*/15 * * * * *' every 15 seconds
-
-let newSbClient = sb.newWebHook(12);

@@ -64,9 +64,43 @@ async function fbReportClean() {
   }
 }
 
+async function insertJson(inputJson) {
+  var sql = `
+  INSERT INTO datico.serv_telegram_json (update_json)
+  VALUES (?)
+  `;
+  try {
+    const result = await db.query(sql, [inputJson]);
+    return result[0].affectedRows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function cleanJsons () {
+  var sql = `
+  DELETE FROM datico.serv_telegram_json
+  WHERE id NOT IN (
+	SELECT id FROM (
+      SELECT id FROM datico.serv_telegram_json
+      ORDER BY timestamp DESC
+      LIMIT 10
+    ) t
+  )
+  `;
+  try {
+    const result = await db.query(sql);
+    return result[0].affectedRows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 module.exports = {
   fbReportUpdate,
   fbReportLatestUpdate,
   fbReportClean,
   insertIgnore,
+  insertJson,
+  cleanJsons,
 };

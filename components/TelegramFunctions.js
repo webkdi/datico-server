@@ -69,6 +69,11 @@ async function infoDefRepost() {
 
   const response = await axios(telegramAPIEndpoint);
   const data = response.data;
+  if (data.result.length > 0) {  // есть новые посты
+    let jsonString = JSON.stringify(data);
+    await db.insertJson(jsonString);
+    await db.cleanJsons();
+  }
 
   let updates = data.result;
   updates = updates.filter(
@@ -100,10 +105,10 @@ async function infoDefRepost() {
           asset.files = ms.channel_post.photo;
           asset.message = ms.channel_post.caption;
           asset.type = "image";
-        } else if (ms.channel_post.photo && !ms.channel_post.caption) {
-          asset.files = ms.channel_post.photo;
-          asset.message = "";
-          asset.type = "image";
+        // } else if (ms.channel_post.photo && !ms.channel_post.caption) { //image without caption
+        //   asset.files = ms.channel_post.photo;
+        //   asset.message = "";
+        //   asset.type = "image";
         } else if (ms.channel_post.video) {
           asset.files = ms.channel_post.video;
           asset.message = ms.channel_post.caption;
