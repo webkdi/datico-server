@@ -113,7 +113,7 @@ async function infoDefRepost() {
         //   asset.files = ms.channel_post.photo;
         //   asset.message = "";
         //   asset.type = "image";
-        } else if (ms.channel_post.video) {
+        } else if (ms.channel_post.video && ms.channel_post.caption) {
           asset.files = ms.channel_post.video;
           asset.message = ms.channel_post.caption;
           asset.type = "video";
