@@ -60,6 +60,7 @@ const routeUpdate = require("./routes/Update");
 const routeDatico = require("./routes/Datico");
 const routeImages = require("./routes/Images");
 const openai = require("./routes/OpenAi");
+const routeSaleBot = require("./routes/SaleBot");
 
 app.use("/tg", routeTg);
 app.use("/ideas", routeIdeas);
@@ -67,6 +68,7 @@ app.use("/update", routeUpdate);
 app.use("/datico", routeDatico);
 app.use("/images", routeImages);
 app.use("/openai", openai);
+app.use("/salebot", routeSaleBot);
 
 app.listen(PORT, () => {
   console.log(`Server starten on PORT ${PORT}`);

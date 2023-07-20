@@ -117,6 +117,7 @@ async function getVariablesPerClient(client_id) {
       jsonData.hasOwnProperty("main_client_id") &&
       jsonData.main_client_id === "NONE"
     ) {
+      jsonData["deleted_main_client_id"] = jsonData["main_client_id"];
       // jsonData.main_client_id = '';
       delete jsonData.main_client_id;
     }
@@ -124,21 +125,17 @@ async function getVariablesPerClient(client_id) {
       jsonData.hasOwnProperty("message_id") &&
       jsonData.message_id === "NONE"
     ) {
-      // jsonData.main_client_id = '';
+      jsonData["deleted_message_id"] = jsonData["message_id"];
       delete jsonData.message_id;
     }
 
-    // if (jsonData.hasOwnProperty("phone")) {
-    //   console.log("before: ",jsonData.phone);
-    //   const phoneNumber = parsePhoneNumber(jsonData.phone);
-    //   if (phoneNumber) {
-    //     jsonData.phone =
-    //       phoneNumber.countryCallingCode + phoneNumber.nationalNumber;
-    //     console.log("after: ",jsonData.phone);
-    //   } else {
-    //     delete jsonData.phone;
-    //   }
-    // }
+    const phoneRegex =
+      /^(?:(?:\+|00)(?:\d{1,4}\s?-?)?)?\(?\d{1,4}\)?\s?-?\d{1,4}\s?-?\d{1,4}\s?-?\d{1,4}\s?-?\d{1,4}$/;
+    if (jsonData.hasOwnProperty("phone") && !phoneRegex.test(jsonData.phone)) {
+      console.log("phone", jsonData.phone, "did not pass regex check, deleted");
+      jsonData["deleted_phone"] = jsonData["phone"];
+      delete jsonData.phone;
+    }
 
     let jsonString = JSON.stringify(jsonData);
 
@@ -149,6 +146,7 @@ async function getVariablesPerClient(client_id) {
     throw error;
   }
 }
+
 async function getVariablesPerClient_start() {
   try {
     //227585686
@@ -213,7 +211,180 @@ async function execute() {
   });
 }
 
-// execute();
+//finalising
+async function get_clients_list() {
+  try {
+    const url = createUrl(baseUrl, key, "/get_clients");
+    const response = await axios.get(url);
+    const responseData = response.data.clients;
+
+    return responseData;
+  } catch (error) {
+    console.error("Error occurred during API call:", error);
+    return null;
+  }
+}
+
+async function runNow(clientId) {
+  const getClients = await get_clients_list();
+
+  var idArray = Object.values(getClients).map((obj) => obj.id);
+  if (clientId) {
+    idArray = [clientId]; // Reset the idArray with a new array containing only clientId
+  }
+  for (const clientId of idArray) {
+    try {
+      let insertedRows = await db.insertClient(clientId);
+      let variable = await getVariablesPerClient(clientId);
+      let updateFromVariable = await db.updateDataFromVariable(clientId);
+      let updateEmailFromVariable = await db.updateEmailFromVariable(clientId);
+      console.log(
+        clientId,
+        insertedRows,
+        variable,
+        updateFromVariable,
+        updateEmailFromVariable
+      );
+    } catch (error) {
+      console.error("Error occurred in insert of", clientId);
+    }
+  }
+}
+// runNow(227585686);
+// runNow();
+
+function findConnectedClients(data) {
+  //receives dataset
+  // const databaseData = [
+  //   { client_id: 1, main_client_id: 1, email: 'mail1@example.com', phone: '111-111-1111' },
+  //   { client_id: 2, main_client_id: 1, email: null, phone: null },
+  //   { client_id: 3, main_client_id: null, email: 'mail1@example.com', phone: '222-111-1111' },
+  //   { client_id: 4, main_client_id: null, email: 'dasfsdaf@example.com', phone: '112-111-1111' },
+  //   { client_id: 5, main_client_id: 2, email: null, phone: '112-111-1111' },
+  //   { client_id: 6, main_client_id: null, email: null, phone: '111-111-1111' },
+  //   { client_id: 7, main_client_id: null, email: null, phone: '114-111-1111' },
+  //   { client_id: 8, main_client_id: null, email: null, phone: '114-111-1111' },
+  // ];
+
+  const connectedClients = [];
+
+  function findConnected(client, group) {
+    for (const item of data) {
+      if (group.includes(item.client_id)) continue;
+
+      if (
+        item.main_client_id &&
+        item.main_client_id === client.main_client_id
+      ) {
+        group.push(item.client_id);
+        findConnected(item, group);
+      } else if (item.email && item.email === client.email) {
+        group.push(item.client_id);
+        findConnected(item, group);
+      } else if (item.phone && item.phone === client.phone) {
+        group.push(item.client_id);
+        findConnected(item, group);
+      }
+    }
+  }
+
+  for (const client of data) {
+    const group = [client.client_id];
+    findConnected(client, group);
+    connectedClients.push(group);
+  }
+
+  const sortedConnectedClients = connectedClients.map((group) =>
+    group.sort((a, b) => a - b)
+  );
+  return sortedConnectedClients.filter(
+    (group, index, self) =>
+      index === self.findIndex((g) => g.some((id) => group.includes(id)))
+  );
+}
+async function getGcc() {
+  const gccData = await db.getGccData();
+  const gccLinks = findConnectedClients(gccData);
+
+  // Create a map to store the gcc links for each client_id
+  const gccMap = new Map();
+
+  // Populate the gccMap with links
+  for (const link of gccLinks) {
+    for (const id of link) {
+      if (!gccMap.has(id)) {
+        gccMap.set(id, []);
+      }
+      gccMap.get(id).push(...link);
+    }
+  }
+
+  // Add the gcc property in gccData based on the gccMap
+  for (const data of gccData) {
+    if (gccMap.has(data.client_id)) {
+      data.gcc = gccMap
+        .get(data.client_id)
+        .filter((id, index, self) => self.indexOf(id) === index);
+    }
+  }
+
+  function cleanDataByGCC(data) {
+    // Step 1: Group data by gcc
+    const groupedData = data.reduce((groups, entry) => {
+      const gcc = entry.gcc.join(','); // Using join to get a unique key for gcc array
+      groups[gcc] = groups[gcc] || [];
+      groups[gcc].push(entry);
+      return groups;
+    }, {});
+  
+    // Step 2 and 3: Find non-null phone and email and populate entries within each group
+    for (const group of Object.values(groupedData)) {
+      let commonPhone = null;
+      let commonEmail = null;
+  
+      for (const entry of group) {
+        if (entry.phone !== null) {
+          commonPhone = entry.phone;
+        }
+        if (entry.email !== null) {
+          commonEmail = entry.email;
+        }
+      }
+  
+      for (const entry of group) {
+        if (commonPhone !== null) {
+          entry.phone = commonPhone;
+        }
+        if (commonEmail !== null) {
+          entry.email = commonEmail;
+        }
+      }
+    }
+  
+    // Return the cleaned data
+    return data;
+  }
+    
+  const cleanedData = cleanDataByGCC(gccData);
+  // console.log(cleanedData);
+  
+
+
+
+  // Find all objects where gcc contains client_id 226457257
+  const resultsAll = gccData.filter((data) => data.gcc && data.gcc.includes(227566079))
+  console.log(resultsAll);
+  // const resultsMulti = gccData.filter((data) => data.gcc && data.gcc.length > 2);
+  // console.log(resultsMulti);
+  // const resultOne = gccData.filter((data) => data.client_id==226963878);
+  // console.log(resultOne);
+
+  // console.log(gccData);
+}
+getGcc();
+
+// const gcc = findConnectedClients(databaseData);
+// console.log(gcc);
 
 module.exports = {
   newWebHook,

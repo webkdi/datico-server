@@ -2,19 +2,13 @@ const mysql = require("mysql2");
 const { db, dbFreud } = require("./Connections.js");
 const axios = require("axios");
 
-async function insertClient(clientId, client_type, platform_id, name, avatar) {
+async function insertClient(clientId) {
   const sql = `
-    INSERT IGNORE INTO datico.salebot_clients (client_id,client_type,platform_id,name,avatar)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT IGNORE INTO datico.salebot_clients (client_id)
+    VALUES (?)
     `;
   try {
-    const [result] = await db.query(sql, [
-      clientId,
-      client_type,
-      platform_id,
-      name,
-      avatar,
-    ]);
+    const [result] = await db.query(sql, clientId);
     //return 0 if customer ixists and 1 if customer has been entered.
     return result.affectedRows;
   } catch (err) {
@@ -57,7 +51,7 @@ async function updateDataFromVariable(id) {
     name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.name')),
     last_name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.last_name')),
     full_name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.full_name')),
-    email = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.email')),
+    email = LCASE(JSON_UNQUOTE(JSON_EXTRACT(variables, '$.email'))),
     phone = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.phone')),
     client_type = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client_type')),
     messenger = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.messenger')),
@@ -69,22 +63,73 @@ async function updateDataFromVariable(id) {
     time_of_creation = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.time_of_creation')),
     avatar = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.avatar'))
     WHERE variables IS NOT NULL AND client_id=?;
-
-    UPDATE datico.salebot_clients
-    SET email = platform_id
-    where client_type = 14 and email is null;
   `;
 
   try {
     const result = await db.query(sql, id);
     return result[0].affectedRows;
   } catch (err) {
-    console.log(err);
+    // console.log(err);
+    console.log(
+      "error in updateDataFromVariable for",
+      id,
+      ". Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
   }
 }
+
+async function updateEmailFromVariable(id) {
+  var sql = `
+  UPDATE datico.salebot_clients
+  SET email = platform_id
+  WHERE client_id=? AND variables IS NOT NULL AND client_type = 14 and email is null;
+  `;
+
+  try {
+    const result = await db.query(sql, id);
+    return result[0].affectedRows;
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in updateEmailFromVariable for",
+      id,
+      ". Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
+  }
+}
+
+async function getGccData() {
+  var sql = `
+  SELECT client_id, main_client_id, email, phone, full_name, name, last_name
+  FROM datico.salebot_clients;
+  `;
+  try {
+    const result = await db.query(sql);
+    return result[0]; // Return the first element of the array directly
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in getGccStartData. Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
+  }
+}
+
+
 
 module.exports = {
   insertClient,
   updateBasics,
   updateVariable,
+  updateDataFromVariable,
+  updateEmailFromVariable,
+  getGccData,
 };
