@@ -5,6 +5,20 @@ require("dotenv").config();
 // const db = require("./Databases/Database");
 const db = require("./Databases/refTelegram");
 
+
+
+// Testen vom OpenAi
+const openAi = require("./OpenAiFunctions");
+async function testOpenAi() {
+  const updateTupel = await db.getMessagePerUpdate(27526992);
+  const message = updateTupel[0].message;
+  const textTelegram = await openAi.getTwitterSummary(message);
+  console.log(textTelegram);
+
+}
+testOpenAi();
+
+
 const now = new Date();
 
 async function sendToTelegram(body) {
@@ -187,10 +201,10 @@ async function infoDefRepost() {
     if (messages[i].message.length == 0) {
       gap = "";
     }
+
+    // Подготовить разные версии текстов для соцсетей
     if (messages[i].chat_name == "FB_InfoDefenseDEUTSCH") {
-      messages[
-        i
-      ].message += `${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
+      messages[i].message += `${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
       messages[i].repost_to = 105288955734641;
     } else if (messages[i].chat_name == "InfodefenseFRANCEbis") {
       messages[
