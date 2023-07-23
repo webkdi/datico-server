@@ -47,6 +47,24 @@ async function fbReportLatestUpdate() {
   }
 }
 
+async function getMessagePerUpdate(update_id) {
+  var sql = `
+  SELECT * FROM datico.serv_telegram WHERE update_id=?;
+  `;
+  try {
+    const result = await db.query(sql, update_id);
+    return result[0]; // Return the first element of the array directly
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in getMessagePerUpdate. Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
+  }
+}
+
 async function fbReportClean() {
   const sql = `
   DELETE FROM datico.serv_telegram
@@ -105,4 +123,5 @@ module.exports = {
   insertIgnore,
   insertJson,
   cleanJsons,
+  getMessagePerUpdate,
 };
