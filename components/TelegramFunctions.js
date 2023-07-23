@@ -4,20 +4,7 @@ const axios = require("axios");
 require("dotenv").config();
 // const db = require("./Databases/Database");
 const db = require("./Databases/refTelegram");
-
-
-
-// Testen vom OpenAi
 const openAi = require("./OpenAiFunctions");
-async function testOpenAi() {
-  const updateTupel = await db.getMessagePerUpdate(27526992);
-  const message = updateTupel[0].message;
-  const textTelegram = await openAi.getTwitterSummary(message);
-  console.log(textTelegram);
-
-}
-testOpenAi();
-
 
 const now = new Date();
 
@@ -66,7 +53,6 @@ async function sendToTelegram(body) {
 }
 
 async function infoDefRepost() {
-
   // console.log(`${now}: Start of cron infoDefRepost`);
 
   const telegramBotToken = process.env.TG_BOT_TOKEN_INFODEFENSE_BOT;
@@ -88,7 +74,8 @@ async function infoDefRepost() {
 
   const response = await axios(telegramAPIEndpoint);
   const data = response.data;
-  if (data.result.length > 0) {  // есть новые посты
+  if (data.result.length > 0) {
+    // есть новые посты
     let jsonString = JSON.stringify(data);
     await db.insertJson(jsonString);
     await db.cleanJsons();
@@ -123,10 +110,10 @@ async function infoDefRepost() {
           asset.files = ms.channel_post.photo;
           asset.message = ms.channel_post.caption;
           asset.type = "image";
-        // } else if (ms.channel_post.photo && !ms.channel_post.caption) { //image without caption
-        //   asset.files = ms.channel_post.photo;
-        //   asset.message = "";
-        //   asset.type = "image";
+          // } else if (ms.channel_post.photo && !ms.channel_post.caption) { //image without caption
+          //   asset.files = ms.channel_post.photo;
+          //   asset.message = "";
+          //   asset.type = "image";
         } else if (ms.channel_post.video && ms.channel_post.caption) {
           asset.files = ms.channel_post.video;
           asset.message = ms.channel_post.caption;
@@ -182,6 +169,12 @@ async function infoDefRepost() {
         /📱 InfoDefenseDEUTSCH\n📱 InfoDefense/g,
         ""
       );
+      messages[i].message = messages[i].message.replace(
+        /📱 InfoDefenseDEUTSCH/g,
+        ""
+      );
+      // Remove newlines and empty lines at the end of the string
+      messages[i].message.replace(/\s*[\r\n]+$/, "");
     } else {
       messages[i].message = "";
     }
@@ -202,15 +195,24 @@ async function infoDefRepost() {
       gap = "";
     }
 
-    // Подготовить разные версии текстов для соцсетей
+    // Подготовить версию текста для Фейсбука
+    messages[i].messageForFacebook = messages[i].message;
     if (messages[i].chat_name == "FB_InfoDefenseDEUTSCH") {
-      messages[i].message += `${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
+      messages[
+        i
+      ].messageForFacebook += `${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
       messages[i].repost_to = 105288955734641;
     } else if (messages[i].chat_name == "InfodefenseFRANCEbis") {
       messages[
         i
-      ].message += `${gap}Plus et sans censure dans Telegram:\n🇫🇷 https://t.me/infodefFRANCE`;
+      ].messageForFacebook += `${gap}Plus et sans censure dans Telegram:\n🇫🇷 https://t.me/infodefFRANCE`;
       messages[i].repost_to = 102131486075155;
+    }
+
+    // подготовить версию для Твиттера
+    if (messages[i].message.length > 280) {
+      const textTwitter = await openAi.getTwitterSummary(messages[i].message);
+      messages[i].messageForTwitter = textTwitter;
     }
   }
 
@@ -221,18 +223,20 @@ async function infoDefRepost() {
       ms.type,
       ms.file_path,
       ms.message,
+      ms.messageForFacebook,
+      ms.messageForTwitter,
       ms.repost_to
     );
   });
   const truncate = await db.fbReportClean();
-  
+
   messages.forEach(async (ms) => {
     if (ms.update_id !== update_id_latest) {
       // shon geliefert
       const sent = await sendToMakeForFb(
         ms.type,
         ms.file_path,
-        ms.message,
+        ms.messageForFacebook,
         ms.repost_to
       );
     }

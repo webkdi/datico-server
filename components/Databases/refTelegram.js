@@ -2,12 +2,14 @@ const mysql = require("mysql2");
 const { db, dbFreud } = require("./Connections.js");
 const axios = require("axios");
 
-async function fbReportUpdate(update_id, type, file_path, message, page_id) {
+async function fbReportUpdate(update_id, type, file_path, message, messageFacebook, messageTwitter, page_id) {
   const sql = `
     UPDATE datico.serv_telegram
     SET type = '${type}', 
     file_path = '${file_path}', 
     message = '${message}',
+    message_facebook = '${messageFacebook}',
+    message_twitter = '${messageTwitter}',
     page_id = ${page_id}
     WHERE update_id = ${update_id};
     `;
