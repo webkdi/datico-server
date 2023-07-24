@@ -251,7 +251,7 @@ async function infoDefRepost() {
       //   ms.messageForFacebook,
       //   ms.repost_to
       // );
-      const sentToTwitter = await sendToTwitter(
+      const sentToTwitter = await twitter.tweetPost(
         ms.messageForTwitter,
         ms.type,
         ms.file_path
@@ -317,21 +317,6 @@ async function getFile(file_Id, telegramBotToken) {
   }
 }
 
-async function sendToTwitter(tweetText, mediaType, mediaUrl) {
-  if (tweetText != "") {
-    try {
-      const tweet = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
-      console.log(tweet);
-    } catch (error) {
-      // Handle the error
-      console.error(
-        "An error occurred while posting the tweet:",
-        error.message
-      );
-    }
-  }
-}
-
 //test des Twitters
 async function tweetTest (update_id) {
   const line = await db.getMessagePerUpdate(update_id);
@@ -340,7 +325,7 @@ async function tweetTest (update_id) {
   const mediaType = line[0].type;
   // console.log(mediaType, mediaUrl, tweetText);
 
-  const tweetGo = await sendToTwitter(tweetText, mediaType, mediaUrl);
+  const tweetGo = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
   console.log(tweetGo);
 }
 // tweetTest(27527084);
