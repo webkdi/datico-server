@@ -174,8 +174,15 @@ async function infoDefRepost() {
         /📱 InfoDefenseDEUTSCH/g,
         ""
       );
+      messages[i].message = messages[i].message.replace(
+        /🔹Werden Sie InfoDefender! Teilen Sie diese Nachricht mit Ihren Freunden!🔹/g,
+        ""
+      );
       // Remove newlines and empty lines at the end of the string
-      messages[i].message.replace(/\s*[\r\n]+$/, "");
+      const regex = /\n\s*$/;
+      messages[i].message = messages[i].message.replace(regex, '');    
+      messages[i].message.trim();
+
     } else {
       messages[i].message = "";
     }
@@ -201,7 +208,7 @@ async function infoDefRepost() {
     if (messages[i].chat_name == "FB_InfoDefenseDEUTSCH") {
       messages[
         i
-      ].messageForFacebook += `${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
+      ].messageForFacebook += `${gap}🔹Werden Sie InfoDefender! Teilen Sie diese Nachricht mit Ihren Freunden!🔹${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
       messages[i].repost_to = 105288955734641;
     } else if (messages[i].chat_name == "InfodefenseFRANCEbis") {
       messages[
@@ -237,13 +244,13 @@ async function infoDefRepost() {
   messages.forEach(async (ms) => {
     if (ms.update_id !== update_id_latest) {
       // schon geliefert
-      const sentToFacebook = await sendToMakeForFb(
-        // post to Facebook
-        ms.type,
-        ms.file_path,
-        ms.messageForFacebook,
-        ms.repost_to
-      );
+      // const sentToFacebook = await sendToMakeForFb(
+      //   // post to Facebook
+      //   ms.type,
+      //   ms.file_path,
+      //   ms.messageForFacebook,
+      //   ms.repost_to
+      // );
       const sentToTwitter = await sendToTwitter(
         ms.messageForTwitter,
         ms.type,
@@ -311,12 +318,6 @@ async function getFile(file_Id, telegramBotToken) {
 }
 
 async function sendToTwitter(tweetText, mediaType, mediaUrl) {
-  // const line = await db.getMessagePerUpdate(27527080);
-  // const mediaUrl = line[0].file_path;
-  // const tweetText = line[0].message_twitter;
-  // const mediaType = line[0].type;
-  console.log(mediaType, mediaUrl, tweetText);
-
   if (tweetText != "") {
     try {
       const tweet = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
@@ -337,12 +338,12 @@ async function tweetTest (update_id) {
   const mediaUrl = line[0].file_path;
   const tweetText = line[0].message_twitter;
   const mediaType = line[0].type;
-  console.log(mediaType, mediaUrl, tweetText);
+  // console.log(mediaType, mediaUrl, tweetText);
 
   const tweetGo = await sendToTwitter(tweetText, mediaType, mediaUrl);
   console.log(tweetGo);
 }
-// tweetTest(27527081);
+// tweetTest(27527084);
 
 module.exports = {
   sendToTelegram,
