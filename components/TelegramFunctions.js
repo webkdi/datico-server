@@ -244,13 +244,13 @@ async function infoDefRepost() {
   messages.forEach(async (ms) => {
     if (ms.update_id !== update_id_latest) {
       // schon geliefert
-      // const sentToFacebook = await sendToMakeForFb(
-      //   // post to Facebook
-      //   ms.type,
-      //   ms.file_path,
-      //   ms.messageForFacebook,
-      //   ms.repost_to
-      // );
+      const sentToFacebook = await sendToMakeForFb(
+        // post to Facebook
+        ms.type,
+        ms.file_path,
+        ms.messageForFacebook,
+        ms.repost_to
+      );
       const sentToTwitter = await twitter.tweetPost(
         ms.messageForTwitter,
         ms.type,
