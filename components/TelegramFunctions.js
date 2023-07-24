@@ -4,6 +4,7 @@ const axios = require("axios");
 require("dotenv").config();
 // const db = require("./Databases/Database");
 const db = require("./Databases/refTelegram");
+const twitter = require("./TwitterFunctions");
 const openAi = require("./OpenAiFunctions");
 
 const now = new Date();
@@ -213,6 +214,8 @@ async function infoDefRepost() {
     if (messages[i].message.length > 280) {
       const textTwitter = await openAi.getTwitterSummary(messages[i].message);
       messages[i].messageForTwitter = textTwitter;
+    } else {
+      messages[i].messageForTwitter = messages[i].message;
     }
   }
 
@@ -230,17 +233,26 @@ async function infoDefRepost() {
   });
   const truncate = await db.fbReportClean();
 
+  // post to Socials
   messages.forEach(async (ms) => {
     if (ms.update_id !== update_id_latest) {
-      // shon geliefert
-      const sent = await sendToMakeForFb(
+      // schon geliefert
+      const sentToFacebook = await sendToMakeForFb(
+        // post to Facebook
         ms.type,
         ms.file_path,
         ms.messageForFacebook,
         ms.repost_to
       );
+      const sentToTwitter = await sendToTwitter(
+        ms.messageForTwitter,
+        ms.type,
+        ms.file_path
+      );
     }
   });
+
+  // post to Twitter
 }
 
 async function sendToMakeForFb(type, filepath, message, page_id) {
@@ -297,6 +309,40 @@ async function getFile(file_Id, telegramBotToken) {
     }
   }
 }
+
+async function sendToTwitter(tweetText, mediaType, mediaUrl) {
+  // const line = await db.getMessagePerUpdate(27527080);
+  // const mediaUrl = line[0].file_path;
+  // const tweetText = line[0].message_twitter;
+  // const mediaType = line[0].type;
+  console.log(mediaType, mediaUrl, tweetText);
+
+  if (tweetText != "") {
+    try {
+      const tweet = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
+      console.log(tweet);
+    } catch (error) {
+      // Handle the error
+      console.error(
+        "An error occurred while posting the tweet:",
+        error.message
+      );
+    }
+  }
+}
+
+//test des Twitters
+async function tweetTest (update_id) {
+  const line = await db.getMessagePerUpdate(update_id);
+  const mediaUrl = line[0].file_path;
+  const tweetText = line[0].message_twitter;
+  const mediaType = line[0].type;
+  console.log(mediaType, mediaUrl, tweetText);
+
+  const tweetGo = await sendToTwitter(tweetText, mediaType, mediaUrl);
+  console.log(tweetGo);
+}
+// tweetTest(27527081);
 
 module.exports = {
   sendToTelegram,
