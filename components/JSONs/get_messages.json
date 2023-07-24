@@ -1,0 +1,116 @@
+{"status":"success","messages":[{"id":16541171,"condition":"#{none}","answer":"","message_type":0,"description":"Check
+Свои?","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16646956,"condition":"","answer":"#{gs_found}\r\n#{gs_status}\r\n#{gs_row}\r\n#{email}\r\n#{client.email}","message_type":8,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{}"},{"id":16648770,"condition":"#{none}","answer":"Спасибо,
+номер #{client.phone}
+сохранен.","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16540068,"condition":"#{none}","answer":"\r\nВоронка
+БП для перезаписи
+своих\r\n_________________________________","message_type":8,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16488055,"condition":"bp_meet;Узнать
+про встречу","answer":"Приветствуем Вас, #{name} 👋\r\n\r\nЗдесь Вы можете записаться на встречу единомышленников \r\n📅
+в пятницу, 21 июля\r\n🕛 с 18:00\r\n","message_type":4,"description":"Старт БП для
+встречи","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16541556,"condition":"","answer":"Приятно
+быть среди
+единомышленников!","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16509279,"condition":"","answer":"Хорошо!
+Давайте оставаться на связи! Мы оповестим Вас по чату и по эл. почте о следующих
+встречах!","message_type":0,"description":"Халявщик","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16490677,"condition":"#{none}","answer":"Вы
+уверены, что Крым не является территорией РФ?\r\n\r\nЖмите на кнопки или пишите:\r\n1: Да\r\n2:
+Нет","message_type":0,"description":"Вы
+уверены?","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16604037,"condition":"#{none}","answer":"","message_type":0,"description":"Check
+Оплатил?","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16735082,"condition":"","answer":"","message_type":6,"description":"unmerge_client()","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16735081,"condition":"#{none}","answer":"","message_type":6,"description":"unmerge_client()
+","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16510658,"condition":"€8
+кредиткой или IBAN","answer":"Вот ссылка на оплату:\r\n#{stripe_pay_url}\r\n\r\nПосле оплаты дождитесь сообщения об
+успешном завершении оплаты","message_type":4,"description":"Оплата
+Stripe","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16745269,"condition":"#{none}","answer":"Приветствую,
+#{name}! \r\n\r\nИ вот уже давно ожидаемая рассылка с информацией о нашей встрече в пятницу, 21 июля, с 18:00.
+\r\n\r\nИтак, встречаемся мы в Padeldome Alte Donau: https:\/\/www.padeldome.at\/standort\/alte-donau\/\r\n\r\nВот
+координаты на карте:\r\nhttps:\/\/goo.gl\/maps\/NKLfNTmfm2Y9vsV28","message_type":0,"description":"Начало рассылки на
+встречу","attachment_url":"","attachment_type":"image","file":null,"attachments":"{\"attachments\":[{\"attachment_id\":783085,\"attachment_name\":\"photo_2023-06-27_18-42-17.jpg\",\"attachment_url\":\"https:\/\/files.salebot.pro\/uploads\/file_item\/16745269\/file\/264222\/photo_2023-06-27_18-42-17.jpg\",\"attachment_type\":\"image\"},{\"attachment_id\":783086,\"attachment_name\":\"photo_2023-06-27_18-42-18.jpg\",\"attachment_url\":\"https:\/\/files.salebot.pro\/uploads\/file_item\/16745269\/file\/264222\/photo_2023-06-27_18-42-18.jpg\",\"attachment_type\":\"image\"},{\"attachment_id\":783089,\"attachment_name\":\"photo_2023-06-27_18-42-19.jpg\",\"attachment_url\":\"https:\/\/files.salebot.pro\/uploads\/file_item\/16745269\/file\/264222\/photo_2023-06-27_18-42-19.jpg\",\"attachment_type\":\"image\"}]}"},{"id":16487469,"condition":"Начать;start;Get_started;Привет;Здравствуй;hi;салют","answer":"Приветствуем
+Вас, #{name} 👋\r\n\r\nЧем можем быть
+полезным?","message_type":1,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16488407,"condition":"#{none}","answer":"\r\nВоронка
+БП для
+встречи\r\n___________________________","message_type":8,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16488338,"condition":"bp_main","answer":"Приветствуем
+Вас, #{name} 👋\r\n\r\nЗдесь Вы можете связаться с организаторами Бессмертного Полка.\r\n\r\nНапишите, что Вас
+интересует 👇🏻","message_type":4,"description":"Старт БП
+общей","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16488430,"condition":"#{none}","answer":"\r\nВоронка
+общая\r\n___________________________","message_type":8,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16489741,"condition":"#{none}","answer":"Введен
+неправильный номер. Напишите его в международном формате 43XXXYYYZZAA","message_type":6,"description":"Неверно
+тел","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16490398,"condition":"#{none}","answer":"Неверно
+ввели эл. почту. Пожалуйста, в формате\r\nuser@mail.com","message_type":6,"description":"Неверно
+мыло","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16490678,"condition":"#{none}","answer":"Спасибо
+за
+интерес!","message_type":0,"description":"Прощание","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16508835,"condition":"#{none}","answer":"","message_type":0,"description":"Отписать","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16509278,"condition":"","answer":"Хотите
+оплатить сейчас или отдадите наличкой на месте? \r\n\r\nЖмите на кнопки или ответьте:\r\n1: €8 кредиткой или IBAN\r\n2:
+€8 через PayPal\r\n3: €10 наличкой","message_type":0,"description":"Как
+оплатить?","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16510890,"condition":"","answer":"-----
+оплата Stripe
+-------","message_type":8,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{}"},{"id":16510893,"condition":"sk_live_51NPK0KAP19W_success","answer":"Спасибо
+за оплату. ","message_type":4,"description":"Stripe
+OK","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16829739,"condition":"","answer":"","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{}"},{"id":16829738,"condition":"","answer":"Пожалуйста,
+напишите только Да, Нет, 1,
+2","message_type":6,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{}"},{"id":16514290,"condition":"€8
+через PayPal","answer":"Вот ссылка на оплату:\r\n#{paypal_pay_url}\r\n\r\n\r\nПосле оплаты дождитесь сообщения об
+успешном завершении оплаты","message_type":4,"description":"Оплата
+PayPal","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16514285,"condition":"","answer":"-----
+оплата
+PayPal-------","message_type":8,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16514871,"condition":"","answer":"Отлично!
+","message_type":0,"description":"Оплата на
+месте","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16515649,"condition":"EGhuJAVA9k_success","answer":"Спасибо
+за оплату.","message_type":4,"description":"PayPal
+OK","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16515980,"condition":"","answer":"Скоро
+пришлем информацию о месте встречи здесь, по мессенджеру, и по эл. почте) До
+встречи!","message_type":0,"description":"See you
+soon","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16489681,"condition":"#{none}","answer":"Поделитесь
+адресом эл. почты, пожалуйста) Напишите его ниже 👇🏻","message_type":0,"description":"Поделиться
+мейлом","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16540790,"condition":"#{none}","answer":"","message_type":0,"description":"Check
+Телефон?","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16540932,"condition":"#{none}","answer":"","message_type":0,"description":"Check
+Мыло?","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16540077,"condition":"bp_reconnect","answer":"Спасибо,
+что перезашли, и мы снова на связи!","message_type":4,"description":"БП для
+перезаписи","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16542467,"condition":"#{none}","answer":"","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16544057,"condition":"","answer":"","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16568836,"condition":"","answer":"Перевожу
+Вас на запись на встречу","message_type":0,"description":"Переход в воронку
+Встреча","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16568052,"condition":"","answer":"В
+пятницу, 21 июля, мы встречаемся среди единомышленников в Вене на гриль. Хотите присоединиться? Если ДА, то жмите
+👇🏻","message_type":0,"description":"Хочешь на
+встречу?","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16490674,"condition":"#{none}","answer":"Мы
+будем грилить на Старом Дунае на частной территории. Это важно для того, чтобы нас никто не беспокоил)\r\n\r\nСтоимость
+аренды территории - €7 c участника. Мы как организаторы собираем €8, онлайн, прямо здесь в чате, чтобы покрыть расходы
+на платежку. Если Вы хотите оплатить на месте, с Вас €10, потому что никто не будет е...ся с монетками 😏 \r\n\r\nВы
+согласны? Жмите на кнопки или ответьте:\r\n1: Да\r\n2: Нет
+","message_type":0,"description":"Оплата","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16583844,"condition":"#{none}","answer":"Пожалуйста,
+поделитесь номером телефона. \r\nНажмите на кнопку \"Поделиться\" в Телеграме или введите номер в международном формате,
+начиная с
+43XXXY___","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16813371,"condition":"","answer":"❓
+Можно кого с собой приведу?\r\n➡️ Только после регистрации через мессенджеры по ссылке https:\/\/polk.uno\/meet\r\n\r\nВ
+случае вопросов звоните в \"справочную\" по телефону с этого же
+лендинга.","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16813183,"condition":"","answer":"\r\nЕще
+вопросы-ответы:\r\n❓ Как выглядит гриль?\r\n➡️ вот так, как на картинке. Ну и плюс будет холодильник, туда можно будет
+загрузить свои напитки.
+","message_type":0,"description":"","attachment_url":"","attachment_type":"image","file":null,"attachments":"{\"attachments\":[{\"attachment_id\":792160,\"attachment_name\":\"photo_2023-07-20_10-14-25.jpg\",\"attachment_url\":\"https:\/\/files.salebot.pro\/uploads\/file_item\/16813183\/file\/264222\/photo_2023-07-20_10-14-25.jpg\",\"attachment_type\":\"image\"}]}"},{"id":16745511,"condition":"#{none}","answer":"Некоторые
+вопросы-ответы. \r\n\r\n❓ Сколько стоит?\r\n➡️ \"аренда\" места стоит 7 Евро. Мы собираем 8 Евро, чтобы покрыть расходы
+на платежные системы. Ну и кто хочет прийти и оплатить наличкой, пусть сразу приносит 10 Евро (монеток у нас не будет).
+\r\n\r\n❓ В объявлении написано 8 евро за место гриль. \r\n➡️ верно, мы арендуем место для гриля на частной территории.
+На территории есть бистро, там можно заказывать, но в этот раз НЕ НУЖНО. Администрация клуба предоставляет нам гриль и
+холодильник. \r\n\r\n❓ А мясо как для гриля? \r\n➡️ каждый приносит свои продукты. Если не хочется, всегда можно пойти в
+бистро и заказать там пиццу, закуски, пиво или напитки\r\n\r\n❓ Каждый принесёт или как это организовано?\r\n➡️ Наталья
+координирует продукты в Телеграм чате https:\/\/t.me\/+CCb4BzQbX6YyODE0, вступайте туда. Организация продуктов - это
+вопрос личный. С нашей стороны - возможность грилить. \r\n\r\n❓ Будет ли там какой то буфет и можно ли будет что то
+заказать поесть,как в прошлый раз? \r\n➡️ Разумеется, буфет, бистро, бар - все на месте и доступно. \r\n\r\n❓ Похоже вы
+поменяли место гриля, теперь это частная территория\r\n➡️ Место то же самое. В прошлый раз была неформальная, но
+обязанность \"сделать кассу\" в баре. Были пожелания погрилить. Теперь можно и грилить со своими продуктами, и
+заказывать)\r\n\r\n❓ Купаться?\r\n➡️ Ага,
+можно)","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16490394,"condition":"#{none}","answer":"Проверочный
+вопрос: чей Крым?\r\nОтветьте через кнопки или напишите цифрой:\r\n1: Крым - Россия\r\n2: Крым
+украинский","message_type":0,"description":"Проверка","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16639421,"condition":"111","answer":"","message_type":6,"description":"Сохранить
+в
+GS","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16645351,"condition":"#{none}","answer":"customer.email:
+#{customer.email}\r\nemail:
+#{email}","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16645396,"condition":"#{none}","answer":"customer.email:
+#{customer.email}\r\nemail:
+#{email}","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16645478,"condition":"#{none}","answer":"customer.email:
+#{customer.email}\r\nemail: #{email}","message_type":6,"description":"Отправить
+почту","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16646953,"condition":"#{none}","answer":"#{gs_found}\r\n#{gs_status}\r\n#{gs_row}\r\n#{email}\r\n#{client.email}","message_type":8,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16646251,"condition":"#{none}","answer":"","message_type":6,"description":"GS
+добаивить
+мыло","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16648906,"condition":"#{none}","answer":"","message_type":0,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16828500,"condition":"","answer":"Нажмите
+кнопку или введите 1 или 2\r\n1: Крым - Россия\r\n2: Крым
+украинский","message_type":6,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16829812,"condition":"","answer":"Ответьте
+только 1, 2 или 3 😉\r\n1: €8 кредиткой или IBAN\r\n2: €8 через PayPal\r\n3: €10
+наличкой","message_type":6,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"},{"id":16829734,"condition":"","answer":"Пожалуйста
+пишите только:\r\n1: Да\r\n2:
+Нет","message_type":6,"description":"","attachment_url":"","attachment_type":"","file":null,"attachments":"{\"attachments\":[]}"}]}
