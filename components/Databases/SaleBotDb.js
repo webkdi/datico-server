@@ -123,6 +123,21 @@ async function getGccData() {
   }
 }
 
+async function storeGccData (id, email, phone, gccArray) {
+  const gccJsonString = JSON.stringify(gccArray); // Convert the array to a JSON string
+  var sql = `
+    UPDATE datico.salebot_clients 
+    SET email=?, phone=?, gcc=?
+    WHERE client_id=?
+  `;
+  try {
+    const result = await db.query(sql, [email, phone, gccJsonString, id]);
+    return result[0].affectedRows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 
 module.exports = {
@@ -132,4 +147,5 @@ module.exports = {
   updateDataFromVariable,
   updateEmailFromVariable,
   getGccData,
+  storeGccData,
 };

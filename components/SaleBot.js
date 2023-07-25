@@ -159,59 +159,6 @@ async function getVariablesPerClient_start() {
 }
 // getVariablesPerClient_start();
 
-// Preparing part
-async function execute() {
-  const temporaryFilePath = path.join(
-    __dirname,
-    subfolder,
-    "response_get_clients.json"
-  );
-
-  fs.readFile(temporaryFilePath, "utf8", (err, data) => {
-    if (err) {
-      console.error("Error reading the JSON file:", err);
-      return;
-    }
-    try {
-      const jsonData = JSON.parse(data);
-      const clients = jsonData.clients;
-
-      // Log the "id" property for each client
-      clients.forEach(async (client) => {
-        // console.log(client.id);
-        let insertedRows = await db.insertClient(
-          client.id,
-          client.client_type,
-          client.platform_id,
-          client.name,
-          client.avatar
-        );
-
-        var email = "";
-        var phone = "";
-
-        // console.log('inserted: ',insertedRows);
-        if (insertedRows === 1) {
-          // New client, data is not normalized
-          if (client.client_type === 6 || client.client_type === 14) {
-            phone = client.client_type === 6 ? client.platform_id : phone; // WhatsApp
-            email = client.client_type === 14 ? client.platform_id : email; // Email
-            let updatedRow = await db.updateBasics(client.id, email, phone);
-            // console.log(client.client_type, 'updated: ',updatedRow, client.id, email, phone);
-          }
-        }
-
-        //store variables
-        let variables = await getVariablesPerClient(client.id);
-        console.log(variables);
-      });
-    } catch (err) {
-      console.error("Error parsing JSON:", err);
-    }
-  });
-}
-
-//finalising
 async function get_clients_list() {
   try {
     const url = createUrl(baseUrl, key, "/get_clients");
@@ -220,12 +167,12 @@ async function get_clients_list() {
 
     return responseData;
   } catch (error) {
-    console.error("Error occurred during API call:", error);
+    console.error("Error occurred during API call: get_clients_list");
     return null;
   }
 }
 
-async function runNow(clientId) {
+async function getClientsFromSb(clientId) {
   const getClients = await get_clients_list();
 
   var idArray = Object.values(getClients).map((obj) => obj.id);
@@ -250,8 +197,6 @@ async function runNow(clientId) {
     }
   }
 }
-// runNow(227585686);
-// runNow();
 
 function findConnectedClients(data) {
   //receives dataset
@@ -302,6 +247,7 @@ function findConnectedClients(data) {
       index === self.findIndex((g) => g.some((id) => group.includes(id)))
   );
 }
+
 async function getGcc() {
   const gccData = await db.getGccData();
   const gccLinks = findConnectedClients(gccData);
@@ -331,17 +277,17 @@ async function getGcc() {
   function cleanDataByGCC(data) {
     // Step 1: Group data by gcc
     const groupedData = data.reduce((groups, entry) => {
-      const gcc = entry.gcc.join(','); // Using join to get a unique key for gcc array
+      const gcc = entry.gcc.join(","); // Using join to get a unique key for gcc array
       groups[gcc] = groups[gcc] || [];
       groups[gcc].push(entry);
       return groups;
     }, {});
-  
+
     // Step 2 and 3: Find non-null phone and email and populate entries within each group
     for (const group of Object.values(groupedData)) {
       let commonPhone = null;
       let commonEmail = null;
-  
+
       for (const entry of group) {
         if (entry.phone !== null) {
           commonPhone = entry.phone;
@@ -350,7 +296,7 @@ async function getGcc() {
           commonEmail = entry.email;
         }
       }
-  
+
       for (const entry of group) {
         if (commonPhone !== null) {
           entry.phone = commonPhone;
@@ -360,20 +306,27 @@ async function getGcc() {
         }
       }
     }
-  
+
     // Return the cleaned data
     return data;
   }
-    
-  const cleanedData = cleanDataByGCC(gccData);
-  // console.log(cleanedData);
-  
 
+  // await cleanDataByGCC(gccData);
 
+  // Loop through the gccData array and log the client_id for each entry
+  for (const client of gccData) {
+    let storeData = await db.storeGccData(
+      client.client_id,
+      client.email,
+      client.phone,
+      client.gcc
+    );
+  }
+  console.log("gcc done");
 
   // Find all objects where gcc contains client_id 226457257
-  const resultsAll = gccData.filter((data) => data.gcc && data.gcc.includes(227566079))
-  console.log(resultsAll);
+  // const resultsAll = gccData.filter((data) => data.gcc && data.gcc.includes(227566079))
+  // console.log(resultsAll);
   // const resultsMulti = gccData.filter((data) => data.gcc && data.gcc.length > 2);
   // console.log(resultsMulti);
   // const resultOne = gccData.filter((data) => data.client_id==226963878);
@@ -381,10 +334,13 @@ async function getGcc() {
 
   // console.log(gccData);
 }
-getGcc();
 
-// const gcc = findConnectedClients(databaseData);
-// console.log(gcc);
+async function run() {
+  // runNow(227585686);
+  let getClients = await getClientsFromSb();
+  let doGcc = await getGcc();
+}
+// run();
 
 module.exports = {
   newWebHook,
