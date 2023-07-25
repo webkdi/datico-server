@@ -90,7 +90,7 @@ var updateStats = cron.schedule(
   }
 );
 if (process.env.THIS_VERSION === "LIVE") {
-  updateStats.start();
+  // updateStats.start();
 }
 // updateStats.start();
 
@@ -107,7 +107,7 @@ var updateImages = cron.schedule(
   }
 );
 if (process.env.THIS_VERSION === "LIVE") {
-  updateImages.start();
+  // updateImages.start();
 }
 
 //Telefram Reposting
