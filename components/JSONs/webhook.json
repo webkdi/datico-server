@@ -1,0 +1,37 @@
+{
+  "id": 5286976574,
+  "client": {
+    "id": 226457257,
+    "recepient": "949111227",
+    "client_type": 1,
+    "name": "Dimitri Korenev",
+    "avatar": "https://files.salebot.pro/uploads/avatars/264222/1-226457257-949111227.jpg",
+    "created_at": "2023-07-11 10:04:22.501490",
+    "unread_count": 0,
+    "tag": "bp_meet",
+    "user_id": 162540,
+    "group": "VPolkBot",
+    "variables": {
+      "callback_query_id": "4076401684407305274",
+      "custom_status_code": "200",
+      "email": "dimitri.korenev@gmail.com",
+      "email_stripe": "dimitri.korenev@gmail.com",
+      "name": "Дмитрий Коренев",
+      "name_stripe": "Dimitri Korenev",
+      "phone": "+436605752835",
+      "phone_stripe": "None",
+      "stripe_callback_data": "{\"id\":\"cs_test_a1iVq76Hk24K8yoTWUjqfP1ErH14BHqlyJz6BpepT3jApmam1T8aBsH4te\",\"object\":\"checkout.session\",\"after_expiration\":null,\"allow_promotion_codes\":null,\"amount_subtotal\":800,\"amount_total\":800,\"automatic_tax\":{\"enabled\":false,\"status\":null},\"billing_address_collection\":null,\"cancel_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/fail?order_id=226457257--9147\",\"client_reference_id\":\"226457257--9147\",\"consent\":null,\"consent_collection\":null,\"created\":1689074039,\"currency\":\"eur\",\"currency_conversion\":null,\"custom_fields\":[],\"custom_text\":{\"shipping_address\":null,\"submit\":null},\"customer\":\"cus_OF8oCvlUj8R8Oy\",\"customer_creation\":\"if_required\",\"customer_details\":{\"address\":{\"city\":null,\"country\":\"AT\",\"line1\":null,\"line2\":null,\"postal_code\":null,\"state\":null},\"email\":\"dimitri.korenev@gmail.com\",\"name\":\"Dimitri Korenev\",\"phone\":null,\"tax_exempt\":\"none\",\"tax_ids\":[]},\"customer_email\":null,\"expires_at\":1689160439,\"invoice\":\"in_1NSeWUAP19WOtJXbWiepcRX4\",\"invoice_creation\":{\"enabled\":true,\"invoice_data\":{\"account_tax_ids\":null,\"custom_fields\":null,\"description\":\"226457257--9147\",\"footer\":null,\"metadata\":{},\"rendering_options\":null}},\"livemode\":false,\"locale\":\"ru\",\"metadata\":{},\"mode\":\"payment\",\"payment_intent\":\"pi_3NSeWSAP19WOtJXb2c0IJ74q\",\"payment_link\":null,\"payment_method_collection\":\"always\",\"payment_method_options\":{},\"payment_method_types\":[\"card\"],\"payment_status\":\"paid\",\"phone_number_collection\":{\"enabled\":false},\"recovered_from\":null,\"setup_intent\":null,\"shipping_address_collection\":null,\"shipping_cost\":null,\"shipping_details\":null,\"shipping_options\":[],\"status\":\"complete\",\"submit_type\":null,\"subscription\":null,\"success_url\":\"https:\\/\\/chatter.salebot.pro\\/stripe_callback\\/success?order_id=226457257--9147\",\"total_details\":{\"amount_discount\":0,\"amount_shipping\":0,\"amount_tax\":0},\"url\":null}",
+      "tg_username": "@freud_online"
+    },
+    "order_variables": {}
+  },
+  "message": "sdfsada",
+  "attachments": null,
+  "project_id": 264222,
+  "is_input": 0,
+  "delivered": 1,
+  "message_id": null,
+  "internal_id": "3003",
+  "error_message": true,
+  "user_id": 162540
+}
