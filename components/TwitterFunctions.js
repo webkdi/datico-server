@@ -46,18 +46,7 @@ async function tweetPost(text, mediaType, mediaeUrl) {
     }
     return tweet;
   } catch (error) {
-    // console.error("An error occurred while posting the tweet:", error);
-    handleTwitterApiError(error);
-  }
-}
-
-function handleTwitterAPIError(error) {
-  if (error.response) {
-    return `Twitter API error: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
-  } else if (error.request) {
-    return 'No response received from the Twitter API. Check your network connection.';
-  } else {
-    return `An error occurred while making the request to the Twitter API: ${error.message}`;
+    console.error("An error occurred while posting the tweet:", error.data, error.rateLimit);
   }
 }
 

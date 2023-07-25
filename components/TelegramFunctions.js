@@ -258,8 +258,6 @@ async function infoDefRepost() {
       );
     }
   });
-
-  // post to Twitter
 }
 
 async function sendToMakeForFb(type, filepath, message, page_id) {
@@ -322,13 +320,14 @@ async function tweetTest (update_id) {
   const line = await db.getMessagePerUpdate(update_id);
   const mediaUrl = line[0].file_path;
   const tweetText = line[0].message_twitter;
+  // const tweetText = '';
   const mediaType = line[0].type;
   // console.log(mediaType, mediaUrl, tweetText);
 
   const tweetGo = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
   console.log(tweetGo);
 }
-// tweetTest(27527084);
+// tweetTest(27527112);
 
 module.exports = {
   sendToTelegram,
