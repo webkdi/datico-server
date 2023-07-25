@@ -51,31 +51,15 @@ async function tweetPost(text, mediaType, mediaeUrl) {
   }
 }
 
-/**
- * Informative Error Handler for Twitter API v2
- * @param {Error} error - The error object thrown by the Twitter API v2 library.
- */
-function handleTwitterApiError(error) {
-  if (error instanceof TwitterApiError) {
-    const { errors } = error.response.data;
-
-    // Twitter API often returns multiple errors; we'll handle the first one for simplicity
-    if (errors && errors.length > 0) {
-      const { title, detail } = errors[0];
-      console.error('Twitter API Error:');
-      console.error('Title:', title);
-      console.error('Detail:', detail);
-
-      // Additional error handling can be done here, like logging or specific actions for certain error types.
-    } else {
-      console.error('Twitter API Error (Unknown Error):', error.message);
-    }
+function handleTwitterAPIError(error) {
+  if (error.response) {
+    return `Twitter API error: ${error.response.status} - ${JSON.stringify(error.response.data)}`;
+  } else if (error.request) {
+    return 'No response received from the Twitter API. Check your network connection.';
   } else {
-    console.error('Non-Twitter API Error:', error.message);
-    // Handle non-Twitter API errors, if needed.
+    return `An error occurred while making the request to the Twitter API: ${error.message}`;
   }
 }
-
 
 module.exports = {
   tweetPost,
