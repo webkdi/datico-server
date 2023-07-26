@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { TwitterApi, TwitterApiError } = require("twitter-api-v2");
+const { TwitterApi } = require("twitter-api-v2");
 const axios = require("axios");
 
 const client = new TwitterApi({
