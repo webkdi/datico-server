@@ -325,6 +325,7 @@ async function sendSingleTweet(update_id) {
   // console.log(mediaType, mediaUrl, tweetText);
 
   try {
+    console.log("trying to create a tweet for",mediaType, mediaUrl, tweetText);
     const tweetGo = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
     return tweetGo;
   } catch (error) {
