@@ -250,11 +250,12 @@ async function infoDefRepost() {
         ms.messageForFacebook,
         ms.repost_to
       );
-      const sentToTwitter = await twitter.tweetPost(
-        ms.messageForTwitter,
-        ms.type,
-        ms.file_path
-      );
+      // const sentToTwitter = await twitter.tweetPost(
+      //   ms.messageForTwitter,
+      //   ms.type,
+      //   ms.file_path
+      // );
+      const sentToTwitter = await tweetOnRender(ms.update_id);
     }
   });
 }
@@ -334,6 +335,7 @@ async function sendSingleTweet(update_id) {
     );
   }
 }
+
 async function tweetOnRender(update_id) {
   const line = await db.getMessagePerUpdate(update_id);
   const mediaUrl = line[0].file_path;
@@ -356,23 +358,17 @@ async function tweetOnRender(update_id) {
       },
     };
 
-    // axios
-    //   .request(options)
-    //   .then(function (response) {
-    //     console.log(response.data);
-    //     return response.data;
-    //   })
-    //   .catch(function (error) {
-    //     console.error(error);
-    //     return res.sendStatus(400);
-    //   });
     const response = await axios.request(options);
     console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
-    return res.sendStatus(400);
-    // return null; // or handle the error as required
+    // return res.sendStatus(400);
+    return {
+      error: true,
+      message: "Failed to post tweet on Render.",
+      // You can add additional error details here if needed
+    };
   }
 }
 // sendSingleTweet(27527112);
