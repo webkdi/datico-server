@@ -34,22 +34,23 @@ async function tweetPost(text, mediaType, mediaeUrl) {
   //Tweet!
   try {
     let tweet;
-    if (mediaType != "text") {
-      tweet = await client.v2.tweet({
-        text,
-        media: { media_ids: [mediaId] },
-      });
-    } else {
-      tweet = await client.v2.tweet({
-        text,
-      });
-    }
+    // if (mediaType != "text") {
+    //   tweet = await client.v2.tweet({
+    //     text,
+    //     media: { media_ids: [mediaId] },
+    //   });
+    // } else {
+    //   tweet = await client.v2.tweet({
+    //     text,
+    //   });
+    // }
+    tweet = await client.v2.tweet('Hello, this is a test.');
     console.log("Twitter: tweet created with id",tweet.data.id,"and text '",tweet.data.text,"'");
     return tweet;
   } catch (error) {
-    const errorMessage = 'An error occurred while posting the tweet: ' + error.data + ', ' + error.rateLimit;
-    console.error(errorMessage);
-    throw new Error(errorMessage);
+    // const errorMessage = 'An error occurred while posting the tweet: ' + error.data + ', ' + error.rateLimit;
+    console.error(error);
+    // throw new Error(errorMessage);
   }
 }
 
