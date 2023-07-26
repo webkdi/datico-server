@@ -28,7 +28,7 @@ async function tweetPost(text, mediaType, mediaeUrl) {
     mediaId = await client.v1.uploadMedia(mediaBuffer, {
       mimeType: mediaTypeDesc,
     });
-    console.log("Twitter: media uploaded with id",mediaId);
+    console.log("Twitter: media uploaded with id", mediaId);
   }
 
   //Tweet!
@@ -44,8 +44,14 @@ async function tweetPost(text, mediaType, mediaeUrl) {
     //     text,
     //   });
     // }
-    tweet = await client.v2.tweet('Hello, this is a test.');
-    console.log("Twitter: tweet created with id",tweet.data.id,"and text '",tweet.data.text,"'");
+    tweet = await client.v2.tweet("Hello, this is a test.");
+    console.log(
+      "Twitter: tweet created with id",
+      tweet.data.id,
+      "and text '",
+      tweet.data.text,
+      "'"
+    );
     return tweet;
   } catch (error) {
     // const errorMessage = 'An error occurred while posting the tweet: ' + error.data + ', ' + error.rateLimit;

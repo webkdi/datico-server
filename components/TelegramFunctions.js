@@ -5,6 +5,7 @@ require("dotenv").config();
 // const db = require("./Databases/Database");
 const db = require("./Databases/refTelegram");
 const twitter = require("./TwitterFunctions");
+// const twitterAxios = require("./TwitterFunctionsAxios");
 const openAi = require("./OpenAiFunctions");
 
 const now = new Date();
@@ -180,9 +181,8 @@ async function infoDefRepost() {
       );
       // Remove newlines and empty lines at the end of the string
       const regex = /\n\s*$/;
-      messages[i].message = messages[i].message.replace(regex, '');    
+      messages[i].message = messages[i].message.replace(regex, "");
       messages[i].message.trim();
-
     } else {
       messages[i].message = "";
     }
@@ -316,7 +316,7 @@ async function getFile(file_Id, telegramBotToken) {
 }
 
 //test des Twitters
-async function sendSingleTweet (update_id) {
+async function sendSingleTweet(update_id) {
   const line = await db.getMessagePerUpdate(update_id);
   const mediaUrl = line[0].file_path;
   const tweetText = line[0].message_twitter;
@@ -324,8 +324,16 @@ async function sendSingleTweet (update_id) {
   const mediaType = line[0].type;
   // console.log(mediaType, mediaUrl, tweetText);
 
-  const tweetGo = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
-  return tweetGo;
+  try {
+    const tweetGo = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
+    return tweetGo;
+  } catch (error) {
+    // Handle the error gracefully
+    console.error(
+      "An error occurred while initializing the TwitterApi client:",
+      error
+    );
+  }
 }
 // sendSingleTweet(27527112);
 
