@@ -1,16 +1,28 @@
-// TwitterFunctionsAxios.js
-
 require("dotenv").config();
 const { TwitterApi, TwitterApiV2Settings } = require("twitter-api-v2");
 const axios = require("axios");
 
+// Set your proxy URL here
+const proxyUrl = "http://your-proxy-url:your-proxy-port";
+
 async function initializeTwitterApi() {
   try {
+    // Configure Axios with proxy
+
+    const axiosInstance = axios.create({
+      proxy: {
+        host: "http://138.197.69.132",
+        port: 19260, // Set the appropriate port for your proxy
+      },
+    });
+
+
     const client = new TwitterApi({
       appKey: process.env.TWITTER_APP_KEY,
       appSecret: process.env.TWITTER_APP_SECRET,
       accessToken: process.env.TWITTER_ACCESS_TOKEN,
       accessSecret: process.env.TWITTER_ACCESS_SECRET,
+      axiosInstance, // Pass the custom Axios instance to the TwitterApi
     });
 
     const rwClient = client.readWrite;
