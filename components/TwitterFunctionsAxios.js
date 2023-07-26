@@ -1,7 +1,7 @@
 // TwitterFunctionsAxios.js
 
 require("dotenv").config();
-const { TwitterApi } = require("twitter-api-v2");
+const { TwitterApi, TwitterApiV2Settings } = require("twitter-api-v2");
 const axios = require("axios");
 
 async function initializeTwitterApi() {
@@ -12,6 +12,9 @@ async function initializeTwitterApi() {
       accessToken: process.env.TWITTER_ACCESS_TOKEN,
       accessSecret: process.env.TWITTER_ACCESS_SECRET,
     });
+
+    const rwClient = client.readWrite;
+    TwitterApiV2Settings.debug = true;
 
     // You can now use the 'client' object to make API requests and perform other operations.
 
