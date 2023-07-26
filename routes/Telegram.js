@@ -35,7 +35,7 @@ router.post("/update_twitter", async (req, res) => {
 
   // At this point, req.body contains one field with key "update_id" and its value is a numeric integer.
   // Proceed to call tg.sendSingleTweet() or perform any other necessary actions.
-  const response = await tg.sendSingleTweet(updateId);
+  const response = await tg.tweetOnRender(updateId);
   res.send(response);
 });
 

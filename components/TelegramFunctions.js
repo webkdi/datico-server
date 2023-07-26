@@ -5,7 +5,6 @@ require("dotenv").config();
 // const db = require("./Databases/Database");
 const db = require("./Databases/refTelegram");
 const twitter = require("./TwitterFunctions");
-const twitterAxios = require("./TwitterFunctionsAxios");
 const openAi = require("./OpenAiFunctions");
 
 const now = new Date();
@@ -315,7 +314,6 @@ async function getFile(file_Id, telegramBotToken) {
   }
 }
 
-//test des Twitters
 async function sendSingleTweet(update_id) {
   const line = await db.getMessagePerUpdate(update_id);
   const mediaUrl = line[0].file_path;
@@ -325,8 +323,8 @@ async function sendSingleTweet(update_id) {
   // console.log(mediaType, mediaUrl, tweetText);
 
   try {
-    console.log("trying to create a tweet for",mediaType, mediaUrl, tweetText);
-    const tweetGo = await twitterAxios.tweetPost(tweetText, mediaType, mediaUrl);
+    console.log("trying to create a tweet for", mediaType, mediaUrl, tweetText);
+    const tweetGo = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
     return tweetGo;
   } catch (error) {
     // Handle the error gracefully
@@ -336,10 +334,52 @@ async function sendSingleTweet(update_id) {
     );
   }
 }
+async function tweetOnRender(update_id) {
+  const line = await db.getMessagePerUpdate(update_id);
+  const mediaUrl = line[0].file_path;
+  const tweetText = line[0].message_twitter;
+  const mediaType = line[0].type;
+
+  try {
+    var options = {
+      method: "POST",
+      url: "https://retweet.onrender.com/twitter/tweets",
+      headers: {
+        Accept: "*/*",
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+        "Content-Type": "application/json",
+      },
+      data: {
+        text: tweetText,
+        mediaType: mediaType,
+        mediaeUrl: mediaUrl,
+      },
+    };
+
+    // axios
+    //   .request(options)
+    //   .then(function (response) {
+    //     console.log(response.data);
+    //     return response.data;
+    //   })
+    //   .catch(function (error) {
+    //     console.error(error);
+    //     return res.sendStatus(400);
+    //   });
+    const response = await axios.request(options);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return res.sendStatus(400);
+    // return null; // or handle the error as required
+  }
+}
 // sendSingleTweet(27527112);
 
 module.exports = {
   sendToTelegram,
   infoDefRepost,
   sendSingleTweet,
+  tweetOnRender,
 };
