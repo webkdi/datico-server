@@ -34,17 +34,17 @@ async function tweetPost(text, mediaType, mediaeUrl) {
   //Tweet!
   try {
     let tweet;
-    // if (mediaType != "text") {
-    //   tweet = await client.v2.tweet({
-    //     text,
-    //     media: { media_ids: [mediaId] },
-    //   });
-    // } else {
-    //   tweet = await client.v2.tweet({
-    //     text,
-    //   });
-    // }
-    tweet = await client.v2.tweet("Hello, this is a test.");
+    if (mediaType != "text") {
+      tweet = await client.v2.tweet({
+        text,
+        media: { media_ids: [mediaId] },
+      });
+    } else {
+      tweet = await client.v2.tweet({
+        text,
+      });
+    }
+    // tweet = await client.v2.tweet("Hello, this is a test.");
     console.log(
       "Twitter: tweet created with id",
       tweet.data.id,

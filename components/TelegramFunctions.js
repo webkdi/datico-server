@@ -5,7 +5,7 @@ require("dotenv").config();
 // const db = require("./Databases/Database");
 const db = require("./Databases/refTelegram");
 const twitter = require("./TwitterFunctions");
-// const twitterAxios = require("./TwitterFunctionsAxios");
+const twitterAxios = require("./TwitterFunctionsAxios");
 const openAi = require("./OpenAiFunctions");
 
 const now = new Date();
@@ -326,7 +326,7 @@ async function sendSingleTweet(update_id) {
 
   try {
     console.log("trying to create a tweet for",mediaType, mediaUrl, tweetText);
-    const tweetGo = await twitter.tweetPost(tweetText, mediaType, mediaUrl);
+    const tweetGo = await twitterAxios.tweetPost(tweetText, mediaType, mediaUrl);
     return tweetGo;
   } catch (error) {
     // Handle the error gracefully
