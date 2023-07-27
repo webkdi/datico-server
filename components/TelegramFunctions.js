@@ -218,7 +218,10 @@ async function infoDefRepost() {
 
     // подготовить версию для Твиттера
     if (messages[i].message.length > 280) {
-      const textTwitter = await openAi.getTwitterSummary(messages[i].message);
+      let twitterFirstAttempt = await openAi.getTwitterSummary(messages[i].message);
+      let textTwitter = twitterFirstAttempt;
+      // if more then 280 signs, shorter the result again
+      if (twitterFirstAttempt.length > 280) {textTwitter = await openAi.getTwitterSummary(twitterFirstAttempt)}
       messages[i].messageForTwitter = textTwitter;
     } else {
       messages[i].messageForTwitter = messages[i].message;
