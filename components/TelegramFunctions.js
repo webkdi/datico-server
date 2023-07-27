@@ -218,11 +218,13 @@ async function infoDefRepost() {
 
     // подготовить версию для Твиттера
     if (messages[i].message.length > 280) {
-      let twitterFirstAttempt = await openAi.getTwitterSummary(messages[i].message);
-      let textTwitter = twitterFirstAttempt;
-      // if more then 280 signs, shorter the result again
-      if (twitterFirstAttempt.length > 280) {textTwitter = await openAi.getTwitterSummary(twitterFirstAttempt)}
-      messages[i].messageForTwitter = textTwitter;
+      try {
+        const textTwitter = await processTwitterSummary(messages[i].message);
+        messages[i].messageForTwitter = textTwitter;
+      } catch (error) {
+        console.error("Error while processing OpenAi tweet message:", error);
+        messages[i].messageForTwitter="";
+      }
     } else {
       messages[i].messageForTwitter = messages[i].message;
     }
@@ -261,6 +263,18 @@ async function infoDefRepost() {
       const sentToTwitter = await tweetOnRender(ms.update_id);
     }
   });
+}
+
+async function processTwitterSummary(message) {
+  const MAX_TWITTER_LENGTH = 280;
+
+  let textTwitter = message;
+
+  while (textTwitter.length > MAX_TWITTER_LENGTH) {
+    textTwitter = await openAi.getTwitterSummary(textTwitter);
+  }
+
+  return textTwitter;
 }
 
 async function sendToMakeForFb(type, filepath, message, page_id) {
