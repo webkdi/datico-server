@@ -8,7 +8,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 async function getTwitterSummary(text) {
-  const prompt = `Agiere als Twitter Blogger. Schreibe eine Zusammenfassung des folgenden Textes für Twitter Post. Ein Post auf Twitter hat den Limit von 280 Zeichen, deswegen darf die Zusammenfassung maximal 280 Zeichen lang, inklusive Leerzeichen, sein! Entgerne Anführungszeichen am Anfang und am Ende der Zusammenfassung.
+  const prompt = `Agiere als Twitter Blogger. Schreibe aud Deutsch eine Zusammenfassung des folgenden Textes für Twitter Post. Ein Post auf Twitter hat den Limit von 280 Zeichen, deswegen darf die Zusammenfassung maximal 280 Zeichen lang, inklusive Leerzeichen, sein! Entferne Anführungszeichen am Anfang und am Ende der Zusammenfassung. Zusammenfassung muss auf Deutsch, maximal 280 Zeichen, sein.
   
   Der Text is:  
   "${text}"`;
