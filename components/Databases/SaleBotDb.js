@@ -2,7 +2,7 @@ const mysql = require("mysql2");
 const { db, dbFreud } = require("./Connections.js");
 const axios = require("axios");
 
-async function insertClient(clientId) {
+async function insertIgnoreClient(clientId) {
   const sql = `
     INSERT IGNORE INTO datico.salebot_clients (client_id)
     VALUES (?)
@@ -13,6 +13,26 @@ async function insertClient(clientId) {
     return result.affectedRows;
   } catch (err) {
     console.log(err);
+  }
+}
+
+async function archiveVariables (clientId, variablesJson) {
+  // const jsonString = JSON.stringify(variablesJson); // Convert the array to a JSON string
+  var sql = `
+    INSERT INTO datico.salebot_archive (client_id, variables)
+    VALUES (?, ?)
+  `;
+  try {
+    const result = await db.query(sql, [clientId, variablesJson]);
+    return result[0].affectedRows;
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in archiveVariables. Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
   }
 }
 
@@ -30,16 +50,30 @@ async function updateBasics(id, email, phone) {
   }
 }
 
-async function updateVariable(id, variablesJson) {
+async function updateVariable(id, variablesJson, checksum) {
   var sql = `
-    UPDATE datico.salebot_clients 
-    SET variables=?
+  UPDATE datico.salebot_clients 
+  SET variables=?, variables_checksum=?
+  WHERE client_id=?
+  `;
+  try {
+    const result = await db.query(sql, [variablesJson, checksum, id]);
+    return result[0].affectedRows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getVariableChecksumPerClient(clientId) {
+  var sql = `
+    SELECT variables_checksum FROM datico.salebot_clients 
     WHERE client_id=?
   `;
-
   try {
-    const result = await db.query(sql, [variablesJson, id]);
-    return result[0].affectedRows;
+    const result = await db.query(sql, clientId);
+    const checksum = result[0][0].variables_checksum;
+    // console.log("here",checksum);
+    return checksum;
   } catch (err) {
     console.log(err);
   }
@@ -123,29 +157,72 @@ async function getGccData() {
   }
 }
 
-async function storeGccData (id, email, phone, gccArray) {
+async function getGccDataPerClient(clientId) {
+  var sql = `
+  SELECT main_client_id, email, phone, full_name, name, last_name
+  FROM datico.salebot_clients
+  WHERE client_id=?;
+  `;
+  try {
+    const result = await db.query(sql, clientId);
+    return result[0][0]; // Return the first element of the array directly
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in getGccStartData. Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
+  }
+}
+
+
+async function getGccCandidatesPerInput(query) {
+  var sql = `
+  SELECT client_id, main_client_id, email, phone, full_name, name, last_name
+  FROM datico.salebot_clients
+  WHERE ${query};
+  `;
+  try {
+    const result = await db.query(sql);
+    return result[0]; 
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in getGccCandidatesPerInput. Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
+  }
+}
+
+async function storeGccData(id, email, phone, gccArray, gccKey) {
   const gccJsonString = JSON.stringify(gccArray); // Convert the array to a JSON string
   var sql = `
     UPDATE datico.salebot_clients 
-    SET email=?, phone=?, gcc=?
+    SET email=?, phone=?, gcc=?, gcc_key=?
     WHERE client_id=?
   `;
   try {
-    const result = await db.query(sql, [email, phone, gccJsonString, id]);
+    const result = await db.query(sql, [email, phone, gccJsonString, gccKey, id]);
     return result[0].affectedRows;
   } catch (err) {
     console.log(err);
   }
 }
 
-
-
 module.exports = {
-  insertClient,
+  insertIgnoreClient,
+  archiveVariables,
   updateBasics,
   updateVariable,
   updateDataFromVariable,
   updateEmailFromVariable,
   getGccData,
+  getGccDataPerClient,
   storeGccData,
+  getVariableChecksumPerClient,
+  getGccCandidatesPerInput,
 };
