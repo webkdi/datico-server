@@ -37,8 +37,10 @@ async function enterClientFromWebhook(webhookBody) {
       sqlQueryForGcc
     );
     const gcc = await getGccPerClient(gccClientsWithData);
-    console.log(gcc, "for", clientId);
-    const uploadClientData = await storeVariablesForGcc();
+    console.log("gcc for", clientId,"with",gcc.gccKey,"calculated");
+
+    const uploadClientData = await storeVariablesForGcc(gcc.gcc, gcc.email, gcc.phone);
+
     console.log("uploadClientData", uploadClientData, "for", clientId);
     return "data for " + clientId + " updated";
   } else {
@@ -83,6 +85,9 @@ async function getGccPerClient(gccData) {
   }
 
   function cleanDataByGCC(data) {
+    let commonPhone = null;
+    let commonEmail = null;
+
     // Step 1: Group data by gcc
     const groupedData = data.reduce((groups, entry) => {
       const gcc = entry.gcc.join(","); // Using join to get a unique key for gcc array
@@ -93,9 +98,6 @@ async function getGccPerClient(gccData) {
 
     // Step 2 and 3: Find non-null phone and email and populate entries within each group
     for (const group of Object.values(groupedData)) {
-      let commonPhone = null;
-      let commonEmail = null;
-
       for (const entry of group) {
         if (entry.phone !== null) {
           commonPhone = entry.phone;
@@ -119,7 +121,6 @@ async function getGccPerClient(gccData) {
     return data;
   }
   await cleanDataByGCC(gccData);
-  // console.log(gccData);
 
   // Loop through the gccData array and log the client_id for each entry
   for (const client of gccData) {
@@ -131,17 +132,10 @@ async function getGccPerClient(gccData) {
       client.gccKey
     );
   }
-  return "gcc done";
 
-  // Find all objects where gcc contains client_id 226457257
-  // const resultsAll = gccData.filter((data) => data.gcc && data.gcc.includes(227566079))
-  // console.log(resultsAll);
-  // const resultsMulti = gccData.filter((data) => data.gcc && data.gcc.length > 2);
-  // console.log(resultsMulti);
-  // const resultOne = gccData.filter((data) => data.client_id==226963878);
-  // console.log(resultOne);
+  //erster Kunde aus GCC hat alle relevanten Daten (GCC Liste, Mail, Phone)
+  return gccData[0];
 
-  // console.log(gccData);
 }
 
 function objectToSqlWhere(obj) {
@@ -166,10 +160,11 @@ async function storeVariablesForGcc(gccArray, email, phone) {
   const bodyData = {
     clients: gccArray,
     variables: {
-      "client.phone": "${email}",
-      "client.email": "${phone}",
+      "client.phone": `${phone}`,
+      "client.email": `${email}`,
     },
   };
+  // console.log(bodyData);
 
   // const bodyData = {
   //   clients: [
