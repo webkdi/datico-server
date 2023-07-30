@@ -1,0 +1,83 @@
+{
+  "ok": true,
+  "result": [
+    {
+      "update_id": 27527197,
+      "channel_post": {
+        "chat": {
+          "id": -1001638044691,
+          "type": "channel",
+          "title": "FB_InfoDefenseDEUTSCH"
+        },
+        "date": 1690707297,
+        "video": {
+          "thumb": {
+            "width": 320,
+            "height": 175,
+            "file_id": "AAMCAgADHQJhopQTAAIOX2TGJWGDArGoINZsrBr9dz95mHdiAAJ6MQACdPsoStXQcdNrzHlbAQAHbQADLwQ",
+            "file_size": 12423,
+            "file_unique_id": "AQADejEAAnT7KEpy"
+          },
+          "width": 848,
+          "height": 464,
+          "file_id": "BAACAgIAAx0CYaKUEwACDl9kxiVhgwKxqCDWbKwa_Xc_eZh3YgACejEAAnT7KErV0HHTa8x5Wy8E",
+          "duration": 122,
+          "file_name": "IMG_1527.MP4",
+          "file_size": 25085992,
+          "mime_type": "video/mp4",
+          "thumbnail": {
+            "width": 320,
+            "height": 175,
+            "file_id": "AAMCAgADHQJhopQTAAIOX2TGJWGDArGoINZsrBr9dz95mHdiAAJ6MQACdPsoStXQcdNrzHlbAQAHbQADLwQ",
+            "file_size": 12423,
+            "file_unique_id": "AQADejEAAnT7KEpy"
+          },
+          "file_unique_id": "AgADejEAAnT7KEo"
+        },
+        "caption": "‼️CNN hat eine ukrainische Kamikaze-See-Drohne gezeigt, mit der er russische Schiffe im Schwarzem Meer  angreifen will.\n\nDem CNN-Bericht zufolge hat die Drohne eine Reichweite von 800 Kilometern. Sie kann bis zu 300 kg Sprengstoff tragen\n\n🔹Werden Sie InfoDefender! Teilen Sie diese Nachricht mit Ihren Freunden!🔹\n\n📱 InfoDefenseDEUTSCH\n📱 InfoDefense",
+        "message_id": 3679,
+        "sender_chat": {
+          "id": -1001638044691,
+          "type": "channel",
+          "title": "FB_InfoDefenseDEUTSCH"
+        },
+        "caption_entities": [
+          {
+            "type": "custom_emoji",
+            "length": 2,
+            "offset": 0,
+            "custom_emoji_id": "5440660757194744323"
+          },
+          { "type": "bold", "length": 118, "offset": 2 },
+          { "type": "italic", "length": 71, "offset": 241 },
+          {
+            "type": "custom_emoji",
+            "length": 2,
+            "offset": 316,
+            "custom_emoji_id": "5220069871072583573"
+          },
+          {
+            "url": "https://t.me/InfoDefGermany",
+            "type": "text_link",
+            "length": 18,
+            "offset": 319
+          },
+          { "type": "italic", "length": 18, "offset": 319 },
+          {
+            "type": "custom_emoji",
+            "length": 2,
+            "offset": 338,
+            "custom_emoji_id": "5220069871072583573"
+          },
+          {
+            "url": "https://t.me/infoDefALL",
+            "type": "text_link",
+            "length": 11,
+            "offset": 341
+          },
+          { "type": "italic", "length": 11, "offset": 341 }
+        ]
+      }
+    }
+  ]
+}

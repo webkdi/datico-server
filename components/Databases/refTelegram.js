@@ -99,6 +99,19 @@ async function insertJson(inputJson) {
   }
 }
 
+async function getStoredJsonUpdateFromDb(id){
+  var sql = `
+  SELECT update_json FROM datico.serv_telegram_json
+  WHERE id=?
+  `;
+  try {
+    const result = await db.query(sql, id);
+    return result[0][0].update_json;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function cleanJsons () {
   var sql = `
   DELETE FROM datico.serv_telegram_json
@@ -126,4 +139,5 @@ module.exports = {
   insertJson,
   cleanJsons,
   getMessagePerUpdate,
+  getStoredJsonUpdateFromDb,
 };
