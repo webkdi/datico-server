@@ -82,12 +82,24 @@ async function infoDefRepost() {
     await db.cleanJsons();
   }
 
-  let updates = data.result;
+  let updatesBeforeRenaming = data.result;
+
+  // Function to rename the "message" property to "channel_post"
+  function renameMessageToChannelPost(update) {
+    if (update.hasOwnProperty("message")) {
+      update.channel_post = update.message;
+      delete update.message;
+    }
+    return update;
+  }
+  let updates = updatesBeforeRenaming.map(renameMessageToChannelPost);
+
   updates = updates.filter(
     (obj) =>
       obj.channel_post &&
       (obj.channel_post.chat.title === "FB_InfoDefenseDEUTSCH" ||
-        obj.channel_post.chat.title === "InfodefenseFRANCEbis")
+        obj.channel_post.chat.title === "InfodefenseFRANCEbis" ||
+        obj.channel_post.chat.title === "FB_Polk")
   );
 
   if (updates.length === 0) {
@@ -209,11 +221,14 @@ async function infoDefRepost() {
         i
       ].messageForFacebook += `${gap}🔹Werden Sie InfoDefender! Teilen Sie diese Nachricht mit Ihren Freunden!🔹${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
       messages[i].repost_to = 105288955734641;
+      messages[i].repost_insta_to = 17841460886756437;
     } else if (messages[i].chat_name == "InfodefenseFRANCEbis") {
       messages[
         i
       ].messageForFacebook += `${gap}Plus et sans censure dans Telegram:\n🇫🇷 https://t.me/infodefFRANCE`;
       messages[i].repost_to = 102131486075155;
+    } else if (messages[i].chat_name == "FB_Polk") {
+      messages[i].repost_to = 108264128925046;
     }
 
     // подготовить версию для Твиттера
@@ -223,7 +238,7 @@ async function infoDefRepost() {
         messages[i].messageForTwitter = textTwitter;
       } catch (error) {
         console.error("Error while processing OpenAi tweet message:", error);
-        messages[i].messageForTwitter="";
+        messages[i].messageForTwitter = "";
       }
     } else {
       messages[i].messageForTwitter = messages[i].message;
@@ -252,18 +267,23 @@ async function infoDefRepost() {
         // post to Facebook
         ms.type,
         ms.file_path,
+        ms.message,
         ms.messageForFacebook,
-        ms.repost_to
+        ms.repost_to,
+        ms.repost_insta_to
       );
       // const sentToTwitter = await twitter.tweetPost(
       //   ms.messageForTwitter,
       //   ms.type,
       //   ms.file_path
       // );
-      const sentToTwitter = await tweetOnRender(ms.update_id);
+      if (ms.repost_to === 105288955734641) {
+        const sentToTwitter = await tweetOnRender(ms.update_id);
+      }
     }
   });
 }
+// infoDefRepost();
 
 async function processTwitterSummary(message) {
   const MAX_TWITTER_LENGTH = 280;
@@ -277,10 +297,16 @@ async function processTwitterSummary(message) {
   return textTwitter;
 }
 
-async function sendToMakeForFb(type, filepath, message, page_id) {
+
+async function sendToMakeForFb(
+  type,
+  filepath,
+  message,
+  message_fb,
+  page_id,
+  page_insta_id
+) {
   let url = `https://hook.eu1.make.com/${process.env.MAKE_WEBHOOK_FB_INFODEF}`;
-  // let url = "https://hook.eu1.make.com/cy1q9h44e60jgtd2qg42imtb7aorjxof"; //test hook
-  // let url = 'https://hook.eu1.make.com/ynq4oo37xwsgiafeylahxeg2qpsh52gp'; //real hook
   const sendFb = await axios
     .post(
       url,
@@ -288,7 +314,9 @@ async function sendToMakeForFb(type, filepath, message, page_id) {
         type: type,
         filepath: filepath,
         message: message,
-        page_id: page_id,
+        message_fb: message_fb,
+        page_fb_id: page_id,
+        page_insta_id: page_insta_id,
       },
       {
         headers: {
