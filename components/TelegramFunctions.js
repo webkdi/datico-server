@@ -6,6 +6,8 @@ require("dotenv").config();
 const db = require("./Databases/refTelegram");
 const twitter = require("./TwitterFunctions");
 const openAi = require("./OpenAiFunctions");
+// const insta = require("./Instagram")
+const images = require("./ImagesFunctions")
 
 const now = new Date();
 
@@ -155,11 +157,18 @@ async function infoDefRepost() {
       delete ms.files;
     });
 
+
   const messagesWithFileId = messages.filter((message) => message.file_fileId);
   for (const message of messagesWithFileId) {
-    const fileData = await getFile(message.file_fileId, telegramBotToken);
+    const fileData = await getFilePath(message.file_fileId, telegramBotToken);
     if (typeof fileData !== "undefined" && fileData) {
-      message.file_path = `https://api.telegram.org/file/bot${telegramBotToken}/${fileData}`;
+      let fileUrl = `https://api.telegram.org/file/bot${telegramBotToken}/${fileData}`;
+      if (message.type === "image") {
+        let imageInstaLocalPath = await images.processImageForInstagram(message.update_id,fileUrl);
+        imageInstaLocalPath = "https://app.freud.online/datico-server/images/output/"+imageInstaLocalPath;
+        console.log(imageInstaLocalPath);
+      }
+      message.file_path = fileUrl;
     } else {
       message.file_path = "";
     }
@@ -231,6 +240,7 @@ async function infoDefRepost() {
       messages[i].repost_to = 108264128925046;
     }
 
+
     // подготовить версию для Твиттера
     if (messages[i].message.length > 280) {
       try {
@@ -297,7 +307,6 @@ async function processTwitterSummary(message) {
   return textTwitter;
 }
 
-
 async function sendToMakeForFb(
   type,
   filepath,
@@ -337,7 +346,7 @@ async function sendToMakeForFb(
     });
 }
 
-async function getFile(file_Id, telegramBotToken) {
+async function getFilePath(file_Id, telegramBotToken) {
   const url = `https://api.telegram.org/bot${telegramBotToken}/getFile?file_id=${file_Id}`;
 
   try {
@@ -416,7 +425,9 @@ async function tweetOnRender(update_id) {
     };
   }
 }
-// sendSingleTweet(27527112);
+
+
+
 
 module.exports = {
   sendToTelegram,

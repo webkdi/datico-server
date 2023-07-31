@@ -184,6 +184,7 @@ async function storeVariablesForGcc(gccArray, email, phone) {
     const response = await axios.request(config);
     let jsonData = response.data;
     console.log(jsonData);
+    return jsonData;
   } catch (error) {
     console.log(error);
     throw error;

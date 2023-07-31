@@ -1,4 +1,5 @@
 /node_modules
+/images/output
 .idea
 .env
 image_files.json

@@ -4,6 +4,7 @@ const path = require("path");
 const crypto = require("crypto");
 const db = require("./Databases/Database");
 const sharp = require("sharp");
+const axios = require("axios");
 
 const baseDir = "/var/www/dimitri.korenev/data/www/freud.online/";
 const searchDirs = ["media", "images"].map((dir) => path.join(baseDir, dir));
@@ -241,10 +242,54 @@ async function dailyImageService() {
   }
 }
 
+async function processImageForInstagram(updateId, url) {
+  try {
+    // Fetch the image using Axios
+    const response = await axios.get(url, { responseType: "arraybuffer" });
+
+    // Create a subfolder if it doesn't exist
+    const imagesFolder = path.join(__dirname, "../images/output");
+    if (!fs.existsSync(imagesFolder)) {
+      fs.mkdirSync(imagesFolder);
+    }
+    const logoPath = path.join(__dirname, "../images/bp_logo.png"); // Correct relative path to bp_logo.png
+    // Extract the filename from the URL
+    const filename = path.basename(url);
+
+    // Save the image to the ./images subfolder
+    const imagePath = path.join(imagesFolder, filename);
+    fs.writeFileSync(imagePath, response.data);
+
+    // Resize the image and save it with low jpg quality
+    const extension = path.extname(filename);
+    const outputImagePath = path.join(
+      imagesFolder,
+      updateId + "_1080" + extension
+    );
+
+    await sharp(imagePath)
+      .resize(1080, 1080, { fit: "contain" }) // Use fit: "inside" instead of fit: "cover"
+      .composite([{ input: logoPath, top: 10, left: 10, height: 80 }])
+      .jpeg({ quality: 30 })
+      .toFile(outputImagePath);
+
+    // Delete the downloaded image file
+    fs.unlinkSync(imagePath);
+
+    
+    const createdFileName = path.basename(outputImagePath);
+    console.log("Image",createdFileName,"created successfully.");
+    return createdFileName;
+  } catch (error) {
+    console.error("Error processing the image:", error.message);
+  }
+}
+
 module.exports = {
   searchForImageFilesExecute,
   optimizeImage,
   getListOfImages,
   deleteFile,
   dailyImageService,
+  processImageForInstagram,
 };
