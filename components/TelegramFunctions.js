@@ -7,7 +7,7 @@ const db = require("./Databases/refTelegram");
 const twitter = require("./TwitterFunctions");
 const openAi = require("./OpenAiFunctions");
 // const insta = require("./Instagram")
-const images = require("./ImagesFunctions")
+const images = require("./ImagesFunctions");
 
 const now = new Date();
 
@@ -157,16 +157,20 @@ async function infoDefRepost() {
       delete ms.files;
     });
 
-
   const messagesWithFileId = messages.filter((message) => message.file_fileId);
   for (const message of messagesWithFileId) {
     const fileData = await getFilePath(message.file_fileId, telegramBotToken);
     if (typeof fileData !== "undefined" && fileData) {
       let fileUrl = `https://api.telegram.org/file/bot${telegramBotToken}/${fileData}`;
       if (message.type === "image") {
-        let imageInstaLocalPath = await images.processImageForInstagram(message.update_id,fileUrl);
-        imageInstaLocalPath = "https://app.freud.online/datico-server/images/output/"+imageInstaLocalPath;
-        console.log(imageInstaLocalPath);
+        let imageInstaLocalPath = await images.processImageForInstagram(
+          message.update_id,
+          fileUrl
+        );
+        imageInstaLocalPath =
+          "https://app.freud.online/datico-server/images/output/" +
+          imageInstaLocalPath;
+        message.file_path_local_1080 = imageInstaLocalPath;
       }
       message.file_path = fileUrl;
     } else {
@@ -240,7 +244,6 @@ async function infoDefRepost() {
       messages[i].repost_to = 108264128925046;
     }
 
-
     // подготовить версию для Твиттера
     if (messages[i].message.length > 280) {
       try {
@@ -273,6 +276,16 @@ async function infoDefRepost() {
   messages.forEach(async (ms) => {
     if (ms.update_id !== update_id_latest) {
       // schon geliefert
+
+      // for newly created image for Insta for Polk
+      if (
+        ms.chat_name == "FB_Polk" &&
+        ms.type === "image" &&
+        ms.hasOwnProperty("file_path_local_1080")
+      ) {
+        ms.file_path = ms.file_path_local_1080;
+      }
+
       const sentToFacebook = await sendToMakeForFb(
         // post to Facebook
         ms.type,
@@ -425,9 +438,6 @@ async function tweetOnRender(update_id) {
     };
   }
 }
-
-
-
 
 module.exports = {
   sendToTelegram,
