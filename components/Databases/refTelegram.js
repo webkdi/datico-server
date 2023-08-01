@@ -119,7 +119,7 @@ async function cleanJsons () {
 	SELECT id FROM (
       SELECT id FROM datico.serv_telegram_json
       ORDER BY timestamp DESC
-      LIMIT 10
+      LIMIT 20
     ) t
   )
   `;

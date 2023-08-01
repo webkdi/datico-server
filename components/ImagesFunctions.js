@@ -276,14 +276,54 @@ async function processImageForInstagram(updateId, url) {
     // Delete the downloaded image file
     fs.unlinkSync(imagePath);
 
-    
     const createdFileName = path.basename(outputImagePath);
-    console.log("Image",createdFileName,"created successfully.");
+    console.log("Image", createdFileName, "created successfully.");
     return createdFileName;
   } catch (error) {
     console.error("Error processing the image:", error.message);
   }
 }
+
+async function deleteImageForInstagram() {
+  const imagesFolder = path.join(__dirname, "../images/output");
+
+  // Check if the directory exists
+  if (fs.existsSync(imagesFolder)) {
+    // Read the files in the directory
+    fs.readdir(imagesFolder, (err, files) => {
+      if (err) {
+        console.error("Error reading files:", err);
+      } else {
+        const currentTime = new Date().getTime();
+        const oneDayInMillis = 24 * 60 * 60 * 1000;
+
+        // Loop through the files and delete the ones older than one day
+        files.forEach((file) => {
+          const filePath = path.join(imagesFolder, file);
+          fs.stat(filePath, (err, stats) => {
+            if (err) {
+              console.error(`Error getting file stats for "${filePath}":`, err);
+            } else {
+              const fileAgeInMillis = currentTime - stats.mtime.getTime();
+              if (fileAgeInMillis > oneDayInMillis) {
+                fs.unlink(filePath, (err) => {
+                  if (err) {
+                    console.error(`Error deleting file "${filePath}":`, err);
+                  } else {
+                    console.log(`Deleted file: ${filePath}`);
+                  }
+                });
+              }
+            }
+          });
+        });
+      }
+    });
+  } else {
+    console.log("Directory not found:", imagesFolder);
+  }
+}
+
 
 module.exports = {
   searchForImageFilesExecute,
@@ -292,4 +332,5 @@ module.exports = {
   deleteFile,
   dailyImageService,
   processImageForInstagram,
+  deleteImageForInstagram,
 };

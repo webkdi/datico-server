@@ -8,6 +8,7 @@ const twitter = require("./TwitterFunctions");
 const openAi = require("./OpenAiFunctions");
 // const insta = require("./Instagram")
 const images = require("./ImagesFunctions");
+const url = require("./urlTgFinderShortener");
 
 const now = new Date();
 
@@ -136,6 +137,14 @@ async function infoDefRepost() {
         } else {
           unknown.push(ms);
         }
+
+        //найти ссылку
+        const urlFound = await url.generateUrlFromTelegramMessage(ms.channel_post);
+        // const urlShort = await url.getShortenedUrl(urlFound);
+        if (urlFound != undefined || urlFound != null) {
+          asset.url = urlFound;
+        }
+
         if (Object.keys(asset).length > 0) {
           asset.chat_id = ms.channel_post.chat.id;
           asset.chat_name = ms.channel_post.chat.title;
@@ -245,9 +254,12 @@ async function infoDefRepost() {
     }
 
     // подготовить версию для Твиттера
-    if (messages[i].message.length > 280) {
+    if (messages[i].message.length > 250) {
       try {
-        const textTwitter = await processTwitterSummary(messages[i].message);
+        const textTwitter = await processTwitterSummary(
+          messages[i].message,
+          messages[i].url
+        );
         messages[i].messageForTwitter = textTwitter;
       } catch (error) {
         console.error("Error while processing OpenAi tweet message:", error);
@@ -305,16 +317,18 @@ async function infoDefRepost() {
       }
     }
   });
-}
-// infoDefRepost();
 
-async function processTwitterSummary(message) {
+  //clean images directory
+  images.deleteImageForInstagram();
+}
+
+async function processTwitterSummary(message, url) {
   const MAX_TWITTER_LENGTH = 280;
 
   let textTwitter = message;
 
   while (textTwitter.length > MAX_TWITTER_LENGTH) {
-    textTwitter = await openAi.getTwitterSummary(textTwitter);
+    textTwitter = await openAi.getTwitterSummary(textTwitter, url);
   }
 
   return textTwitter;
