@@ -50,6 +50,34 @@ async function updateBasics(id, email, phone) {
   }
 }
 
+async function updateEmailPerClient(id, email) {
+  var sql = `
+    UPDATE datico.salebot_clients 
+    SET email=?
+    WHERE client_id=?
+    `;
+  try {
+    const [result] = await db.query(sql, [email, id]);
+    return result.affectedRows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function updateTimestampPerClient(id, created_at) {
+  var sql = `
+    UPDATE datico.salebot_clients 
+    SET updated=?
+    WHERE client_id=?
+    `;
+  try {
+    const [result] = await db.query(sql, [created_at, id]);
+    return result.affectedRows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function updateVariable(id, variablesJson, checksum) {
   var sql = `
   UPDATE datico.salebot_clients 
@@ -225,4 +253,6 @@ module.exports = {
   storeGccData,
   getVariableChecksumPerClient,
   getGccCandidatesPerInput,
+  updateEmailPerClient,
+  updateTimestampPerClient,
 };

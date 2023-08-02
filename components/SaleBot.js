@@ -9,7 +9,11 @@ const baseUrl = "https://chatter.salebot.pro/api/";
 async function enterClientFromWebhook(webhookBody) {
   const clientId = webhookBody.client.id;
   const variables = webhookBody.client.variables;
+  const client_type = webhookBody.client.client_type;
+  const recipient = webhookBody.client.recepient;
+  const updateTimestamp = webhookBody.client.created_at;
 
+  // сохранить вебхук
   const variablesJson = JSON.stringify(variables);
   const storeWebhookBody = JSON.stringify(webhookBody);
   const archivedVariables = await db.archiveVariables(
@@ -22,6 +26,11 @@ async function enterClientFromWebhook(webhookBody) {
   let variablesChecksum = crc32(variablesJson).toString(16);
   //insert ignore client
   const insertedClient = await db.insertIgnoreClient(clientId);
+  const updated = await db.updateTimestampPerClient(clientId, updateTimestamp);
+  if (client_type == 14) {
+    // email received
+    const updateMail = await db.updateEmailPerClient(clientId, recipient);
+  }
   //update variable json
   const variablesChecksumOld = await db.getVariableChecksumPerClient(clientId);
   if (variablesChecksumOld != variablesChecksum) {
