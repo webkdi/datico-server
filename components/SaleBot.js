@@ -39,7 +39,7 @@ async function enterClientFromWebhook(webhookBody) {
       clientId,
       variablesJson,
       variablesChecksum
-    );
+    ); 
     const updateFromVariable = await db.updateDataFromVariable(clientId);
     console.log(clientId, insertedClient, updatedVariable, updateFromVariable);
 
