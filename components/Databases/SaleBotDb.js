@@ -50,14 +50,14 @@ async function updateBasics(id, email, phone) {
   }
 }
 
-async function updateEmailPerClient(id, email) {
+async function updateEmailPerClient(id, email, client_type) {
   var sql = `
     UPDATE datico.salebot_clients 
-    SET email=?
+    SET email=?, client_type=?
     WHERE client_id=?
     `;
   try {
-    const [result] = await db.query(sql, [email, id]);
+    const [result] = await db.query(sql, [email, client_type, id]);
     return result.affectedRows;
   } catch (err) {
     console.log(err);

@@ -29,7 +29,7 @@ async function enterClientFromWebhook(webhookBody) {
   const updated = await db.updateTimestampPerClient(clientId, updateTimestamp);
   if (client_type == 14) {
     // email received
-    const updateMail = await db.updateEmailPerClient(clientId, recipient);
+    const updateMail = await db.updateEmailPerClient(clientId, recipient, client_type);
   }
   //update variable json
   const variablesChecksumOld = await db.getVariableChecksumPerClient(clientId);
