@@ -18,7 +18,6 @@ async function insertIgnoreClient(clientId) {
 
 async function archiveVariables (clientId, variablesJson, webhookJson) {
   // const jsonString = JSON.stringify(variablesJson); // Convert the array to a JSON string
-  console.log(webhookJson);
   var sql = `
     INSERT INTO datico.salebot_archive (client_id, variables, webhook)
     VALUES (?, ?, ?)

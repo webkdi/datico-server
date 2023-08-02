@@ -2,7 +2,6 @@ const db = require("./Databases/SaleBotDb");
 const crc32 = require("crc32");
 const axios = require("axios");
 require("dotenv").config();
-const email = require("./email");
 
 const key = process.env.SB_KEY;
 const baseUrl = "https://chatter.salebot.pro/api/";
