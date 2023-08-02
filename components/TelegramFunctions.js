@@ -9,6 +9,7 @@ const openAi = require("./OpenAiFunctions");
 // const insta = require("./Instagram")
 const images = require("./ImagesFunctions");
 const url = require("./urlTgFinderShortener");
+const https = require("https");
 
 const now = new Date();
 
@@ -54,6 +55,19 @@ async function sendToTelegram(body) {
     stat = 400;
   }
   return { status: stat, response: result };
+}
+
+async function checkIfURLExists(url) {
+  //checks if image file exists on the server
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, (res) => {
+        resolve(res.statusCode === 200);
+      })
+      .on("error", (err) => {
+        reject(err);
+      });
+  });
 }
 
 async function infoDefRepost() {
@@ -139,7 +153,9 @@ async function infoDefRepost() {
         }
 
         //найти ссылку
-        const urlFound = await url.generateUrlFromTelegramMessage(ms.channel_post);
+        const urlFound = await url.generateUrlFromTelegramMessage(
+          ms.channel_post
+        );
         // const urlShort = await url.getShortenedUrl(urlFound);
         if (urlFound != undefined || urlFound != null) {
           asset.url = urlFound;
@@ -256,10 +272,17 @@ async function infoDefRepost() {
     // подготовить версию для Твиттера
     if (messages[i].message.length > 250) {
       try {
+        let language;
+        if (messages[i].repost_to === 105288955734641) {
+          language = "de";
+        } else if (messages[i].repost_to === 108264128925046) {
+          language = "ru";
+        }
         const textTwitter = await processTwitterSummary(
           messages[i].message,
-          messages[i].url
-        );
+          messages[i].url,
+          language
+        ); 
         messages[i].messageForTwitter = textTwitter;
       } catch (error) {
         console.error("Error while processing OpenAi tweet message:", error);
@@ -295,7 +318,9 @@ async function infoDefRepost() {
         ms.type === "image" &&
         ms.hasOwnProperty("file_path_local_1080")
       ) {
-        ms.file_path = ms.file_path_local_1080;
+        //check if file is on the server
+        const exists = await checkIfURLExists(ms.file_path_local_1080);
+        if (exists) ms.file_path = ms.file_path_local_1080;
       }
 
       const sentToFacebook = await sendToMakeForFb(
@@ -312,7 +337,10 @@ async function infoDefRepost() {
       //   ms.type,
       //   ms.file_path
       // );
-      if (ms.repost_to === 105288955734641) {
+      if (
+        ms.repost_to === 105288955734641 ||
+        ms.repost_to === 108264128925046
+      ) {
         const sentToTwitter = await tweetOnRender(ms.update_id);
       }
     }
@@ -322,15 +350,16 @@ async function infoDefRepost() {
   images.deleteImageForInstagram();
 }
 
-async function processTwitterSummary(message, url) {
+async function processTwitterSummary(message, url, language) {
   const MAX_TWITTER_LENGTH = 280;
 
-  let textTwitter = message;
+  let textTwitter = message; 
 
   while (textTwitter.length > MAX_TWITTER_LENGTH) {
-    textTwitter = await openAi.getTwitterSummary(textTwitter, url);
+    console.log('shortening OpenAi text for',language,'Twitter, length', textTwitter.length);
+    textTwitter = await openAi.getTwitterSummary(textTwitter, url, language);
   }
-
+  console.log('final text length',textTwitter.length);
   return textTwitter;
 }
 
@@ -422,6 +451,14 @@ async function tweetOnRender(update_id) {
   const mediaUrl = line[0].file_path;
   const tweetText = line[0].message_twitter;
   const mediaType = line[0].type;
+  const pageFbForPosting = line[0].page_id;
+
+  let channel;
+  if (pageFbForPosting === 105288955734641) {
+    channel = "infodefense";
+  } else if (pageFbForPosting === 108264128925046) {
+    channel = "polk";
+  }
 
   try {
     var options = {
@@ -436,6 +473,7 @@ async function tweetOnRender(update_id) {
         text: tweetText,
         mediaType: mediaType,
         mediaeUrl: mediaUrl,
+        channel: channel,
       },
     };
 
@@ -443,8 +481,7 @@ async function tweetOnRender(update_id) {
     console.log(response.data);
     return response.data;
   } catch (error) {
-    console.error(error);
-    // return res.sendStatus(400);
+    console.log(error.response.status, error.response.statusText, error.data);
     return {
       error: true,
       message: "Failed to post tweet on Render.",
@@ -452,6 +489,8 @@ async function tweetOnRender(update_id) {
     };
   }
 }
+
+infoDefRepost();
 
 module.exports = {
   sendToTelegram,

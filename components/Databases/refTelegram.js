@@ -18,7 +18,7 @@ async function fbReportUpdate(update_id, type, file_path, message, messageFacebo
     console.log(`data for ${update_id} done with status: ${res.info}`);
     return res;
   } catch (err) {
-    console.log("error in INSERT IGNORE INTO datico.serv_telegram for update",update_id, ". Code:", err.code, " sqlMessage:", err.sqlMessage);
+    console.log("error in UPDATE datico.serv_telegram for",update_id, ". Code:", err.code, " sqlMessage:", err.sqlMessage);
     // console.log(err.code); // Log the 'code' property
     // console.log(err.sqlMessage); // Log the 'sqlMessage' property
   }
