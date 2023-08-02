@@ -2,6 +2,7 @@ const db = require("./Databases/SaleBotDb");
 const crc32 = require("crc32");
 const axios = require("axios");
 require("dotenv").config();
+const email = require("./email");
 
 const key = process.env.SB_KEY;
 const baseUrl = "https://chatter.salebot.pro/api/";
@@ -9,7 +10,15 @@ const baseUrl = "https://chatter.salebot.pro/api/";
 async function enterClientFromWebhook(webhookBody) {
   const clientId = webhookBody.client.id;
   const variables = webhookBody.client.variables;
+
   const variablesJson = JSON.stringify(variables);
+  const storeWebhookBody = JSON.stringify(webhookBody);
+  const archivedVariables = await db.archiveVariables(
+    clientId,
+    variablesJson,
+    storeWebhookBody
+  );
+
   // let variablesChecksum = calculateChecksum(variablesJson);
   let variablesChecksum = crc32(variablesJson).toString(16);
   //insert ignore client
@@ -18,10 +27,6 @@ async function enterClientFromWebhook(webhookBody) {
   const variablesChecksumOld = await db.getVariableChecksumPerClient(clientId);
   if (variablesChecksumOld != variablesChecksum) {
     // variables поменялись
-    const archivedVariables = await db.archiveVariables(
-      clientId,
-      variablesJson
-    );
     const updatedVariable = await db.updateVariable(
       clientId,
       variablesJson,
@@ -37,9 +42,13 @@ async function enterClientFromWebhook(webhookBody) {
       sqlQueryForGcc
     );
     const gcc = await getGccPerClient(gccClientsWithData);
-    console.log("gcc for", clientId,"with",gcc.gccKey,"calculated");
+    console.log("gcc for", clientId, "with", gcc.gccKey, "calculated");
 
-    const uploadClientData = await storeVariablesForGcc(gcc.gcc, gcc.email, gcc.phone);
+    const uploadClientData = await postGccVariablesToSalebot(
+      gcc.gcc,
+      gcc.email,
+      gcc.phone
+    );
 
     console.log("uploadClientData", uploadClientData, "for", clientId);
     return "data for " + clientId + " updated";
@@ -135,7 +144,6 @@ async function getGccPerClient(gccData) {
 
   //erster Kunde aus GCC hat alle relevanten Daten (GCC Liste, Mail, Phone)
   return gccData[0];
-
 }
 
 function objectToSqlWhere(obj) {
@@ -154,7 +162,7 @@ function objectToSqlWhere(obj) {
   return conditions.join(" OR ");
 }
 
-async function storeVariablesForGcc(gccArray, email, phone) {
+async function postGccVariablesToSalebot(gccArray, email, phone) {
   const thisUrl = baseUrl + key + "/save_variables";
 
   const bodyData = {
@@ -250,6 +258,49 @@ function findConnectedClients(data) {
       index === self.findIndex((g) => g.some((id) => group.includes(id)))
   );
 }
+
+async function manageAllClients() {
+  const clientsData = await db.getGccData();
+  const clientsAll = clientsData.map((obj) => obj.client_id);
+  var countOfClients = clientsAll.length;
+
+  // Map the clientsAll array to an array of Promises
+  const promises = clientsAll.map(async (clientId) => {
+    const gccData = await db.getGccDataPerClient(clientId);
+    const sqlQueryForGcc = objectToSqlWhere(gccData);
+    const gccClientsWithData = await db.getGccCandidatesPerInput(
+      sqlQueryForGcc
+    );
+    const gcc = await getGccPerClient(gccClientsWithData);
+    countOfClients--;
+    console.log(
+      "gcc for",
+      clientId,
+      "with",
+      gcc.gccKey,
+      "calculated.",
+      countOfClients,
+      "remains."
+    );
+    return clientId; // Return the clientId to keep track of calculated clients
+  });
+
+  // Wait for all Promises to resolve
+  const calculatedClients = await Promise.all(promises);
+
+  // clientsAll.forEach(async (clientId) => {
+  //   const gccData = await db.getGccDataPerClient(clientId);
+  //   const sqlQueryForGcc = objectToSqlWhere(gccData);
+  //   const gccClientsWithData = await db.getGccCandidatesPerInput(
+  //     sqlQueryForGcc
+  //   );
+  //   const gcc = await getGccPerClient(gccClientsWithData);
+  //   countOfClients--;
+  //   console.log("gcc for", clientId, "with", gcc.gccKey, "calculated.", countOfClients,"remains.");
+  // });
+  console.log("all clients calculated");
+}
+// manageAllClients();
 
 module.exports = {
   enterClientFromWebhook,
