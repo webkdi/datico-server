@@ -16,14 +16,13 @@ async function insertIgnoreClient(clientId) {
   }
 }
 
-async function archiveVariables (clientId, variablesJson, webhookJson) {
-  // const jsonString = JSON.stringify(variablesJson); // Convert the array to a JSON string
+async function archiveVariables (clientId, webhookJson) {
   var sql = `
-    INSERT INTO datico.salebot_archive (client_id, variables, webhook)
-    VALUES (?, ?, ?)
+    INSERT INTO datico.salebot_archive (client_id, webhook)
+    VALUES (?, ?)
   `;
   try {
-    const result = await db.query(sql, [clientId, variablesJson, webhookJson]);
+    const result = await db.query(sql, [clientId, webhookJson]);
     return result[0].affectedRows;
   } catch (err) {
     // console.log(err);
