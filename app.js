@@ -8,6 +8,8 @@ const tg = require("./components/TelegramFunctions");
 const sb = require("./components/SaleBot");
 require("dotenv").config();
 
+const mail = require("./components/email");
+
 const pm2 = require("pm2");
 pm2.launchBus(function (err, bus) {
   bus.on("log:err", function (e) {

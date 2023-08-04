@@ -7,39 +7,61 @@ const key = process.env.SB_KEY;
 const baseUrl = "https://chatter.salebot.pro/api/";
 
 async function enterClientFromWebhook(webhookBody) {
-  const clientId = webhookBody.client.id;
-  const variables = webhookBody.client.variables;
-  const client_type = webhookBody.client.client_type;
-  const recipient = webhookBody.client.recepient;
-  const updateTimestamp = webhookBody.client.created_at;
+  const clientObjectInWebhook = webhookBody.client;
+  //убрать лишние данные, которые не относятся к основным, чтобы не мешать checksum (что поменялось?)
+  delete clientObjectInWebhook.unread_count;
+  delete clientObjectInWebhook.tag;
+
+  // создать критически важные переменные
+  const clientId = clientObjectInWebhook.id;
+  const client_type = clientObjectInWebhook.client_type;
+  const recipient = clientObjectInWebhook.recepient;
 
   // сохранить вебхук
-  const variablesJson = JSON.stringify(variables);
+  const clientObjectJson = JSON.stringify(clientObjectInWebhook);
   const storeWebhookBody = JSON.stringify(webhookBody);
   const archivedVariables = await db.archiveVariables(
     clientId,
-    variablesJson,
+    clientObjectJson,
     storeWebhookBody
   );
 
-  // let variablesChecksum = calculateChecksum(variablesJson);
-  let variablesChecksum = crc32(variablesJson).toString(16);
+  // let variablesChecksum = calculateChecksum(clientObjectJson);
+  let variablesChecksum = crc32(clientObjectJson).toString(16);
   //insert ignore client
   const insertedClient = await db.insertIgnoreClient(clientId);
+
+  const updateTimestamp = new Date()
+    .toISOString()
+    .replace("T", " ")
+    .slice(0, 19);
   const updated = await db.updateTimestampPerClient(clientId, updateTimestamp);
-  if (client_type == 14) {
-    // email received
-    const updateMail = await db.updateEmailPerClient(clientId, recipient, client_type);
-  }
+
   //update variable json
   const variablesChecksumOld = await db.getVariableChecksumPerClient(clientId);
   if (variablesChecksumOld != variablesChecksum) {
-    // variables поменялись
+    // переменные поменялись
+
+    // EMAIL. 14 - email bot
+    let email;
+    email = client_type == 14 ? recipient : webhookBody.client.email;
+    if (email && email.trim() !== "") {
+      const updateMail = await db.updateEmailPerClient(clientId, email);
+    }
+
+    // PHONE. 6  в вотсапе
+    let phone;
+    phone = client_type == 6 ? recipient : webhookBody.client.phone;
+    // Check if the phone is not empty before calling db.updatePhonePerClient
+    if (phone && phone.trim() !== "") {
+      const updatePhone = await db.updatePhonePerClient(clientId, phone);
+    }
+
     const updatedVariable = await db.updateVariable(
       clientId,
-      variablesJson,
+      storeWebhookBody,
       variablesChecksum
-    ); 
+    );
     const updateFromVariable = await db.updateDataFromVariable(clientId);
     console.log(clientId, insertedClient, updatedVariable, updateFromVariable);
 
@@ -62,7 +84,7 @@ async function enterClientFromWebhook(webhookBody) {
     return "data for " + clientId + " updated";
   } else {
     const returnText =
-      "variables for " +
+      "переменные for " +
       clientId +
       " unchanged: old " +
       variablesChecksumOld +

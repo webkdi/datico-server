@@ -50,19 +50,32 @@ async function updateBasics(id, email, phone) {
   }
 }
 
-async function updateEmailPerClient(id, email, client_type) {
+async function updateEmailPerClient(id, email) {
   var sql = `
     UPDATE datico.salebot_clients 
-    SET email=?, client_type=?
-    WHERE client_id=?
+    SET email=? WHERE client_id=?
     `;
   try {
-    const [result] = await db.query(sql, [email, client_type, id]);
+    const [result] = await db.query(sql, [email, id]);
     return result.affectedRows;
   } catch (err) {
     console.log(err);
   }
 }
+
+async function updatePhonePerClient(id, phone) {
+  var sql = `
+    UPDATE datico.salebot_clients 
+    SET phone=? WHERE client_id=?
+    `;
+  try {
+    const [result] = await db.query(sql, [phone, id]);
+    return result.affectedRows;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 async function updateTimestampPerClient(id, created_at) {
   var sql = `
@@ -110,25 +123,25 @@ async function getVariableChecksumPerClient(clientId) {
 async function updateDataFromVariable(id) {
   var sql = `
     UPDATE datico.salebot_clients SET 
-    name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.name')),
-    last_name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.last_name')),
-    full_name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.full_name')),
-    email = LCASE(JSON_UNQUOTE(JSON_EXTRACT(variables, '$.email'))),
-    phone = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.phone')),
-    client_type = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client_type')),
-    messenger = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.messenger')),
-    platform_id = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.platform_id')),
+    name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.name')),
+    last_name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.last_name')),
+    full_name = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.full_name')),
+    client_type = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.client_type')),
+    messenger = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.messenger')),
+    platform_id = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.platform_id')),
     message_id = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.message_id')),
-    main_client_id = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.main_client_id')),
-    date_of_creation = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.date_of_creation')),
-    date_of_creation = DATE_FORMAT(STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(variables, '$.date_of_creation')), '%d.%m.%Y'), '%Y-%m-%d'),
-    time_of_creation = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.time_of_creation')),
-    avatar = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.avatar'))
+    main_client_id = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.main_client_id')),
+    avatar = JSON_UNQUOTE(JSON_EXTRACT(variables, '$.client.avatar'))
     WHERE variables IS NOT NULL AND client_id=?;
   `;
-
+  var sqlOutput = `
+  SELECT name,  last_name, full_name, email, phone, client_type, messenger, platform_id, message_id, main_client_id, avatar 
+  FROM datico.salebot_clients WHERE client_id=?;
+`;
   try {
     const result = await db.query(sql, id);
+    const resultOutput = await db.query(sqlOutput, id);
+    console.log(resultOutput[0]);
     return result[0].affectedRows;
   } catch (err) {
     // console.log(err);
@@ -254,5 +267,6 @@ module.exports = {
   getVariableChecksumPerClient,
   getGccCandidatesPerInput,
   updateEmailPerClient,
+  updatePhonePerClient,
   updateTimestampPerClient,
 };
