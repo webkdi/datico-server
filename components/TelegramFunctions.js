@@ -8,7 +8,7 @@ const twitter = require("./TwitterFunctions");
 const openAi = require("./OpenAiFunctions");
 // const insta = require("./Instagram")
 const images = require("./ImagesFunctions");
-const url = require("./urlTgFinderShortener");
+const url = require("./UrlTgFinderShortener");
 const https = require("https");
 
 const now = new Date();

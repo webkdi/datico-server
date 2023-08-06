@@ -20,12 +20,6 @@ async function enterClientFromWebhook(webhookBody) {
   const clientObjectJson = JSON.stringify(clientObjectInWebhook);
   const variablesChecksum = crc32(clientObjectJson).toString(16);
 
-  // сохранить вебхук
-  const archivedVariables = await db.archiveVariables(
-    clientId,
-    storeWebhookBody
-  );
-
   //insert ignore client
   const insertedClient = await db.insertIgnoreClient(clientId);
   //обновить актуальность
@@ -44,17 +38,30 @@ async function enterClientFromWebhook(webhookBody) {
   if (variablesChecksumOld != variablesChecksum || true) {
     // переменные поменялись
 
+    // сохранить вебхук
+    const archivedVariables = await db.archiveVariables(
+      clientId,
+      storeWebhookBody
+    );
+
     // EMAIL. 14 - email bot
     let email;
-    email = client_type == 14 ? recipient : webhookBody.client.email;
+    if (client_type == 14) {
+      email = recipient;
+    } else if (webhookBody.client.variables.email) {
+      email = webhookBody.client.variables.email;
+    }
     if (email && email.trim() !== "") {
       const updateMail = await db.updateEmailPerClient(clientId, email);
     }
 
     // PHONE. 6  в вотсапе
     let phone;
-    phone = client_type == 6 ? recipient : webhookBody.client.phone;
-    // Check if the phone is not empty before calling db.updatePhonePerClient
+    if (client_type == 6) {
+      phone = recipient;
+    } else if (webhookBody.client.variables.phone) {
+      phone = webhookBody.client.variables.phone;
+    }
     if (phone && phone.trim() !== "") {
       const updatePhone = await db.updatePhonePerClient(clientId, phone);
     }

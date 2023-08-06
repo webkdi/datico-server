@@ -8,7 +8,7 @@ const tg = require("./components/TelegramFunctions");
 const sb = require("./components/SaleBot");
 require("dotenv").config();
 
-const mail = require("./components/email");
+const mail = require("./components/Email");
 
 const pm2 = require("pm2");
 pm2.launchBus(function (err, bus) {
@@ -77,6 +77,7 @@ app.listen(PORT, () => {
 });
 
 app.get("/testing", (req, res) => {
+  console.log(req);
   res.send("Hello World!");
 });
 
