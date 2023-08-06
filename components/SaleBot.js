@@ -35,7 +35,7 @@ async function enterClientFromWebhook(webhookBody) {
 
   //update variable json
   const variablesChecksumOld = await db.getVariableChecksumPerClient(clientId);
-  if (variablesChecksumOld != variablesChecksum || true) {
+  if (variablesChecksumOld != variablesChecksum) {
     // переменные поменялись
 
     // сохранить вебхук
@@ -48,7 +48,7 @@ async function enterClientFromWebhook(webhookBody) {
     let email;
     if (client_type == 14) {
       email = recipient;
-    } else if (webhookBody.client.variables.email) {
+    } else if (webhookBody && webhookBody.client && webhookBody.client.variables && webhookBody.client.variables.email) {
       email = webhookBody.client.variables.email;
     }
     if (email && email.trim() !== "") {
@@ -59,7 +59,7 @@ async function enterClientFromWebhook(webhookBody) {
     let phone;
     if (client_type == 6) {
       phone = recipient;
-    } else if (webhookBody.client.variables.phone) {
+    } else if (webhookBody && webhookBody.client && webhookBody.client.variables && webhookBody.client.variables.phone)  {
       phone = webhookBody.client.variables.phone;
     }
     if (phone && phone.trim() !== "") {
@@ -83,13 +83,15 @@ async function enterClientFromWebhook(webhookBody) {
     const gcc = await getGccPerClient(gccClientsWithData);
     console.log("gcc for", clientId, "with", gcc.gccKey, "calculated");
 
-    const uploadClientData = await postGccVariablesToSalebot(
-      gcc.gcc,
-      gcc.email,
-      gcc.phone
-    );
-
-    console.log("uploadClientData", uploadClientData, "for", clientId);
+    if (gcc.email && gcc.email !== "" && gcc.email !== null & gcc.email !== 'null') {
+      console.log(gcc.email);
+      const uploadClientData = await postGccVariablesToSalebot(
+        gcc.gcc,
+        gcc.email,
+        gcc.phone
+      );
+      console.log("uploadClientData", uploadClientData, "for", clientId);
+    }
     return "data for " + clientId + " updated";
   } else {
     const returnText =
