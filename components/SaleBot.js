@@ -88,7 +88,7 @@ async function enterClientFromWebhook(webhookBody) {
     // find GCC and update
     const gcc = await getGccPerClient(clientId);
     console.log("gcc for", clientId, "with", gcc.gccKey, "calculated");
-
+ 
     const uploadClientData = await postGccVariablesToSalebot(
       gcc.gcc,
       gcc.email,
@@ -230,12 +230,14 @@ async function postGccVariablesToSalebot(gccArray, email, phone) {
   ) {
     bodyData.variables["client.email"] = email.trim();
   } else {
+    bodyData.variables["client.email"] = null;
     console.log("update to SB: email is not strim or emtpy");
   }
 
   if (typeof phone === "number" && Number.isFinite(phone)) {
     bodyData.variables["client.phone"] = phone;
   } else {
+    bodyData.variables["client.phone"] = null;
     console.log("update to SB: phone is not number or emtpy");
   }
 
@@ -336,10 +338,17 @@ function findConnectedClients(data) {
   const sortedConnectedClients = connectedClients.map((group) =>
     group.sort((a, b) => a - b)
   );
-  return sortedConnectedClients.filter(
+
+  const retunedData = sortedConnectedClients.filter(
     (group, index, self) =>
       index === self.findIndex((g) => g.some((id) => group.includes(id)))
   );
+
+  // console.log("findConnectedClients:", data);
+  // console.log("sortedConnectedClients:", sortedConnectedClients);
+  // console.log("retunedData:", sortedConnectedClients);
+
+  return retunedData;
 }
 
 function removeNullEntries(obj) {
@@ -430,7 +439,7 @@ async function triggerWebhook(clientId, message) {
     console.log(error.response.data);
   }
 }
-// triggerWebhook(233060142,"trigger webhook");
+// triggerWebhook(227566091,"trigger webhook");
 
 module.exports = {
   enterClientFromWebhook,
