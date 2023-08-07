@@ -7,6 +7,7 @@ const key = process.env.SB_KEY;
 const baseUrl = "https://chatter.salebot.pro/api/";
 
 async function enterClientFromWebhook(webhookBody) {
+  webhookBody=removeNullEntries(webhookBody);
   const clientId = webhookBody.client.id;
   const storeWebhookBody = JSON.stringify(webhookBody);
 
@@ -48,7 +49,12 @@ async function enterClientFromWebhook(webhookBody) {
     let email;
     if (client_type == 14) {
       email = recipient;
-    } else if (webhookBody && webhookBody.client && webhookBody.client.variables && webhookBody.client.variables.email) {
+    } else if (
+      webhookBody &&
+      webhookBody.client &&
+      webhookBody.client.variables &&
+      webhookBody.client.variables.email
+    ) {
       email = webhookBody.client.variables.email;
     }
     if (email && email.trim() !== "") {
@@ -59,7 +65,12 @@ async function enterClientFromWebhook(webhookBody) {
     let phone;
     if (client_type == 6) {
       phone = recipient;
-    } else if (webhookBody && webhookBody.client && webhookBody.client.variables && webhookBody.client.variables.phone)  {
+    } else if (
+      webhookBody &&
+      webhookBody.client &&
+      webhookBody.client.variables &&
+      webhookBody.client.variables.phone
+    ) {
       phone = webhookBody.client.variables.phone;
     }
     if (phone && phone.trim() !== "") {
@@ -75,23 +86,16 @@ async function enterClientFromWebhook(webhookBody) {
     console.log(clientId, insertedClient, updatedVariable, updateFromVariable);
 
     // find GCC and update
-    const gccData = await db.getGccDataPerClient(clientId);
-    const sqlQueryForGcc = objectToSqlWhere(gccData);
-    const gccClientsWithData = await db.getGccCandidatesPerInput(
-      sqlQueryForGcc
-    );
-    const gcc = await getGccPerClient(gccClientsWithData);
+    const gcc = await getGccPerClient(clientId);
     console.log("gcc for", clientId, "with", gcc.gccKey, "calculated");
 
-    if (gcc.email && gcc.email !== "" && gcc.email !== null & gcc.email !== 'null') {
-      console.log(gcc.email);
-      const uploadClientData = await postGccVariablesToSalebot(
-        gcc.gcc,
-        gcc.email,
-        gcc.phone
-      );
-      console.log("uploadClientData", uploadClientData, "for", clientId);
-    }
+    const uploadClientData = await postGccVariablesToSalebot(
+      gcc.gcc,
+      gcc.email,
+      gcc.phone
+    );
+    console.log("uploadClientData", uploadClientData, "for", clientId);
+
     return "data for " + clientId + " updated";
   } else {
     const returnText =
@@ -108,8 +112,16 @@ async function enterClientFromWebhook(webhookBody) {
   // let doGcc = await getGcc();
 }
 
-async function getGccPerClient(gccData) {
-  const gccLinks = findConnectedClients(gccData);
+async function getGccPerClient(clientId) {
+
+  const gccData = await db.getGccDataPerClient(clientId);
+  const sqlQueryForGcc = objectToSqlWhere(gccData);
+  //gccClientsWithData: client_id, main_client_id, email, phone, full_name, name, last_name
+  const gccClientsWithData = await db.getGccCandidatesPerInput(
+    sqlQueryForGcc
+  );
+
+  const gccLinks = findConnectedClients(gccClientsWithData);
 
   // Create a map to store the gcc links for each client_id
   const gccMap = new Map();
@@ -124,8 +136,8 @@ async function getGccPerClient(gccData) {
     }
   }
 
-  // Add the gcc property in gccData based on the gccMap
-  for (const data of gccData) {
+  // Add the gcc property in gccClientsWithData based on the gccMap
+  for (const data of gccClientsWithData) {
     if (gccMap.has(data.client_id)) {
       data.gcc = gccMap
         .get(data.client_id)
@@ -170,10 +182,10 @@ async function getGccPerClient(gccData) {
     // Return the cleaned data
     return data;
   }
-  await cleanDataByGCC(gccData);
+  await cleanDataByGCC(gccClientsWithData);
 
-  // Loop through the gccData array and log the client_id for each entry
-  for (const client of gccData) {
+  // Loop through the gccClientsWithData array and log the client_id for each entry
+  for (const client of gccClientsWithData) {
     let storeData = await db.storeGccData(
       client.client_id,
       client.email,
@@ -184,7 +196,7 @@ async function getGccPerClient(gccData) {
   }
 
   //erster Kunde aus GCC hat alle relevanten Daten (GCC Liste, Mail, Phone)
-  return gccData[0];
+  return gccClientsWithData[0];
 }
 
 function objectToSqlWhere(obj) {
@@ -204,15 +216,42 @@ function objectToSqlWhere(obj) {
 }
 
 async function postGccVariablesToSalebot(gccArray, email, phone) {
-  const thisUrl = baseUrl + key + "/save_variables";
-
   const bodyData = {
     clients: gccArray,
-    variables: {
-      "client.phone": `${phone}`,
-      "client.email": `${email}`,
-    },
+    variables: {},
   };
+
+  if (
+    typeof email === "string" &&
+    (email ?? "" !== "") &&
+    email !== "null" &&
+    email !== null &&
+    email !== undefined
+  ) {
+    bodyData.variables["client.email"] = email.trim();
+  } else {
+    console.log("update to SB: email is not strim or emtpy");
+  }
+
+  if (typeof phone === "number" && Number.isFinite(phone)) {
+    bodyData.variables["client.phone"] = phone;
+  } else {
+    console.log("update to SB: phone is not number or emtpy");
+  }
+
+  // Check if variables object is empty
+  if (Object.keys(bodyData.variables).length === 0) {
+    console.log("update to SB: No variables to save.");
+    return; // Return early if variables object is empty
+  }
+
+  // const bodyData = {
+  //   clients: gccArray,
+  //   variables: {
+  //     "client.phone": `${phone}`,
+  //     "client.email": `${email}`,
+  //   },
+  // };
   // console.log(bodyData);
 
   // const bodyData = {
@@ -230,6 +269,8 @@ async function postGccVariablesToSalebot(gccArray, email, phone) {
   //     "client.email": "dimitri.korenev@gmail.com",
   //   },
   // };
+
+  const thisUrl = baseUrl + key + "/save_variables";
 
   let config = {
     method: "post",
@@ -250,6 +291,7 @@ async function postGccVariablesToSalebot(gccArray, email, phone) {
     throw error;
   }
 }
+// postGccVariablesToSalebot([226457257,226963878],null);
 
 function findConnectedClients(data) {
   // const databaseData = [
@@ -300,6 +342,25 @@ function findConnectedClients(data) {
   );
 }
 
+function removeNullEntries(obj) {
+  if (typeof obj !== "object" || obj === null) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(removeNullEntries);
+  }
+
+  const result = {};
+  for (const key in obj) {
+    const value = removeNullEntries(obj[key]);
+    if (value !== null) {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
 async function manageAllClients() {
   const clientsData = await db.getGccData();
   const clientsAll = clientsData.map((obj) => obj.client_id);
@@ -342,6 +403,34 @@ async function manageAllClients() {
   console.log("all clients calculated");
 }
 // manageAllClients();
+
+//запускает callback, невидимый для клиента. Запускает отправку webhook. Полезная функция
+async function triggerWebhook(clientId, message) {
+  const thisUrl = baseUrl + key + "/callback";
+
+  const bodyData = {
+    client_id: clientId,
+    message: message,
+  };
+
+  let config = {
+    method: "post",
+    url: thisUrl,
+    headers: {
+      Accept: "application/json",
+    },
+    data: JSON.stringify(bodyData), // Convert the bodyData to a JSON string
+  };
+  try {
+    const response = await axios.request(config);
+    let jsonData = response.data;
+    console.log(jsonData);
+    return jsonData;
+  } catch (error) {
+    console.log(error.response.data);
+  }
+}
+// triggerWebhook(233060142,"trigger webhook");
 
 module.exports = {
   enterClientFromWebhook,

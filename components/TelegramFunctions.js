@@ -490,7 +490,7 @@ async function tweetOnRender(update_id) {
   }
 }
 
-infoDefRepost();
+// infoDefRepost();
 
 module.exports = {
   sendToTelegram,
