@@ -75,7 +75,6 @@ async function updatePhonePerClient(id, phone) {
   }
 }
 
-
 async function updateTimestampPerClient(id, created_at) {
   var sql = `
     UPDATE datico.salebot_clients 
@@ -217,7 +216,6 @@ async function getGccDataPerClient(clientId) {
   }
 }
 
-
 async function getGccCandidatesPerInput(query) {
   var sql = `
   SELECT client_id, main_client_id, email, phone, full_name, name, last_name
@@ -238,18 +236,39 @@ async function getGccCandidatesPerInput(query) {
   }
 }
 
-async function storeGccData(id, email, phone, gccArray, gccKey) {
+async function storeGccData(id, email, phone, gccArray, gccKey, gccNames) {
   const gccJsonString = JSON.stringify(gccArray); // Convert the array to a JSON string
   var sql = `
     UPDATE datico.salebot_clients 
-    SET email=?, phone=?, gcc=?, gcc_key=?
+    SET email=?, phone=?, gcc=?, gcc_key=?, gcc_names=?
     WHERE client_id=?
   `;
   try {
-    const result = await db.query(sql, [email, phone, gccJsonString, gccKey, id]);
+    const result = await db.query(sql, [email, phone, gccJsonString, gccKey, gccNames, id]);
     return result[0].affectedRows;
   } catch (err) {
     console.log(err);
+  }
+}
+
+async function cleanEmailForClient(clientId) {
+  var sql = `
+    UPDATE datico.salebot_clients SET email=NULL, phone=NULL
+    WHERE client_id=?;
+  `;
+  try {
+    const result = await db.query(sql, clientId);
+    return result[0].affectedRows;
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in cleanEmailForClient for",
+      id,
+      ". Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
   }
 }
 
@@ -268,4 +287,5 @@ module.exports = {
   updateEmailPerClient,
   updatePhonePerClient,
   updateTimestampPerClient,
+  cleanEmailForClient,
 };

@@ -7,7 +7,7 @@ const key = process.env.SB_KEY;
 const baseUrl = "https://chatter.salebot.pro/api/";
 
 async function enterClientFromWebhook(webhookBody) {
-  webhookBody=removeNullEntries(webhookBody);
+  webhookBody = removeNullEntries(webhookBody);
   const clientId = webhookBody.client.id;
   const storeWebhookBody = JSON.stringify(webhookBody);
 
@@ -88,9 +88,10 @@ async function enterClientFromWebhook(webhookBody) {
     // find GCC and update
     const gcc = await getGccPerClient(clientId);
     console.log("gcc for", clientId, "with", gcc.gccKey, "calculated");
- 
+
     const uploadClientData = await postGccVariablesToSalebot(
       gcc.gcc,
+      gcc.gccNames,
       gcc.email,
       gcc.phone
     );
@@ -113,13 +114,10 @@ async function enterClientFromWebhook(webhookBody) {
 }
 
 async function getGccPerClient(clientId) {
-
   const gccData = await db.getGccDataPerClient(clientId);
   const sqlQueryForGcc = objectToSqlWhere(gccData);
   //gccClientsWithData: client_id, main_client_id, email, phone, full_name, name, last_name
-  const gccClientsWithData = await db.getGccCandidatesPerInput(
-    sqlQueryForGcc
-  );
+  const gccClientsWithData = await db.getGccCandidatesPerInput(sqlQueryForGcc);
 
   const gccLinks = findConnectedClients(gccClientsWithData);
 
@@ -184,6 +182,24 @@ async function getGccPerClient(clientId) {
   }
   await cleanDataByGCC(gccClientsWithData);
 
+  //список имен
+  const gccNamesArray = gccClientsWithData.map((client) => {
+    if (client.name !== null && client.last_name !== null) {
+      return `${client.name} ${client.last_name}`;
+    } else if (client.name !== null) {
+      return client.name;
+    } else if (client.last_name !== null) {
+      return client.last_name;
+    } else {
+      return ''; // If both name and last_name are null, return an empty string
+    }
+  });
+  const gccNamesUnique = new Set(gccNamesArray);
+  const gccNames = Array.from(gccNamesUnique).join(', ');
+  for (const data of gccClientsWithData) {
+      data.gccNames = gccNames;
+  }
+
   // Loop through the gccClientsWithData array and log the client_id for each entry
   for (const client of gccClientsWithData) {
     let storeData = await db.storeGccData(
@@ -191,7 +207,8 @@ async function getGccPerClient(clientId) {
       client.email,
       client.phone,
       client.gcc,
-      client.gccKey
+      client.gccKey, 
+      client.gccNames,
     );
   }
 
@@ -215,10 +232,14 @@ function objectToSqlWhere(obj) {
   return conditions.join(" OR ");
 }
 
-async function postGccVariablesToSalebot(gccArray, email, phone) {
+async function postGccVariablesToSalebot(gccArray, gccNames, email, phone) {
+
   const bodyData = {
     clients: gccArray,
-    variables: {},
+    variables: {
+      "client.gcc": gccArray,
+      "client.gccNames": gccNames,
+    },
   };
 
   if (
@@ -439,7 +460,46 @@ async function triggerWebhook(clientId, message) {
     console.log(error.response.data);
   }
 }
-// triggerWebhook(227566091,"trigger webhook");
+// triggerWebhook(227086073,"trigger webhook");
+
+async function triggerMailCallback(clientId, message) {
+  const thisUrl = baseUrl + key + "/email_callback";
+
+  const clientData = await db.getGccDataPerClient(clientId);
+
+  const bodyData = {
+    name: clientData.name,
+    email: clientData.email,
+    message: message,
+  };
+
+  let config = {
+    method: "post",
+    url: thisUrl,
+    headers: {
+      Accept: "application/json",
+    },
+    data: JSON.stringify(bodyData), // Convert the bodyData to a JSON string
+  };
+  try {
+    const response = await axios.request(config);
+    let jsonData = response.data;
+    console.log(jsonData);
+    return jsonData;
+  } catch (error) {
+    console.log(error.response.data);
+  }
+}
+// triggerMailCallback(238382648, "trigger mail creation");
+
+async function cleanEmail(clientId) {
+  const gccArray = [clientId];
+  const cleanMailInSb = await postGccVariablesToSalebot(gccArray, null, null);
+  console.log(cleanMailInSb);
+  const cleanMailInDb = await db.cleanEmailForClient(clientId);
+  console.log(cleanMailInDb);
+}
+// cleanEmail(227086073);
 
 module.exports = {
   enterClientFromWebhook,
