@@ -92,6 +92,7 @@ async function enterClientFromWebhook(webhookBody) {
     const uploadClientData = await postGccVariablesToSalebot(
       gcc.gcc,
       gcc.gccNames,
+      gcc.gccKey,
       gcc.email,
       gcc.phone
     );
@@ -232,12 +233,12 @@ function objectToSqlWhere(obj) {
   return conditions.join(" OR ");
 }
 
-async function postGccVariablesToSalebot(gccArray, gccNames, email, phone) {
+async function postGccVariablesToSalebot(gccArray, gccNames, gccKey, email, phone) {
 
   const bodyData = {
     clients: gccArray,
     variables: {
-      "client.gcc": gccArray,
+      "client.gcc": gccKey,
       "client.gccNames": gccNames,
     },
   };
