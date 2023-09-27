@@ -29,6 +29,7 @@ var allowedOrigins = [
   "https://app.freud.online",
   "http://194.67.105.122",
   "http://89.108.103.129",
+  "http://127.0.0.1:5500",
 ];
 app.use(
   cors({
@@ -63,6 +64,7 @@ const routeDatico = require("./routes/Datico");
 const routeImages = require("./routes/Images");
 const openai = require("./routes/OpenAi");
 const routeSaleBot = require("./routes/SaleBot");
+const routeQuiz = require("./routes/Quizzes");
 
 app.use("/tg", routeTg);
 app.use("/ideas", routeIdeas);
@@ -71,6 +73,7 @@ app.use("/datico", routeDatico);
 app.use("/images", routeImages);
 app.use("/openai", openai);
 app.use("/salebot", routeSaleBot);
+app.use("/quiz", routeQuiz);
 
 app.listen(PORT, () => {
   console.log(`Server starten on PORT ${PORT}`);

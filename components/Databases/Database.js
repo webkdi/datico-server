@@ -146,8 +146,6 @@ async function getDaticoUserAnswersOrCreateNew(device, sex) {
   }
 }
 
-
-
 async function truncateImageData() {
   const sql = `
   TRUNCATE TABLE serv_images
@@ -540,7 +538,6 @@ async function getRandomQuote() {
   }
 }
 
-
 async function chatCreateDevice(deviceId) {
   const sql = `
   INSERT IGNORE INTO datico.chat_device (device_id)
@@ -556,8 +553,9 @@ async function chatCreateDevice(deviceId) {
 }
 
 async function chatStoreMessage(deviceId, step, message, uniqueId) {
-  var sql = '';
-  if (step == 1 ) { // is a question
+  var sql = "";
+  if (step == 1) {
+    // is a question
     sql = `
     INSERT IGNORE INTO datico.chat_messages (device_id, question, hashkey)
     VALUES ('${deviceId}','${message}','${uniqueId}')
@@ -619,6 +617,99 @@ async function chatIncreaseUserTokens(deviceId, messageCount, tokens, status) {
   }
 }
 
+//Quizzes Queries
+//update poll view by 1 for new queries
+async function quiz_increase_view(poll_id) {
+  var sql = `
+  UPDATE datico.polls_poll
+  SET views=views+1
+  WHERE id=?
+  `;
+  try {
+    const [res] = await db.query(sql, poll_id);
+    return res;
+  } catch (err) {
+    console.log(poll_id, "error update poll view by 1 for new queries");
+  }
+}
+
+//update VOTE
+async function quiz_update_vote(poll_id, answer_id) {
+  var sql = `
+  UPDATE datico.polls_answers
+  SET votes_answer=votes_answer+1
+  WHERE poll_id=? AND answer_id=?
+  `;
+  try {
+    const [res] = await db.query(sql, [poll_id, answer_id]);
+    return res;
+  } catch (err) {
+    console.log(poll_id, "error update VOTE");
+  }
+}
+
+//store in log
+async function quiz_log_vote(poll_id, answer_id, analytics) {
+  // var sql = `
+  // INSERT INTO datico.polls_votes (poll_id, answer_id, analytics_json)
+  // VALUES (?,?,?)
+  // `;
+  var sql = `
+  INSERT INTO datico.polls_votes (poll_id, answer_id, analytics_json)
+  VALUES (${poll_id}, ${answer_id}, '${analytics}')
+  `;
+  // console.log(sql);
+  try {
+    // const [res] = await db.query(sql, [poll_id, answer_id, analytics]);
+    const [res] = await db.query(sql);
+    return res;
+  } catch (err) {
+    console.log("error store in log");
+    console.log(err.message);
+    console.log(err.stack);
+  }
+}
+
+//get all pool data
+async function quiz_get_poll_data(poll_id) {
+  var sql = `
+  SELECT DISTINCT question, answer, answer_id, votes_answer, views, votes_question
+  FROM polls_poll AS a 
+  JOIN polls_answers AS b ON a.id=b.poll_id 
+  WHERE a.id=?
+  `;
+  try {
+    const [rows] = await db.query(sql, poll_id);
+    if (rows.length > 0) {
+      let answers_arr = [];
+      let sum_votes = 0;
+
+      for (let thisrow of rows) {
+        const answer_single = {
+          answer: thisrow.answer,
+          answer_votes: thisrow.votes_answer,
+          answer_id: thisrow.answer_id,
+        };
+        sum_votes += Number(thisrow.votes_answer);
+        answers_arr.push(answer_single);
+      }
+      this.answers = answers_arr;
+      this.question = rows[0].question;
+      this.question_views = rows[0].views;
+      this.question_votes = String(sum_votes);
+      delete this.answer_votes;
+      delete this.answer;
+      delete this.answer_id;
+      return this;
+    } else {
+      return false;
+    }
+    return res;
+  } catch (err) {
+    console.log(poll_id, "error get all pool data");
+  }
+}
+
 module.exports = {
   checkLatest,
   getVisitsStatsDay,
@@ -643,4 +734,8 @@ module.exports = {
   chatStoreMessage,
   chatGetUserTokens,
   chatIncreaseUserTokens,
+  quiz_increase_view,
+  quiz_update_vote,
+  quiz_log_vote,
+  quiz_get_poll_data,
 };
