@@ -1,4 +1,5 @@
 const db = require("./Databases/SaleBotDb");
+const googlePeople = require("./GooglePeopleApi");
 const crc32 = require("crc32");
 const axios = require("axios");
 require("dotenv").config();
@@ -98,6 +99,8 @@ async function enterClientFromWebhook(webhookBody) {
     );
     console.log("uploadClientData", uploadClientData, "for", clientId);
 
+    const saveContactToGoogle = await storeONEgccInGoogleContacts(gcc.gccNames,gcc.phone);
+
     return "data for " + clientId + " updated";
   } else {
     const returnText =
@@ -192,13 +195,13 @@ async function getGccPerClient(clientId) {
     } else if (client.last_name !== null) {
       return client.last_name;
     } else {
-      return ''; // If both name and last_name are null, return an empty string
+      return ""; // If both name and last_name are null, return an empty string
     }
   });
   const gccNamesUnique = new Set(gccNamesArray);
-  const gccNames = Array.from(gccNamesUnique).join(', ');
+  const gccNames = Array.from(gccNamesUnique).join(", ");
   for (const data of gccClientsWithData) {
-      data.gccNames = gccNames;
+    data.gccNames = gccNames;
   }
 
   // Loop through the gccClientsWithData array and log the client_id for each entry
@@ -208,8 +211,8 @@ async function getGccPerClient(clientId) {
       client.email,
       client.phone,
       client.gcc,
-      client.gccKey, 
-      client.gccNames,
+      client.gccKey,
+      client.gccNames
     );
   }
 
@@ -233,8 +236,13 @@ function objectToSqlWhere(obj) {
   return conditions.join(" OR ");
 }
 
-async function postGccVariablesToSalebot(gccArray, gccNames, gccKey, email, phone) {
-
+async function postGccVariablesToSalebot(
+  gccArray,
+  gccNames,
+  gccKey,
+  email,
+  phone
+) {
   const bodyData = {
     clients: gccArray,
     variables: {
@@ -501,6 +509,31 @@ async function cleanEmail(clientId) {
   console.log(cleanMailInDb);
 }
 // cleanEmail(227086073);
+
+//für EinmalUpdate
+async function storeALLGccInGoogleContacts() {
+  const gccList = await db.getGccUniqueList();
+
+  const arrayForGoogle = gccList.map((item) => {
+    return {
+      name: item.gcc_names,
+      phone: item.phone.toString(),
+    };
+  });
+
+  await googlePeople.checkAndCreateContacts(arrayForGoogle);
+}
+// storeAllGccInGoogleContacts();
+
+async function storeONEgccInGoogleContacts(inputName, inputPhone) {
+  const arrayForGoogle = [
+    {
+      name: inputName,
+      phone: inputPhone.toString(),
+    },
+  ];
+  await googlePeople.checkAndCreateContacts(arrayForGoogle);
+}
 
 module.exports = {
   enterClientFromWebhook,

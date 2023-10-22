@@ -8,7 +8,9 @@ const tg = require("./components/TelegramFunctions");
 const sb = require("./components/SaleBot");
 require("dotenv").config();
 
-const mail = require("./components/Email");
+// const apa = require("./components/OtsApa");
+// const mail = require("./components/Email");
+// const googlePeople = require("./components/GooglePeopleApi");
 
 const pm2 = require("pm2");
 pm2.launchBus(function (err, bus) {

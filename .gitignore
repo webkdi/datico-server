@@ -4,3 +4,5 @@
 .idea
 .env
 image_files.json
+credentials.json
+token.json

@@ -272,6 +272,26 @@ async function cleanEmailForClient(clientId) {
   }
 }
 
+async function getGccUniqueList() {
+  var sql = `
+  SELECT DISTINCT gcc_key, gcc_names, phone
+  FROM datico.salebot_clients
+  WHERE phone IS NOT NULL AND gcc_names IS NOT NULL;
+  `;
+  try {
+    const result = await db.query(sql);
+    return result[0]; 
+  } catch (err) {
+    // console.log(err);
+    console.log(
+      "error in getGccUniqueList Code:",
+      err.code,
+      " sqlMessage:",
+      err.sqlMessage
+    );
+  }
+}
+
 module.exports = {
   insertIgnoreClient,
   archiveVariables,
@@ -281,6 +301,7 @@ module.exports = {
   updateEmailFromVariable,
   getGccData,
   getGccDataPerClient,
+  getGccUniqueList,
   storeGccData,
   getVariableChecksumPerClient,
   getGccCandidatesPerInput,
