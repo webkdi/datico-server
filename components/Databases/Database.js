@@ -710,6 +710,37 @@ async function quiz_get_poll_data(poll_id) {
   }
 }
 
+async function otsInsertIgnore(SCHLUESSEL, channel, ergebnis) {
+  var ergebnis_json = JSON.stringify(ergebnis);
+  var sql = `
+  INSERT IGNORE INTO datico.autocontent_ots(SCHLUESSEL, channel, ergebnis_json)
+  VALUES (?,?,?)
+  `;
+  try {
+    const [res] = await db.query(sql, [SCHLUESSEL, channel, ergebnis_json]);
+    return res.affectedRows;
+  } catch (err) {
+    console.log("db datico: error in otsInsertIgnore");
+    console.log(err.message);
+    console.log(err.stack);
+  }
+}
+async function otsUpdateOriginal(SCHLUESSEL, DATUM, WEBLINK, ANHANG, TEXT) {
+  var sql = `
+  UPDATE datico.autocontent_ots
+  SET WEBLINK=?, ANHANG=?, TEXT=?, DATUM=?
+  WHERE SCHLUESSEL=?
+  `;
+  try {
+    const [res] = await db.query(sql, [WEBLINK, ANHANG, TEXT, DATUM, SCHLUESSEL]);
+    return res.affectedRows;
+  } catch (err) {
+    console.log("db datico: error in otsInsertIgnore");
+    console.log(err.message);
+    console.log(err.stack);
+  }
+}
+
 module.exports = {
   checkLatest,
   getVisitsStatsDay,
@@ -738,4 +769,6 @@ module.exports = {
   quiz_update_vote,
   quiz_log_vote,
   quiz_get_poll_data,
+  otsInsertIgnore,
+  otsUpdateOriginal,
 };

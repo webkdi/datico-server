@@ -54,6 +54,42 @@ async function getTwitterSummary(text, url, language) {
   }
 } 
 
+async function getRuTranslation(text) {
+  let prompt;
+  prompt = `Действуй как журналист. Переведи текст на русский язык:  
+  "${text}"`;
+
+  const params = {
+    model: "text-davinci-003",
+    // model: "gpt-3.5-turbo-0301",
+    prompt: prompt,
+    // messages: messages,
+    temperature: 0.7,
+    max_tokens: 1000,
+    top_p: 1,
+    frequency_penalty: 0.5,
+    presence_penalty: 0.5,
+  };
+
+  try {
+    const response = await openai.createCompletion(params);
+    const newText = response.data.choices[0];
+    // console.log(response);
+    newText.text = newText.text.trim();
+   
+    return newText.text;
+  } catch (error) {
+    if (error.response) {
+      console.log(error.response.status);
+      console.log(error.response.data);
+    } else {
+      console.log(error.message);
+    }
+  }
+} 
+
+
+
 async function runForTesting() {
   const text = `🇷🇺 🇺🇦 "Ist die ukrainische Offensive ins Stocken geraten?": Selbst Spanien hat erkannt, dass die Gegenoffensive gescheitert ist, und nun müsste man klären, wer die Schuld trägt.
 
@@ -77,4 +113,5 @@ async function runForTesting() {
 
 module.exports = {
   getTwitterSummary,
+  getRuTranslation,
 };
