@@ -104,7 +104,7 @@ function optimizeImage(path, password) {
         dither: 0.5,
         trellisQuantisation: true,
         quantisationPosterize: 2,
-        background: { r: 255, g: 255, b: 255, alpha: 0 },
+        // background: { r: 255, g: 255, b: 255, alpha: 0 },
       })
       .jpeg({ quality: 60 })
       .toBuffer((err, buffer, info) => {
