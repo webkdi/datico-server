@@ -150,7 +150,7 @@ if (process.env.THIS_VERSION === "LIVE") {
   console.log("cron schnitzelNewsBot started");
   schnitzelNewsBot.start();
 }
-schnitzelNewsBot.start();
+// schnitzelNewsBot.start();
 
 
 
