@@ -1,7 +1,7 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const apiKey = process.env.RELEVANCE_API_KEY;
+const relProject = process.env.RELEVANCE_PROJECT;
 
 const message = `
 [
@@ -21,7 +21,7 @@ async function triggerRelAi(text) {
         params: {
             article_texts_all: text
         },
-        project: "6f54abdd0f8d-4e58-9eb0-42c79d6a225f"
+        project: relProject
     };
     const config = {
         headers: {
