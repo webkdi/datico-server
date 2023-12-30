@@ -262,18 +262,14 @@ async function parseGoogleNewsRss() {
         item.rusArticle = rusArticle;
         item.rusShort = rusShort;
 
-        const newsSource = item.links[0];
-        const shortUrl = await urlShort.postLink(newsSource);
-        console.log('shortUrl: ', shortUrl);
-        let sourceFrom;
-        sourceFrom = getMainDomain(newsSource);
-        let tgText = `#ШницельНовости ${rusShort}\n\n⌨️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom}\n🔎 ${shortUrl}`;
-        // const sendTg = await tg.sendToTelegram(tgText);
-        console.log("Длина текста -", tgText.length);
-        tgText = tgText.replace(/"/g, "''");
-
         if (makePost && interesting) {
-            console.log("Отправляем в Телегу");
+            const newsSource = item.links[0];
+            const shortUrl = await urlShort.postLink(newsSource);
+            const sourceFrom = getMainDomain(newsSource);
+            let tgText = `#ШницельНовости ${rusShort}\n\n⌨️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom}\n🔎 ${shortUrl}`;
+            console.log("Длина текста -", tgText.length);
+            tgText = tgText.replace(/"/g, "''");
+            // console.log("Отправляем в Телегу");
             const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, -1001352848071);
         }
 
