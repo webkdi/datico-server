@@ -29,6 +29,7 @@ async function triggerRelAi(text) {
         } else {
             console.error('Error in triggerRelAi:', error.message);
         }
+        return '';
         // throw error; // Re-throw the error for the caller to handle
     }
 }
