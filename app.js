@@ -6,6 +6,7 @@ const upd = require("./components/UpdateFunctions");
 const img = require("./components/ImagesFunctions");
 const tg = require("./components/TelegramFunctions");
 const sb = require("./components/SaleBot");
+const glNews = require("./components/Apps/googleNews/googleNewsApp");
 require("dotenv").config();
 
 // const apa = require("./components/OtsApa");
@@ -134,6 +135,26 @@ if (process.env.THIS_VERSION === "LIVE") {
   reportTgToFb.start();
 }
 // reportTgToFb.start();
+
+//GoogleNewsAT reposting
+var schnitzelNewsBot = cron.schedule(
+  '42 */2 * * * *',
+  () => {
+    glNews.parseGoogleNewsRss();
+  },
+  {
+    scheduled: false,
+  }
+);
+if (process.env.THIS_VERSION === "LIVE") {
+  console.log("cron schnitzelNewsBot started");
+  schnitzelNewsBot.start();
+}
+schnitzelNewsBot.start();
+
+
+
+
 
 // # ┌────────────── second (optional)
 // # │ ┌──────────── minute
