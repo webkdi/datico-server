@@ -7,6 +7,7 @@ const db = require("./components/db_datico");
 const tg = require("./components/telegram");
 const collage = require("./components/collage");
 const urlShort = require("./components/urlshortener");
+const relAi = require("./components/relevance_ai");
 
 function getMainDomain(inputUrl) {
     try {
@@ -209,7 +210,6 @@ async function makeRusNews(texts) {
     };
 }
 
-
 async function parseGoogleNewsRss() {
     const RSS_URL = 'https://news.google.com/rss/topics/CAAqIAgKIhpDQkFTRFFvSEwyMHZNR2czZUJJQ1pHVW9BQVAB?hl=de&gl=AT&ceid=AT%3Ade';
     var news = await parseRSS(RSS_URL);
@@ -251,13 +251,18 @@ async function parseGoogleNewsRss() {
         }
 
         let translations = {};
+        let rusShort, rusArticle;
 
         if (makePost && interesting) {
-            translations = await makeRusNews(item.texts);
+            //translations = await makeRusNews(item.texts);
+            rusArticle = texts.slice(0, 2).map((element, index) => `Artikel ${index + 1}:\n"${element}"`).join('\n');
+            rusShort = await relAi.triggerRelAi(rusArticle);
+            translations.rusShort = rusShort;
+            translations.rusArticle = rusArticle;
         }
 
-        let rusArticle = translations.rusArticle !== undefined ? translations.rusArticle : "";
-        let rusShort = translations.rusShort !== undefined ? translations.rusShort : "";
+        rusArticle = translations.rusArticle !== undefined ? translations.rusArticle : "";
+        rusShort = translations.rusShort !== undefined ? translations.rusShort : "";
 
         item.rusArticle = rusArticle;
         item.rusShort = rusShort;
@@ -266,8 +271,8 @@ async function parseGoogleNewsRss() {
             const newsSource = item.links[0];
             const shortUrl = await urlShort.postLink(newsSource);
             const sourceFrom = getMainDomain(newsSource);
-            let tgText = `#ШницельНовости ${rusShort}\n\n⌨️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom}\n🔎 ${shortUrl}`;
-            console.log("Длина текста -", tgText.length);
+            let tgText = `#ШницельНовости ${rusShort}\n\n⌨️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
+            console.log("Длина текста в Твиттер :", tgText.length);
             tgText = tgText.replace(/"/g, "''");
             // console.log("Отправляем в Телегу");
             const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, -1001352848071);
