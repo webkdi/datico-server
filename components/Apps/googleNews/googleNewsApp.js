@@ -262,7 +262,7 @@ async function parseGoogleNewsRss() {
         item.rusArticle = rusArticle;
         item.rusShort = rusShort;
 
-        if (makePost && interesting) {
+        if (makePost && interesting && rusShort !=="") {
             const newsSource = item.links[0];
             const shortUrl = await urlShort.postLink(newsSource);
             const sourceFrom = getMainDomain(newsSource);
