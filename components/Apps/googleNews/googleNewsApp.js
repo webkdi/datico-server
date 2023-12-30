@@ -20,9 +20,9 @@ function getMainDomain(inputUrl) {
         // Split the hostname into parts
         const parts = hostnameWithoutWww.split('.');
 
-        // Extract the main domain (last two parts)
-        // This assumes a standard domain format like 'example.com'
-        const mainDomain = parts.length > 2 ? parts.slice(-2).join('.') : hostnameWithoutWww;
+        // Extract the main domain name (second to last part)
+        // This handles standard domain formats like 'example.com'
+        const mainDomain = parts.length > 1 ? parts[parts.length - 2] : hostnameWithoutWww;
 
         return mainDomain;
     } catch (error) {
@@ -31,7 +31,6 @@ function getMainDomain(inputUrl) {
         return ''; // or any other default value or error handling
     }
 }
-
 
 // Separate function to decode URLs
 function decodeUrl(href) {
