@@ -253,7 +253,21 @@ async function parseGoogleNewsRss() {
             // Add only the longest string back into the array
             array.push(longestString);
         }
-        findAndKeepLongestString(texts);
+        // findAndKeepLongestString(texts);
+
+        // Keep only the first entry
+        function keepFirstEntry(array) {
+            if (array.length > 0) {
+                // Store the first entry
+                const firstEntry = array[0];
+                // Clear the array
+                array.length = 0;
+                // Add only the first entry back into the array
+                array.push(firstEntry);
+            }
+        }
+        keepFirstEntry(texts);
+        console.log(texts.length);
 
         item.texts = texts;
         item.images = images;
@@ -291,7 +305,7 @@ async function parseGoogleNewsRss() {
             const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, -1001352848071);
 
             // only one post per execution, rest is stored
-            if (sendTg.status = 200) {makePost = false;}
+            if (sendTg.status = 200) { makePost = false; }
         }
 
         const updateArticle = await db.updateArticle(item);
