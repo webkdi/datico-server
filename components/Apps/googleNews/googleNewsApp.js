@@ -289,6 +289,9 @@ async function parseGoogleNewsRss() {
             tgText = tgText.replace(/"/g, "''");
             // console.log("Отправляем в Телегу");
             const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, -1001352848071);
+
+            // only one post per execution, rest is stored
+            if (sendTg.status = 200) {makePost = false;}
         }
 
         const updateArticle = await db.updateArticle(item);

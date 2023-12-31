@@ -138,7 +138,7 @@ if (process.env.THIS_VERSION === "LIVE") {
 
 //GoogleNewsAT reposting
 var schnitzelNewsBot = cron.schedule(
-  '42 */2 * * * *',
+  '42 */15 * * * *',
   () => {
     glNews.parseGoogleNewsRss();
   },

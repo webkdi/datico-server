@@ -50,7 +50,8 @@ async function sendPhotoToTelegram(caption, imageBuffer, chat_id) {
         console.log(`Создан пост https://t.me/${response.data.result.sender_chat.username}/${response.data.result.message_id}`);
         // console.log(response.status, response.statusText, JSON.stringify(response.data, null, 2));
         const result = response.data.result;
-        return { status: response.status, response: result };
+        const message_id = response.data.result.message_id; 
+        return { status: response.status, response: result, message_id: message_id };
     } catch (error) {
         stat = error.response ? error.response.status : 400;
         const errorMessage = error.response ? error.response.data.description : error.message;
