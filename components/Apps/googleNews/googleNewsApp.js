@@ -220,7 +220,11 @@ async function parseGoogleNewsRss() {
         const newItem = await db.insertIgnoreguid(item.guid);
 
         const interesting = item.links.length > 4;
-        const makePost = true;
+
+        var makePost = true;
+        // Set makePost to false from 10 PM (22) to 6 AM (6)
+        const currentHour = new Date().getHours();
+        makePost = !(currentHour >= 1 || currentHour < 8);
 
         if (newItem == 0) {
             // console.log("Уже существует:", item.titles[0]);
@@ -266,7 +270,7 @@ async function parseGoogleNewsRss() {
         item.rusArticle = rusArticle;
         item.rusShort = rusShort;
 
-        if (makePost && interesting && rusShort !=="") {
+        if (makePost && interesting && rusShort !== "") {
             const newsSource = item.links[0];
             const shortUrl = await urlShort.postLink(newsSource);
             const sourceFrom = getMainDomain(newsSource);
