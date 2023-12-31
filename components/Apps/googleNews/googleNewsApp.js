@@ -215,16 +215,16 @@ async function parseGoogleNewsRss() {
 
     await db.cleanNewsTable();
 
+    var makePost = true;
+    // Set makePost to false from 10 PM (22) to 6 AM (6)
+    const currentHour = new Date().getHours();
+    makePost = !(currentHour >= 1 && currentHour < 9);
+
     for (const item of news) {
 
         const newItem = await db.insertIgnoreguid(item.guid);
 
         const interesting = item.links.length > 4;
-
-        var makePost = true;
-        // Set makePost to false from 10 PM (22) to 6 AM (6)
-        const currentHour = new Date().getHours();
-        makePost = !(currentHour >= 1 && currentHour < 9);
 
         if (newItem == 0) {
             // console.log("Уже существует:", item.titles[0]);
