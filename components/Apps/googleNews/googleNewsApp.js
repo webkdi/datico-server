@@ -224,7 +224,7 @@ async function parseGoogleNewsRss() {
         var makePost = true;
         // Set makePost to false from 10 PM (22) to 6 AM (6)
         const currentHour = new Date().getHours();
-        makePost = !(currentHour >= 1 || currentHour < 9);
+        makePost = !(currentHour >= 1 && currentHour < 9);
 
         if (newItem == 0) {
             // console.log("Уже существует:", item.titles[0]);
@@ -288,6 +288,8 @@ async function parseGoogleNewsRss() {
     console.log('Articles saved to articles.json');
     return;
 }
+
+// parseGoogleNewsRss();
 
 module.exports = { parseGoogleNewsRss };
 
