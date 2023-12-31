@@ -233,7 +233,6 @@ async function parseGoogleNewsRss() {
             console.log(`Репост: ${makePost}, Интересно: ${interesting}, Пост ${item.titles[0]}`);
         }
 
-
         const texts = [];
         const images = [];
         for (const link of item.links) {
@@ -245,6 +244,17 @@ async function parseGoogleNewsRss() {
                 console.error('Error processing link:', link, error.message);
             }
         }
+
+        // retain longest article only
+        function findAndKeepLongestString(array) {
+            const longestString = array.reduce((a, b) => a.length >= b.length ? a : b, "");
+            // Clear the array
+            array.length = 0;
+            // Add only the longest string back into the array
+            array.push(longestString);
+        }
+        findAndKeepLongestString(texts);
+
         item.texts = texts;
         item.images = images;
 
