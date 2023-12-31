@@ -298,7 +298,7 @@ async function parseGoogleNewsRss() {
             const newsSource = item.links[0];
             const shortUrl = await urlShort.postLink(newsSource);
             const sourceFrom = getMainDomain(newsSource);
-            let tgText = `#ШницельНовости ${rusShort}\n\n⌨️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
+            let tgText = `#ШницельНовости ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
             console.log("Длина текста в Твиттер :", tgText.length);
             tgText = tgText.replace(/"/g, "''");
             // console.log("Отправляем в Телегу");
