@@ -217,7 +217,7 @@ async function parseGoogleNewsRss() {
 
     await db.cleanNewsTable();
 
-    var makePost = false;
+    var makePost = true;
     // Set makePost to false from 10 PM (22) to 6 AM (6)
     const currentHour = new Date().getHours();
     if (makePost) {
