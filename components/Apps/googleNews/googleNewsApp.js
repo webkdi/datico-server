@@ -2,12 +2,14 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const cheerio = require('cheerio');
 const fs = require('fs');
-const ai = require("./components/openai");
+const ai = require("./components/ai_openai");
 const db = require("./components/db_datico");
 const tg = require("./components/telegram");
 const collage = require("./components/collage");
 const urlShort = require("./components/urlshortener");
-const relAi = require("./components/relevance_ai");
+const relAi = require("./components/ai_relevance");
+const prompts = require("./components/ai_prompts");
+const { firebaserules } = require('googleapis/build/src/apis/firebaserules');
 
 function getMainDomain(inputUrl) {
     try {
@@ -215,10 +217,12 @@ async function parseGoogleNewsRss() {
 
     await db.cleanNewsTable();
 
-    var makePost = true;
+    var makePost = false;
     // Set makePost to false from 10 PM (22) to 6 AM (6)
     const currentHour = new Date().getHours();
-    makePost = !(currentHour >= 1 && currentHour < 9);
+    if (makePost) {
+        makePost = !(currentHour >= 1 && currentHour < 9);
+    }
 
     for (const item of news) {
 
@@ -267,7 +271,6 @@ async function parseGoogleNewsRss() {
             }
         }
         keepFirstEntry(texts);
-        console.log(texts.length);
 
         item.texts = texts;
         item.images = images;
@@ -283,7 +286,8 @@ async function parseGoogleNewsRss() {
         if (makePost && interesting) {
             //translations = await makeRusNews(item.texts);
             rusArticle = texts.slice(0, 2).map((element, index) => `Artikel ${index + 1}:\n"${element}"`).join('\n');
-            rusShort = await relAi.triggerRelAi(rusArticle);
+            const prompt=prompts.currentPrompt(rusArticle);
+            rusShort = await relAi.triggerRelAi(prompt);
             translations.rusShort = rusShort;
             translations.rusArticle = rusArticle;
         }
@@ -301,7 +305,6 @@ async function parseGoogleNewsRss() {
             let tgText = `#ШницельНовости ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
             console.log("Длина текста в Твиттер :", tgText.length);
             tgText = tgText.replace(/"/g, "''");
-            // console.log("Отправляем в Телегу");
             const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, -1001352848071);
 
             // only one post per execution, rest is stored
@@ -316,7 +319,7 @@ async function parseGoogleNewsRss() {
     return;
 }
 
-// parseGoogleNewsRss();
+parseGoogleNewsRss();
 
 module.exports = { parseGoogleNewsRss };
 
