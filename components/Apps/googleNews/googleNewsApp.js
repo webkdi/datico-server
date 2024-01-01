@@ -319,7 +319,7 @@ async function parseGoogleNewsRss() {
     return;
 }
 
-parseGoogleNewsRss();
+// parseGoogleNewsRss();
 
 module.exports = { parseGoogleNewsRss };
 
