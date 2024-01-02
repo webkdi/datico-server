@@ -45,7 +45,6 @@ async function cleanNewsTable () {
   }
 }
 
-
 async function updateArticle(article) {
 
   const guid = article.guid;
@@ -84,9 +83,37 @@ async function updateArticle(article) {
   }
 }
 
+async function getNewsMngt () {
+  const sql = `
+  SELECT * FROM datico.news_google_mng
+  ;`;
+  try {
+    const [result] = await pool.execute(sql);
+    return result;
+  } catch (error) {
+    console.log(error.sqlMessage);
+    return 0;
+  }
+}
+
+async function updateNewsMngt (crimeCounter) {
+  const sql = `
+  UPDATE datico.news_google_mng SET shareCrime = ?
+  ;`;
+  const values = [crimeCounter];
+  try {
+    const [result] = await pool.execute(sql, values);
+    return result;
+  } catch (error) {
+    console.log(error.sqlMessage);
+    return 0;
+  }
+}
 
 module.exports = {
   insertIgnoreguid,
   updateArticle,
   cleanNewsTable,
+  getNewsMngt,
+  updateNewsMngt,
 };

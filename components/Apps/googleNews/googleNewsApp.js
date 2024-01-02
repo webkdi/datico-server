@@ -9,7 +9,8 @@ const collage = require("./components/collage");
 const urlShort = require("./components/urlshortener");
 const relAi = require("./components/ai_relevance");
 const prompts = require("./components/ai_prompts");
-// const { firebaserules } = require('googleapis/build/src/apis/firebaserules');
+const topics = require("./components/news_similarity");
+
 
 function getMainDomain(inputUrl) {
     try {
@@ -217,7 +218,12 @@ async function parseGoogleNewsRss() {
 
     await db.cleanNewsTable();
 
-    var makePost = true;
+    const mng = await db.getNewsMngt();
+
+    var makePost = mng[0].publish == 1 ? true : false;
+    var crimeCounter = mng[0].shareCrime;
+    const postCrime = crimeCounter % 3 === 0 ? true : false;
+
     // Set makePost to false from 10 PM (22) to 6 AM (6)
     const currentHour = new Date().getHours();
     if (makePost) {
@@ -234,7 +240,7 @@ async function parseGoogleNewsRss() {
             // console.log("Уже существует:", item.titles[0]);
             continue;
         } else {
-            console.log(`Репост: ${makePost}, Интересно: ${interesting}, Пост ${item.titles[0]}`);
+            console.log(`Репост: ${makePost}, Интересно: ${interesting}, Немирно: ${postCrime}, Пост ${item.titles[0]}`);
         }
 
         const texts = [];
@@ -248,6 +254,7 @@ async function parseGoogleNewsRss() {
                 console.error('Error processing link:', link, error.message);
             }
         }
+        item.texts = texts;
 
         // retain longest article only
         function findAndKeepLongestString(array) {
@@ -272,7 +279,6 @@ async function parseGoogleNewsRss() {
         }
         keepFirstEntry(texts);
 
-        item.texts = texts;
         item.images = images;
 
         const imgCollage = await collage.createCollage(images);
@@ -283,10 +289,19 @@ async function parseGoogleNewsRss() {
         let translations = {};
         let rusShort, rusArticle;
 
+        var isCrime;
         if (makePost && interesting) {
             //translations = await makeRusNews(item.texts);
             rusArticle = texts.slice(0, 2).map((element, index) => `Artikel ${index + 1}:\n"${element}"`).join('\n');
-            const prompt=prompts.currentPrompt(rusArticle);
+            const themes = topics.analyzeTextTopic(rusArticle);
+
+            isCrime = (themes.incidents.totalSimilarity > 1 || themes.crime.totalSimilarity > 1) ? true : false;
+            if (isCrime && !postCrime) {
+                console.log("crime topic, skip this time");
+                continue;
+            }
+
+            const prompt = prompts.currentPrompt(rusArticle);
             rusShort = await relAi.triggerRelAi(prompt);
             translations.rusShort = rusShort;
             translations.rusArticle = rusArticle;
@@ -308,7 +323,11 @@ async function parseGoogleNewsRss() {
             const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, -1001352848071);
 
             // only one post per execution, rest is stored
-            if (sendTg.status = 200) { makePost = false; }
+            if (sendTg.status = 200) {
+                makePost = false;
+                crimeCounter += 1;
+                await db.updateNewsMngt(crimeCounter);
+            }
         }
 
         const updateArticle = await db.updateArticle(item);
