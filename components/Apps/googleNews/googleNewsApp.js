@@ -9,7 +9,7 @@ const collage = require("./components/collage");
 const urlShort = require("./components/urlshortener");
 const relAi = require("./components/ai_relevance");
 const prompts = require("./components/ai_prompts");
-const { firebaserules } = require('googleapis/build/src/apis/firebaserules');
+// const { firebaserules } = require('googleapis/build/src/apis/firebaserules');
 
 function getMainDomain(inputUrl) {
     try {
@@ -217,7 +217,7 @@ async function parseGoogleNewsRss() {
 
     await db.cleanNewsTable();
 
-    var makePost = false;
+    var makePost = true;
     // Set makePost to false from 10 PM (22) to 6 AM (6)
     const currentHour = new Date().getHours();
     if (makePost) {

@@ -1,15 +1,16 @@
 const axios = require('axios');
 require('dotenv').config();
 
-const relProject = process.env.RELEVANCE_PROJECT;
+// const relProject = process.env.RELEVANCE_PROJECT;
+const relProject = 'd29d7a1698e0-44d3-bb75-d756c1cd3b3c';
 
 // Async function to perform the POST request
 async function triggerRelAi(text) {
     console.log("Длина вводного текста в Relevance:", text.length);
-    const url = "https://api-d7b62b.stack.tryrelevance.com/latest/studios/efdc3268-1405-4de3-9b9c-b7b18c0e6cfb/trigger_limited";
+    const url = "https://api-d7b62b.stack.tryrelevance.com/latest/studios/c8632020-f831-4f65-9a72-9124abeb4d83/trigger_limited";
     const data = {
         params: {
-            article_texts_all: text
+            text: text
         },
         project: relProject
     };
