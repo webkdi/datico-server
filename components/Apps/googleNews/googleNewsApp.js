@@ -239,9 +239,7 @@ async function parseGoogleNewsRss() {
         if (newItem == 0) {
             // console.log("Уже существует:", item.titles[0]);
             continue;
-        } else {
-            console.log(`Репост: ${makePost}, Интересно: ${interesting}, Немирно: ${postCrime}, Пост ${item.titles[0]}`);
-        }
+        } 
 
         const texts = [];
         const images = [];
@@ -290,17 +288,15 @@ async function parseGoogleNewsRss() {
         let rusShort, rusArticle;
 
         var isCrime;
-        if (makePost && interesting) {
-            //translations = await makeRusNews(item.texts);
-            rusArticle = texts.slice(0, 2).map((element, index) => `Artikel ${index + 1}:\n"${element}"`).join('\n');
-            const themes = topics.analyzeTextTopic(rusArticle);
+        rusArticle = texts.slice(0, 2).map((element, index) => `Artikel ${index + 1}:\n"${element}"`).join('\n');
+        const themes = topics.analyzeTextTopic(rusArticle);
+        isCrime = (themes.incidents.totalSimilarity > 1 || themes.crime.totalSimilarity > 1) ? true : false;
 
-            isCrime = (themes.incidents.totalSimilarity > 1 || themes.crime.totalSimilarity > 1) ? true : false;
-            if (isCrime && !postCrime) {
-                console.log("crime topic, skip this time");
-                continue;
-            }
+        console.log(`Постить: ${makePost}, Интересно: ${interesting}, Крими: ${isCrime}, Жесть: ${postCrime}, Пост ${item.titles[0]}`);
 
+        if (isCrime && !postCrime) {
+            console.log("crime topic, skip this time");
+        } else if (makePost && interesting) {
             const prompt = prompts.currentPrompt(rusArticle);
             rusShort = await relAi.triggerRelAi(prompt);
             translations.rusShort = rusShort;
