@@ -4,7 +4,11 @@ const TfIdf = natural.TfIdf;
 
 // Keywords for different topics
 const topics = {
-    incidents: ["Unfall", "Fahrzeug", "Verletzt", "Todesopfer", "gestorben", "Zusammenstoß", "Autobahn", "Rettungsdienst", "Verkehr", "Sperrung", "Kollision", "Fahrer", "Fahrerin", "Schaden", "Zeugen"],
+    incidents: [
+        "Unfall", "Fahrzeug", "Verletzt", "Todesopfer", "gestorben", "Zusammenstoß", "Autobahn", "Rettungsdienst", "Verkehr", "Sperrung", "Kollision", "Fahrer", "Fahrerin", "Schaden", "Zeugen", "Verkehrsunfall", "Fußgänger", "tödlich verletzt", "Fahrbahn", "Verbrechen", "Polizei", "Ermittlung", "Festnahme", "Tatverdächtiger", "Zeuge", "Gericht", "Straftat", "Anklage", "Urteil", "Diebstahl", "Überfall", "Mord", "Raub", "Betrug", "Körperverletzung", "Fahndung", "Verhaftung", "Verdächtig", "Täter", "tatverdächtigen", "gestohlene Bankomatkarte", "fahndet", "Ermittlungen",
+        "Berufsrettung", "Notrufe", "Einsätze", "Feuerwehreinsatz", "Rettungskräfte", "Pyrotechnik", "Verletzungen", "Berufsfeuerwehr", "medizinisch versorgt", "Sanitäter", "Notarzt", "Reanimation"
+    ],
+    // ["Unfall", "Fahrzeug", "Verletzt", "Todesopfer", "gestorben", "Zusammenstoß", "Autobahn", "Rettungsdienst", "Verkehr", "Sperrung", "Kollision", "Fahrer", "Fahrerin", "Schaden", "Zeugen"],
     crime: ["Verbrechen", "Polizei", "Ermittlung", "Festnahme", "Tatverdächtiger", "Zeuge", "Gericht", "Straftat", "Anklage", "Urteil", "Diebstahl", "Überfall", "Mord", "Raub", "Betrug", "Körperverletzung", "Fahndung", "Verhaftung", "Verdächtig", "Täter"],
     // Add more topics and keywords as needed
 };
