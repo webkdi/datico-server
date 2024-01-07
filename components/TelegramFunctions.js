@@ -399,6 +399,7 @@ async function sendToMakeForFb(
     })
     .catch((error) => {
       console.error("There was a problem with the POST request");
+      console.log(error.response);
     });
 }
 
