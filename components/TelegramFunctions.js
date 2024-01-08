@@ -11,7 +11,7 @@ const images = require("./ImagesFunctions");
 const url = require("./UrlTgFinderShortener");
 const https = require("https");
 
-const now = new Date();
+var now = new Date();
 
 async function sendToTelegram(body) {
   const id = uuidv4();
@@ -71,6 +71,7 @@ async function checkIfURLExists(url) {
 }
 
 async function infoDefRepost() {
+  now = new Date();
   // console.log(`${now}: Start of cron infoDefRepost`);
 
   const telegramBotToken = process.env.TG_BOT_TOKEN_INFODEFENSE_BOT;
@@ -282,7 +283,7 @@ async function infoDefRepost() {
           messages[i].message,
           messages[i].url,
           language
-        ); 
+        );
         messages[i].messageForTwitter = textTwitter;
       } catch (error) {
         console.error("Error while processing OpenAi tweet message:", error);
@@ -353,13 +354,13 @@ async function infoDefRepost() {
 async function processTwitterSummary(message, url, language) {
   const MAX_TWITTER_LENGTH = 280;
 
-  let textTwitter = message; 
+  let textTwitter = message;
 
   while (textTwitter.length > MAX_TWITTER_LENGTH) {
-    console.log('shortening OpenAi text for',language,'Twitter, length', textTwitter.length);
+    console.log('shortening OpenAi text for', language, 'Twitter, length', textTwitter.length);
     textTwitter = await openAi.getTwitterSummary(textTwitter, url, language);
   }
-  console.log('final text length',textTwitter.length);
+  console.log('final text length', textTwitter.length);
   return textTwitter;
 }
 
