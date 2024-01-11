@@ -110,10 +110,27 @@ async function updateNewsMngt (crimeCounter) {
   }
 }
 
+async function getLatestPostTitles() {
+  const sql = `
+  SELECT titles FROM datico.news_google
+  WHERE rus_summary <> ''
+  ORDER BY timestamp DESC
+  LIMIT 10;
+  ;`;
+  try {
+    const [result] = await pool.execute(sql);
+    return result;
+  } catch (error) {
+    console.log(error.sqlMessage);
+    return 0;
+  }
+}
+
 module.exports = {
   insertIgnoreguid,
   updateArticle,
   cleanNewsTable,
   getNewsMngt,
   updateNewsMngt,
+  getLatestPostTitles,
 };

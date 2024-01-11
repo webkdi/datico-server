@@ -230,6 +230,9 @@ async function parseGoogleNewsRss() {
         makePost = !(currentHour >= 1 && currentHour < 9);
     }
 
+    // for checking of repearing topics already published
+    const titlesPublishedPreviously = await db.getLatestPostTitles();
+
     for (const item of news) {
 
         const newItem = await db.insertIgnoreguid(item.guid);
@@ -292,9 +295,15 @@ async function parseGoogleNewsRss() {
         const themes = topics.analyzeTextTopic(rusArticle);
         isCrime = (themes.incidents.totalSimilarity > 1 || themes.crime.totalSimilarity > 1) ? true : false;
 
-        console.log(`Постить: ${makePost}, Интересно: ${interesting}, Крими: ${isCrime}, Жесть: ${postCrime}, Пост ${item.titles[0]}`);
+        const titles = item.titles;
+        const similarScore = topics.compareSimilarity(titles, titlesPublishedPreviously);
+        const repeating = similarScore >= 0.5 ? true : false;
 
-        if (isCrime && !postCrime) {
+        console.log(`Постить: ${makePost}, Интересно: ${interesting}, Крими: ${isCrime}, Жесть: ${postCrime}, Повтор: ${repeating}, Пост ${titles}`);
+
+        if (repeating) {
+            console.log("repeating topic, skip this time");
+        } else if (isCrime && !postCrime ) {
             console.log("crime topic, skip this time");
         } else if (makePost && interesting) {
             const prompt = prompts.currentPrompt(rusArticle);

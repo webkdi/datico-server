@@ -1,6 +1,8 @@
 // textAnalyzer.js
 const natural = require('natural');
 const TfIdf = natural.TfIdf;
+const nlp = require('compromise');
+const db = require("./db_datico");
 
 // Keywords for different topics
 const topics = {
@@ -42,10 +44,65 @@ function analyzeTextTopic(textInput) {
     return topicSimilarities;
 }
 
+function compareHeadersForSimilarity(articleHeaders1, articleHeaders2) {
+    function extractKeywords(text) {
+        let doc = nlp(text);
+        // Extract nouns and adjectives as they often carry the main topic of the text
+        let nouns = doc.nouns().out('array');
+        let adjectives = doc.adjectives().out('array');
+        return [...new Set([...nouns, ...adjectives])]; // Combine and remove duplicates
+    }
+    let keywords1 = extractKeywords(articleHeaders1);
+    let keywords2 = extractKeywords(articleHeaders2);
+
+    // console.log("Keywords in Article 1:", keywords1);
+    // console.log("Keywords in Article 2:", keywords2);
+
+    // Find common keywords
+    let common = keywords1.filter(keyword => keywords2.includes(keyword));
+    let similarityScore = common.length / Math.min(keywords1.length, keywords2.length);
+
+    // console.log("Common Keywords:", common);
+    // console.log("Similarity Score:", similarityScore);
+
+    return similarityScore;
+}
+
+async function compareSimilarity(articleHeaders, titlesPublishedPreviously) {
+    let titleNow;
+    if (typeof articleHeaders === 'string') {
+        titleNow = articleHeaders;
+    } else if (Array.isArray(articleHeaders)) {
+        titleNow = articleHeaders.join('. ');
+    }
+
+    // const articles = await db.getLatestPostTitles();
+    const articles = titlesPublishedPreviously;
+    let similarScore = 0;
+    for (const article of articles) {
+        const titlesPast = article.titles.join('. ');
+        // console.log(titleNow);
+        // console.log(titlesPast);
+        const similar = compareHeadersForSimilarity(titleNow, titlesPast)
+        similarScore +=similar;
+    }
+    return similarScore;
+}
+// Example articles
+let article1 = [
+    "FPÖ-Chef Kickl in der \"ZiB 2\": Ein Geisterfahrer auf der Überholspur",
+    "ORF-Neujahrs-Interview - Kickl mit Kreide, Thür mit verpasster Nachfrage | krone.at",
+    "Kickl will \"Rechtslage\" für Entzug von Staatsbürgerschaft schaffen",
+    "FPÖ-Chef über \"Käsezettel\", \"Sauhaufen\" und Remigration",
+    "2024 werde das “Jahr der Wende werden” - Politik"
+];
+// compareSimilarity(article1);
+
 module.exports = {
     analyzeTextTopic,
-  };
-  
+    compareSimilarity
+};
+
 
 // const fs = require('fs');
 // const path = require('path');
