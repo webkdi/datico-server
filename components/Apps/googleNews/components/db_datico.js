@@ -126,6 +126,19 @@ async function getLatestPostTitles() {
   }
 }
 
+async function getRelevanceaiUrls() {
+  const sql = `
+  SELECT * FROM datico.news_google_relevanceai
+  ;`;
+  try {
+    const [result] = await pool.execute(sql);
+    return result;
+  } catch (error) {
+    console.log(error.sqlMessage);
+    return 0;
+  }
+}
+
 module.exports = {
   insertIgnoreguid,
   updateArticle,
@@ -133,4 +146,5 @@ module.exports = {
   getNewsMngt,
   updateNewsMngt,
   getLatestPostTitles,
+  getRelevanceaiUrls,
 };
