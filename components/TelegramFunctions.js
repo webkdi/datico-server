@@ -11,6 +11,8 @@ const images = require("./ImagesFunctions");
 const url = require("./UrlTgFinderShortener");
 const https = require("https");
 
+const fb_InfoDefenseDePageId = 352456381276442; ////105288955734641
+
 var now = new Date();
 
 async function sendToTelegram(body) {
@@ -259,7 +261,7 @@ async function infoDefRepost() {
       messages[
         i
       ].messageForFacebook += `${gap}🔹Werden Sie InfoDefender! Teilen Sie diese Nachricht mit Ihren Freunden!🔹${gap}Mehr und zensurfrei in Telegram:\n🇩🇪🇦🇹🇨🇭 https://t.me/InfoDefGermany\n🇺🇸🇪🇸🇫🇷 https://t.me/infoDefALL`;
-      messages[i].repost_to = 105288955734641;
+      messages[i].repost_to = fb_InfoDefenseDePageId;
       messages[i].repost_insta_to = 17841460886756437;
     } else if (messages[i].chat_name == "InfodefenseFRANCEbis") {
       messages[
@@ -274,7 +276,7 @@ async function infoDefRepost() {
     if (messages[i].message.length > 250) {
       try {
         let language;
-        if (messages[i].repost_to === 105288955734641) {
+        if (messages[i].repost_to === fb_InfoDefenseDePageId) {
           language = "de";
         } else if (messages[i].repost_to === 108264128925046) {
           language = "ru";
@@ -339,7 +341,7 @@ async function infoDefRepost() {
       //   ms.file_path
       // );
       if (
-        ms.repost_to === 105288955734641 ||
+        ms.repost_to === fb_InfoDefenseDePageId ||
         ms.repost_to === 108264128925046
       ) {
         const sentToTwitter = await tweetOnRender(ms.update_id);
@@ -456,7 +458,7 @@ async function tweetOnRender(update_id) {
   const pageFbForPosting = line[0].page_id;
 
   let channel;
-  if (pageFbForPosting === 105288955734641) {
+  if (pageFbForPosting === fb_InfoDefenseDePageId) {
     channel = "infodefense";
   } else if (pageFbForPosting === 108264128925046) {
     channel = "polk";
