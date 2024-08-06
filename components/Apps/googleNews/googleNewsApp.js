@@ -94,6 +94,8 @@ async function decodeUrl_fetchDecodedBatchExecute(id) {
     }
 }
 
+// Google News URL Decoder
+// https://github.com/SSujitX/google-news-url-decoder/blob/main/README.md
 async function decodeUrl_v202408(sourceUrl) {
     try {
         const url = new URL(sourceUrl);
