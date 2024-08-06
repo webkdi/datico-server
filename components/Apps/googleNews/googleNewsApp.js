@@ -10,6 +10,7 @@ const urlShort = require("./components/urlshortener");
 const relAi = require("./components/ai_relevance");
 const prompts = require("./components/ai_prompts");
 const topics = require("./components/news_similarity");
+const { URL } = require('url');
 
 
 function getMainDomain(inputUrl) {
@@ -42,6 +43,7 @@ function decodeUrl(href) {
     if (partsAfterArticles.length < 2) {
         return; // Skip if '/articles/' not found
     }
+
     const afterArticles = partsAfterArticles[1];
 
     // Step 3: Further split by '?'
@@ -49,9 +51,89 @@ function decodeUrl(href) {
     const encodedUrlPart = partsBeforeQuery[0];
     const padding = '='.repeat((4 - encodedUrlPart.length % 4) % 4);
     let decodedUrl = Buffer.from(encodedUrlPart + padding, 'base64').toString('binary');
+
+    console.log("href:",href,"\n","encodedUrlPart:",encodedUrlPart)
+
     const urlMatch = decodedUrl.match(/https?:\/\/[\w\-._~:/?#\[\]@!$&'()*+,;=%]+/);
     return urlMatch ? urlMatch[0] : null;
 }
+
+async function decodeUrl_fetchDecodedBatchExecute(id) {
+    const s = `[[["Fbv4je","[\\"garturlreq\\",[[\\"en-US\\",\\"US\\",[\\"FINANCE_TOP_INDICES\\",\\"WEB_TEST_1_0_0\\"],null,null,1,1,\\"US:en\\",null,180,null,null,null,null,null,0,null,null,[1608992183,723341000]],\\"en-US\\",\\"US\\",1,[2,3,4,8],1,0,\\"655000234\\",0,0,null,0],\\"${id}\\"]",null,"generic"]]]`;
+
+    const headers = {
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+        "Referer": "https://news.google.com/",
+    };
+
+    try {
+        const response = await axios.post(
+            "https://news.google.com/_/DotsSplashUi/data/batchexecute?rpcids=Fbv4je",
+            `f.req=${encodeURIComponent(s)}`,
+            { headers }
+        );
+
+        if (response.status !== 200) {
+            throw new Error('Failed to fetch data from Google.');
+        }
+
+        const text = response.data;
+        const header = '[\\"garturlres\\",\\"';
+        const footer = '\\",';
+        if (!text.includes(header)) {
+            throw new Error(`Header not found in response: ${text}`);
+        }
+        const start = text.split(header)[1];
+        if (!start.includes(footer)) {
+            throw new Error("Footer not found in response.");
+        }
+        const url = start.split(footer)[0];
+        return url;
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function decodeUrl_v202408(sourceUrl) {
+    try {
+        const url = new URL(sourceUrl);
+        const path = url.pathname.split("/");
+        if (url.hostname === "news.google.com" && path.length > 1 && path[path.length - 2] === "articles") {
+            const base64Str = path[path.length - 1];
+            let decodedStr = Buffer.from(base64Str, 'base64').toString('latin1');
+
+            const prefix = Buffer.from([0x08, 0x13, 0x22]).toString('latin1');
+            if (decodedStr.startsWith(prefix)) {
+                decodedStr = decodedStr.substring(prefix.length);
+            }
+
+            const suffix = Buffer.from([0xd2, 0x01, 0x00]).toString('latin1');
+            if (decodedStr.endsWith(suffix)) {
+                decodedStr = decodedStr.slice(0, -suffix.length);
+            }
+
+            const bytesArray = Buffer.from(decodedStr, 'latin1');
+            const length = bytesArray[0];
+            if (length >= 0x80) {
+                decodedStr = decodedStr.substring(2, length + 1);
+            } else {
+                decodedStr = decodedStr.substring(1, length + 1);
+            }
+
+            if (decodedStr.startsWith("AU_yqL")) {
+                return await decodeUrl_fetchDecodedBatchExecute(base64Str);
+            }
+
+            return decodedStr;
+        } else {
+            return sourceUrl;
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 
 function convertToMySQLDateTime(inputString) {
     const date = new Date(inputString);
@@ -87,6 +169,8 @@ async function parseRSS(url) {
         const result = await xml2js.parseStringPromise(response.data);
         const items = result.rss.channel[0].item.slice(0, 999);
 
+        // fs.writeFileSync('components/Apps/googleNews/images/items.json', JSON.stringify(items));
+
         for (const item of items) {
             // Load description HTML content with Cheerio
             const $ = cheerio.load(item.description[0]);
@@ -96,13 +180,15 @@ async function parseRSS(url) {
 
             // Extract and decode URLs from the <a> tags
             const links = [];
-            $('a').each((i, elem) => {
+            const anchors = $('a').toArray(); // Convert jQuery object to array
+            
+            for (const elem of anchors) {
                 const href = $(elem).attr('href');
-                const decodedUrl = decodeUrl(href);
+                const decodedUrl = await decodeUrl_v202408(href);
                 if (decodedUrl) {
                     links.push(decodedUrl);
                 }
-            });
+            }
 
             // Assign the extracted data to the item object
 
@@ -125,6 +211,8 @@ async function parseRSS(url) {
         return [];
     }
 }
+
+
 
 async function extractTextAndImageFromURL(url) {
     try {
