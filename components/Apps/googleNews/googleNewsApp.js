@@ -8,9 +8,11 @@ const tg = require("./components/telegram");
 const collage = require("./components/collage");
 const urlShort = require("./components/urlshortener");
 const relAi = require("./components/ai_relevance");
+const gigaChatAi = require("./components/ai_gigachat");
 const prompts = require("./components/ai_prompts");
 const topics = require("./components/news_similarity");
 const { URL } = require('url');
+require("dotenv").config();
 
 
 function getMainDomain(inputUrl) {
@@ -52,7 +54,7 @@ function decodeUrl(href) {
     const padding = '='.repeat((4 - encodedUrlPart.length % 4) % 4);
     let decodedUrl = Buffer.from(encodedUrlPart + padding, 'base64').toString('binary');
 
-    console.log("href:",href,"\n","encodedUrlPart:",encodedUrlPart)
+    console.log("href:", href, "\n", "encodedUrlPart:", encodedUrlPart)
 
     const urlMatch = decodedUrl.match(/https?:\/\/[\w\-._~:/?#\[\]@!$&'()*+,;=%]+/);
     return urlMatch ? urlMatch[0] : null;
@@ -135,8 +137,6 @@ async function decodeUrl_v202408(sourceUrl) {
     }
 }
 
-
-
 function convertToMySQLDateTime(inputString) {
     const date = new Date(inputString);
 
@@ -183,7 +183,7 @@ async function parseRSS(url) {
             // Extract and decode URLs from the <a> tags
             const links = [];
             const anchors = $('a').toArray(); // Convert jQuery object to array
-            
+
             for (const elem of anchors) {
                 const href = $(elem).attr('href');
                 const decodedUrl = await decodeUrl_v202408(href);
@@ -213,8 +213,6 @@ async function parseRSS(url) {
         return [];
     }
 }
-
-
 
 async function extractTextAndImageFromURL(url) {
     try {
@@ -302,9 +300,9 @@ async function makeRusNews(texts) {
     };
 }
 
-async function parseGoogleNewsRss() {
-    const RSS_URL = 'https://news.google.com/rss/topics/CAAqIAgKIhpDQkFTRFFvSEwyMHZNR2czZUJJQ1pHVW9BQVAB?hl=de&gl=AT&ceid=AT%3Ade';
-    var news = await parseRSS(RSS_URL);
+async function parseGoogleNewsRss(rssUrl, options = {}) {
+    // const RSS_URL = 'https://news.google.com/rss/topics/CAAqIAgKIhpDQkFTRFFvSEwyMHZNR2czZUJJQ1pHVW9BQVAB?hl=de&gl=AT&ceid=AT%3Ade';
+    var news = await parseRSS(rssUrl);
 
     await db.cleanNewsTable();
 
@@ -327,12 +325,14 @@ async function parseGoogleNewsRss() {
 
         const newItem = await db.insertIgnoreguid(item.guid);
 
-        const interesting = item.links.length > 4;
+        // let interesting = item.links.length > 4;
+        let interesting = options.news ? item.links.length > 4 : true;
+
 
         if (newItem == 0) {
             // console.log("Уже существует:", item.titles[0]);
             continue;
-        } 
+        }
 
         const texts = [];
         const images = [];
@@ -393,11 +393,27 @@ async function parseGoogleNewsRss() {
 
         if (repeating) {
             console.log("repeating topic, skip this time");
-        } else if (isCrime && !postCrime ) {
+        } else if (isCrime && !postCrime) {
             console.log("crime topic, skip this time");
-        } else if (makePost && interesting) {
+        } else if (makePost && (interesting || !options.news)) {
             const prompt = prompts.currentPrompt(rusArticle);
             rusShort = await relAi.triggerRelAi(prompt);
+            console.log("relAi:", rusShort);
+            if (rusShort === "" || rusShort === undefined) {
+                rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
+
+                let rusShortLength = rusShort.length;
+                let maxIterations = 3;        
+                for (let i = 0; i < maxIterations; i++) {
+                    if (rusShortLength > 1000) {
+                        console.log(`text with ${rusShortLength} characters too long, repeating`);
+                        rusShort = await gigaChatAi.getPostOutOfArticle(rusShort);
+                        rusShortLength = rusShort.length; // Update length after modification
+                    } else {
+                        break; // Exit loop if the text is short enough
+                    }
+                }
+            }
             translations.rusShort = rusShort;
             translations.rusArticle = rusArticle;
         }
@@ -408,14 +424,19 @@ async function parseGoogleNewsRss() {
         item.rusArticle = rusArticle;
         item.rusShort = rusShort;
 
-        if (makePost && interesting && rusShort !== "") {
+        if (makePost && (interesting || !options.news) && rusShort.length > 300) {
             const newsSource = item.links[0];
             const shortUrl = await urlShort.postLink(newsSource);
             const sourceFrom = getMainDomain(newsSource);
-            let tgText = `#ШницельНовости ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
+            let tgText = "";
+            if (options.news) {
+                tgText = `#ШницельНовости ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
+            } else {
+                tgText = `#ПсиСлухи ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)}`;
+            }
             console.log("Длина текста в Твиттер :", tgText.length);
             tgText = tgText.replace(/"/g, "''");
-            const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, -1001352848071);
+            const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, options.chatId, options.botToken);
 
             // only one post per execution, rest is stored
             if (sendTg.status = 200) {
@@ -433,8 +454,30 @@ async function parseGoogleNewsRss() {
     return;
 }
 
-// parseGoogleNewsRss();
+async function executeGoogleParcing() {
 
+    const rssAutNews = 'https://news.google.com/rss/topics/CAAqIAgKIhpDQkFTRFFvSEwyMHZNR2czZUJJQ1pHVW9BQVAB?hl=de&gl=AT&ceid=AT%3Ade';
+    const chatIdAutNews = Number(process.env.TG_CHAT_ID_AT_NEWS);
+    const botTokenAutNews = process.env.TG_BOT_TOKEN_SCHNITZELNEWS_BOT;
 
-module.exports = { parseGoogleNewsRss };
+    const rssPsyDeNews = 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNRFZ4Wm1nU0FtUmxLQUFQAQ?hl=de&gl=DE&ceid=DE%3Ade';
+    const rssPsyRuNews = 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNRFZ4Wm1nU0FtUmxLQUFQAQ?hl=ru&gl=RU&ceid=RU%3Aru';
+    const rssPsyEnNews = 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNRFZ4Wm1nU0FtVnVLQUFQAQ?hl=en-US&gl=US&ceid=US%3Aen';
+    
+    const chatIdPsyNews = Number(process.env.TG_CHAT_ID_PSY_NEWS);
+    const botTokenPsyNews = process.env.TG_BOT_TOKEN_FREUD_ONLINE_REPOST_BOT;
 
+    // Austria news feed with interesting check
+    // await parseGoogleNewsRss(rssAutNews, { news: true, chatId: chatIdAutNews, botToken: botTokenAutNews});
+
+    // Psychology feeds without interesting check
+    const options = { news: false, chatId: chatIdPsyNews, botToken: botTokenPsyNews };
+    await parseGoogleNewsRss(rssPsyDeNews, options);
+    await parseGoogleNewsRss(rssPsyRuNews, options);
+    await parseGoogleNewsRss(rssPsyEnNews, options);
+
+}
+
+// executeGoogleParcing();
+
+module.exports = { executeGoogleParcing };

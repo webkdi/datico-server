@@ -32,8 +32,8 @@ async function sendToTelegram(text) {
     return { status: stat, response: result};
 }
 
-async function sendPhotoToTelegram(caption, imageBuffer, chat_id) {
-    var botToken = process.env.TG_BOT_TOKEN_SCHNITZELNEWS_BOT;
+async function sendPhotoToTelegram(caption, imageBuffer, chat_id, botToken) {
+    
     const url = `https://api.telegram.org/bot${botToken}/sendPhoto`;
 
     const data = new FormData();
@@ -47,7 +47,7 @@ async function sendPhotoToTelegram(caption, imageBuffer, chat_id) {
         response = await axios.post(url, data, {
             headers: { ...data.getHeaders() },
         });
-        console.log(`Создан пост https://t.me/${response.data.result.sender_chat.username}/${response.data.result.message_id}`);
+        console.log(`Создан пост https://t.me/${response.data.result.chat.username}/${response.data.result.message_id}`);
         // console.log(response.status, response.statusText, JSON.stringify(response.data, null, 2));
         const result = response.data.result;
         const message_id = response.data.result.message_id; 

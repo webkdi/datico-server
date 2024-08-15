@@ -140,7 +140,7 @@ if (process.env.THIS_VERSION === "LIVE") {
 var schnitzelNewsBot = cron.schedule(
   '42 45 * * * *',
   () => {
-    glNews.parseGoogleNewsRss();
+    glNews.executeGoogleParcing();
   },
   {
     scheduled: false,
@@ -151,9 +151,6 @@ if (process.env.THIS_VERSION === "LIVE") {
   schnitzelNewsBot.start();
 }
 // schnitzelNewsBot.start();
-
-
-
 
 
 // # ┌────────────── second (optional)

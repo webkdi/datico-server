@@ -23,7 +23,7 @@ async function postLink(urlToPost) {
         // You may need to adjust the path depending on the actual structure of the response
         return response.data.data.short_url;
     } catch (error) {
-        console.error(error.message);
+        console.error("urlday:", error.message);
         // throw error; // re-throw the error for the caller to handle
         return '';
     }
