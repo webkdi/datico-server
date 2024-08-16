@@ -151,7 +151,6 @@ if (process.env.THIS_VERSION === "LIVE") {
   schnitzelNewsBot.start();
 }
 // schnitzelNewsBot.start();
-glNews.executeGoogleParcing();
 
 
 // # ┌────────────── second (optional)

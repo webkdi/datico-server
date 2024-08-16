@@ -137,6 +137,18 @@ async function decodeUrl_v202408(sourceUrl) {
     }
 }
 
+async function shortenUrl(originalUrl) {
+    const clckUrl = `https://clck.ru/--?url=${encodeURIComponent(originalUrl)}`;
+
+    try {
+        const response = await axios.get(clckUrl);
+        return response.data.trim();
+    } catch (error) {
+        console.error('Error occurred while shortening the URL:', error);
+        return 'Error occurred while shortening the URL';
+    }
+}
+
 function convertToMySQLDateTime(inputString) {
     const date = new Date(inputString);
 
@@ -402,6 +414,9 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
                 rusShort = await relAi.triggerRelAi(prompt);
                 console.log("relAi:", rusShort);
             } else {
+                if (rusArticle.length>2000) {
+                    rusArticle = await gigaChatAi.shortenArticle(rusArticle);
+                }
                 rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
 
                 let rusShortLength = rusShort.length;
@@ -434,7 +449,8 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
             if (options.news) {
                 tgText = `#ШницельНовости ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
             } else {
-                tgText = `#ПсиСлухи ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)}`;
+                const clckUrl = await shortenUrl(newsSource);
+                tgText = `#ПсиСлухи ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🔎 ${clckUrl}`;
             }
             console.log("Длина текста в Твиттер :", tgText.length);
             tgText = tgText.replace(/"/g, "''");
@@ -452,13 +468,10 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
     }
 
     fs.writeFileSync('components/Apps/googleNews/images/articles.json', JSON.stringify(news));
-    console.log('Articles saved to articles.json');
     return;
 }
 
 async function executeGoogleParcing() {
-
-    console.log("executeGoogleParcing started");
 
     const rssAutNews = 'https://news.google.com/rss/topics/CAAqIAgKIhpDQkFTRFFvSEwyMHZNR2czZUJJQ1pHVW9BQVAB?hl=de&gl=AT&ceid=AT%3Ade';
     const chatIdAutNews = Number(process.env.TG_CHAT_ID_AT_NEWS);
@@ -479,7 +492,8 @@ async function executeGoogleParcing() {
     await parseGoogleNewsRss(rssPsyDeNews, options);
     await parseGoogleNewsRss(rssPsyRuNews, options);
     await parseGoogleNewsRss(rssPsyEnNews, options);
-
+    return;
 }
+// executeGoogleParcing();
 
 module.exports = { executeGoogleParcing };
