@@ -397,13 +397,14 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
             console.log("crime topic, skip this time");
         } else if (makePost && (interesting || !options.news)) {
             const prompt = prompts.currentPrompt(rusArticle);
-            rusShort = await relAi.triggerRelAi(prompt);
-            console.log("relAi:", rusShort);
-            if (rusShort === "" || rusShort === undefined) {
+            if (options.news) {
+                rusShort = await relAi.triggerRelAi(prompt);
+                console.log("relAi:", rusShort);
+            } else {
                 rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
 
                 let rusShortLength = rusShort.length;
-                let maxIterations = 3;        
+                let maxIterations = 3;
                 for (let i = 0; i < maxIterations; i++) {
                     if (rusShortLength > 1000) {
                         console.log(`text with ${rusShortLength} characters too long, repeating`);
@@ -463,12 +464,12 @@ async function executeGoogleParcing() {
     const rssPsyDeNews = 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNRFZ4Wm1nU0FtUmxLQUFQAQ?hl=de&gl=DE&ceid=DE%3Ade';
     const rssPsyRuNews = 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNRFZ4Wm1nU0FtUmxLQUFQAQ?hl=ru&gl=RU&ceid=RU%3Aru';
     const rssPsyEnNews = 'https://news.google.com/rss/topics/CAAqIQgKIhtDQkFTRGdvSUwyMHZNRFZ4Wm1nU0FtVnVLQUFQAQ?hl=en-US&gl=US&ceid=US%3Aen';
-    
+
     const chatIdPsyNews = Number(process.env.TG_CHAT_ID_PSY_NEWS);
     const botTokenPsyNews = process.env.TG_BOT_TOKEN_FREUD_ONLINE_REPOST_BOT;
 
     // Austria news feed with interesting check
-    // await parseGoogleNewsRss(rssAutNews, { news: true, chatId: chatIdAutNews, botToken: botTokenAutNews});
+    await parseGoogleNewsRss(rssAutNews, { news: true, chatId: chatIdAutNews, botToken: botTokenAutNews });
 
     // Psychology feeds without interesting check
     const options = { news: false, chatId: chatIdPsyNews, botToken: botTokenPsyNews };
@@ -478,6 +479,6 @@ async function executeGoogleParcing() {
 
 }
 
-// executeGoogleParcing();
+executeGoogleParcing();
 
 module.exports = { executeGoogleParcing };
