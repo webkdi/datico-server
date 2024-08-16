@@ -479,6 +479,4 @@ async function executeGoogleParcing() {
 
 }
 
-executeGoogleParcing();
-
 module.exports = { executeGoogleParcing };
