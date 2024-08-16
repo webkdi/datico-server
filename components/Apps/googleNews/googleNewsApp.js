@@ -301,7 +301,8 @@ async function makeRusNews(texts) {
 }
 
 async function parseGoogleNewsRss(rssUrl, options = {}) {
-    // const RSS_URL = 'https://news.google.com/rss/topics/CAAqIAgKIhpDQkFTRFFvSEwyMHZNR2czZUJJQ1pHVW9BQVAB?hl=de&gl=AT&ceid=AT%3Ade';
+
+    console.log("Parcing", rssUrl)
     var news = await parseRSS(rssUrl);
 
     await db.cleanNewsTable();
@@ -456,6 +457,8 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
 }
 
 async function executeGoogleParcing() {
+
+    console.log("executeGoogleParcing started");
 
     const rssAutNews = 'https://news.google.com/rss/topics/CAAqIAgKIhpDQkFTRFFvSEwyMHZNR2czZUJJQ1pHVW9BQVAB?hl=de&gl=AT&ceid=AT%3Ade';
     const chatIdAutNews = Number(process.env.TG_CHAT_ID_AT_NEWS);
