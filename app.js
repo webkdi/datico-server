@@ -138,7 +138,8 @@ if (process.env.THIS_VERSION === "LIVE") {
 
 //GoogleNewsAT reposting
 var schnitzelNewsBot = cron.schedule(
-  '42 45 * * * *',
+  '5 */3 * * * *', 
+  // '42 45 * * * *',
   () => {
     glNews.executeGoogleParcing();
   },
