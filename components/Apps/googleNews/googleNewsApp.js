@@ -391,7 +391,7 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
         }
 
         let translations = {};
-        let rusShort, rusArticle;
+        let rusShort, rusShortLength, rusArticle;
 
         var isCrime;
         rusArticle = texts.slice(0, 2).map((element, index) => `Artikel ${index + 1}:\n"${element}"`).join('\n');
@@ -416,19 +416,22 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
                 console.log("relAi:", rusShort);
             }
         } else {
-            if (rusArticle.length > 2000) {
-                rusArticle = await gigaChatAi.shortenArticle(rusArticle);
-            }
-            rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
+            // if (rusArticle.length > 2000) {
+            //     rusArticle = await gigaChatAi.shortenArticle(rusArticle);
+            // }
+            // rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
 
-            let rusShortLength = rusShort.length;
             let maxIterations = 3;
+            rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
             for (let i = 0; i < maxIterations; i++) {
+                rusShortLength = rusShort.length;
                 if (rusShortLength > 1000) {
                     console.log(`text with ${rusShortLength} characters too long, repeating`);
+                    rusShort = await gigaChatAi.shortenArticle(rusShort);
                     rusShort = await gigaChatAi.getPostOutOfArticle(rusShort);
                     rusShortLength = rusShort.length; // Update length after modification
                 } else {
+                    console.log(`text length OK with ${rusShortLength} characters.`);
                     break; // Exit loop if the text is short enough
                 }
             }
@@ -441,11 +444,6 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
         item.rusArticle = rusArticle;
         item.rusShort = rusShort;
 
-
-
-
-
-
         // подготовить финальный текст или укоротить до нуля, чтобы не постить
         let tgText = "";
         if (rusShort.length > 300) {
@@ -456,7 +454,7 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
                 tgText = `#ШницельНовости ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
             } else {
                 const clckUrl = await shortenUrl(newsSource);
-                tgText = `#ПсиСлухи ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🔎 ${clckUrl}`;
+                tgText = `${rusShort}\n\n#ПсиСплетни 🗓️ ${convertDateString(item.pubDate)} 🧐 ${clckUrl}`;
             }
             console.log("Длина текста в Твиттер :", tgText.length);
             tgText = tgText.replace(/"/g, "''");
@@ -495,14 +493,14 @@ async function executeGoogleParcing() {
     const chatIdPsyNews = Number(process.env.TG_CHAT_ID_PSY_NEWS);
     const botTokenPsyNews = process.env.TG_BOT_TOKEN_FREUD_ONLINE_REPOST_BOT;
 
-    // Austria news feed with interesting check
-    await parseGoogleNewsRss(rssAutNews, { news: true, chatId: chatIdAutNews, botToken: botTokenAutNews });
+    const optionsAtNews = { news: true, chatId: chatIdAutNews, botToken: botTokenAutNews };
+    const optionsPsyNews = { news: false, chatId: chatIdPsyNews, botToken: botTokenPsyNews };
 
-    // Psychology feeds without interesting check
-    const options = { news: false, chatId: chatIdPsyNews, botToken: botTokenPsyNews };
-    await parseGoogleNewsRss(rssPsyDeNews, options);
-    await parseGoogleNewsRss(rssPsyRuNews, options);
-    await parseGoogleNewsRss(rssPsyEnNews, options);
+    // Austria news feed with interesting check
+    await parseGoogleNewsRss(rssAutNews, optionsAtNews);
+    await parseGoogleNewsRss(rssPsyDeNews, optionsPsyNews);
+    await parseGoogleNewsRss(rssPsyRuNews, optionsPsyNews);
+    await parseGoogleNewsRss(rssPsyEnNews, optionsPsyNews);
 
     console.log(Date().toString(), "executeGoogleParcing finished");
     return;
