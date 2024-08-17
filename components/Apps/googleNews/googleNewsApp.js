@@ -144,8 +144,8 @@ async function shortenUrl(originalUrl) {
         const response = await axios.get(clckUrl);
         return response.data.trim();
     } catch (error) {
-        console.error('Error occurred while shortening the URL:', error);
-        return 'Error occurred while shortening the URL';
+        console.error('Error with clck.ru:', error.message);
+        return originalUrl;
     }
 }
 
@@ -405,6 +405,7 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
         console.log(`Постить: ${makePost}, Интересно: ${interesting}, Крими: ${isCrime}, Жесть: ${postCrime}, Повтор: ${repeating}, Пост ${titles}`);
 
         // сделать текст статьи
+        rusShort = rusArticle;
         if (options.news) {
             if (repeating) {
                 console.log("repeating topic, skip this time");
@@ -424,18 +425,21 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
             let maxIterations = 3;
             rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
             for (let i = 0; i < maxIterations; i++) {
-                rusShortLength = rusShort.length;
-                if (rusShortLength > 1000) {
-                    console.log(`text with ${rusShortLength} characters too long, repeating`);
-                    rusShort = await gigaChatAi.shortenArticle(rusShort);
-                    rusShort = await gigaChatAi.getPostOutOfArticle(rusShort);
-                    rusShortLength = rusShort.length; // Update length after modification
-                } else {
-                    console.log(`text length OK with ${rusShortLength} characters.`);
-                    break; // Exit loop if the text is short enough
+                if (rusShort && rusShort.length) {
+                    rusShortLength = rusShort.length;
+                    if (rusShortLength > 1000) {
+                        console.log(`text with ${rusShortLength} characters too long, repeating`);
+                        rusShort = await gigaChatAi.shortenArticle(rusShort);
+                        rusShort = await gigaChatAi.getPostOutOfArticle(rusShort);
+                        rusShortLength = rusShort.length; // Update length after modification
+                    } else {
+                        console.log(`text length OK with ${rusShortLength} characters.`);
+                        break; // Exit loop if the text is short enough
+                    }
                 }
             }
         }
+
         translations.rusShort = rusShort;
         translations.rusArticle = rusArticle;
         rusArticle = translations.rusArticle !== undefined ? translations.rusArticle : "";
@@ -447,6 +451,10 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
         // подготовить финальный текст или укоротить до нуля, чтобы не постить
         let tgText = "";
         if (rusShort.length > 300) {
+            // Check if the string starts and ends with double single quotes (which represent the original double quotes)
+            if (rusShort.startsWith('"') && rusShort.endsWith('"')) {
+                rusShort = rusShort.substring(1, rusShort.length - 1);
+            }
             const newsSource = item.links[0];
             const shortUrl = await urlShort.postLink(newsSource);
             const sourceFrom = getMainDomain(newsSource);
@@ -457,7 +465,10 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
                 tgText = `${rusShort}\n\n#ПсиСплетни 🗓️ ${convertDateString(item.pubDate)} 🧐 ${clckUrl}`;
             }
             console.log("Длина текста в Твиттер :", tgText.length);
+
+
             tgText = tgText.replace(/"/g, "''");
+
         }
 
         if (((makePost && interesting) || !options.news) && tgText.length > 300) {
@@ -473,6 +484,7 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
         }
 
         const updateArticle = await db.updateArticle(item);
+        console.log("updateArticle", updateArticle);
 
     }
 
