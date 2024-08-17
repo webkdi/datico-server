@@ -314,7 +314,7 @@ async function makeRusNews(texts) {
 
 async function parseGoogleNewsRss(rssUrl, options = {}) {
 
-    console.log("Parcing", rssUrl)
+    console.log(Date().toString(),"Parcing", rssUrl);
     var news = await parseRSS(rssUrl);
 
     await db.cleanNewsTable();
