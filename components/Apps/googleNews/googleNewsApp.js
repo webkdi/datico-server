@@ -314,7 +314,7 @@ async function makeRusNews(texts) {
 
 async function parseGoogleNewsRss(rssUrl, options = {}) {
 
-    console.log(Date().toString(),"Parcing", rssUrl);
+    console.log(Date().toString(), "Parcing", rssUrl);
     var news = await parseRSS(rssUrl);
 
     await db.cleanNewsTable();
@@ -404,48 +404,54 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
 
         console.log(`Постить: ${makePost}, Интересно: ${interesting}, Крими: ${isCrime}, Жесть: ${postCrime}, Повтор: ${repeating}, Пост ${titles}`);
 
-        if (repeating) {
-            console.log("repeating topic, skip this time");
-        } else if (isCrime && !postCrime) {
-            console.log("crime topic, skip this time");
-        } else if (makePost && (interesting || !options.news)) {
-            const prompt = prompts.currentPrompt(rusArticle);
-            if (options.news) {
+        // сделать текст статьи
+        if (options.news) {
+            if (repeating) {
+                console.log("repeating topic, skip this time");
+            } else if (isCrime && !postCrime) {
+                console.log("crime topic, skip this time");
+            } else if (makePost && interesting) {
+                const prompt = prompts.currentPrompt(rusArticle);
                 rusShort = await relAi.triggerRelAi(prompt);
                 console.log("relAi:", rusShort);
-            } else {
-                if (rusArticle.length>2000) {
-                    rusArticle = await gigaChatAi.shortenArticle(rusArticle);
-                }
-                rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
+            }
+        } else {
+            if (rusArticle.length > 2000) {
+                rusArticle = await gigaChatAi.shortenArticle(rusArticle);
+            }
+            rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
 
-                let rusShortLength = rusShort.length;
-                let maxIterations = 3;
-                for (let i = 0; i < maxIterations; i++) {
-                    if (rusShortLength > 1000) {
-                        console.log(`text with ${rusShortLength} characters too long, repeating`);
-                        rusShort = await gigaChatAi.getPostOutOfArticle(rusShort);
-                        rusShortLength = rusShort.length; // Update length after modification
-                    } else {
-                        break; // Exit loop if the text is short enough
-                    }
+            let rusShortLength = rusShort.length;
+            let maxIterations = 3;
+            for (let i = 0; i < maxIterations; i++) {
+                if (rusShortLength > 1000) {
+                    console.log(`text with ${rusShortLength} characters too long, repeating`);
+                    rusShort = await gigaChatAi.getPostOutOfArticle(rusShort);
+                    rusShortLength = rusShort.length; // Update length after modification
+                } else {
+                    break; // Exit loop if the text is short enough
                 }
             }
-            translations.rusShort = rusShort;
-            translations.rusArticle = rusArticle;
         }
-
+        translations.rusShort = rusShort;
+        translations.rusArticle = rusArticle;
         rusArticle = translations.rusArticle !== undefined ? translations.rusArticle : "";
         rusShort = translations.rusShort !== undefined ? translations.rusShort : "";
 
         item.rusArticle = rusArticle;
         item.rusShort = rusShort;
 
-        if (makePost && (interesting || !options.news) && rusShort.length > 300) {
+
+
+
+
+
+        // подготовить финальный текст или укоротить до нуля, чтобы не постить
+        let tgText = "";
+        if (rusShort.length > 300) {
             const newsSource = item.links[0];
             const shortUrl = await urlShort.postLink(newsSource);
             const sourceFrom = getMainDomain(newsSource);
-            let tgText = "";
             if (options.news) {
                 tgText = `#ШницельНовости ${rusShort}\n\n🗓️ ${convertDateString(item.pubDate)} 🗞️ ${sourceFrom} 🔎 ${shortUrl}`;
             } else {
@@ -454,10 +460,14 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
             }
             console.log("Длина текста в Твиттер :", tgText.length);
             tgText = tgText.replace(/"/g, "''");
+        }
+
+        if (((makePost && interesting) || !options.news) && tgText.length > 300) {
+
             const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, options.chatId, options.botToken);
 
             // only one post per execution, rest is stored
-            if (sendTg.status = 200) {
+            if (sendTg.status === 200) {  // Use === for comparison
                 makePost = false;
                 crimeCounter += 1;
                 await db.updateNewsMngt(crimeCounter);
@@ -465,6 +475,7 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
         }
 
         const updateArticle = await db.updateArticle(item);
+
     }
 
     fs.writeFileSync('components/Apps/googleNews/images/articles.json', JSON.stringify(news));
@@ -492,6 +503,8 @@ async function executeGoogleParcing() {
     await parseGoogleNewsRss(rssPsyDeNews, options);
     await parseGoogleNewsRss(rssPsyRuNews, options);
     await parseGoogleNewsRss(rssPsyEnNews, options);
+
+    console.log(Date().toString(), "executeGoogleParcing finished");
     return;
 }
 // executeGoogleParcing();
