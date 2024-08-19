@@ -402,7 +402,7 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
         const similarScore = topics.compareSimilarity(titles, titlesPublishedPreviously);
         const repeating = similarScore >= 0.5 ? true : false;
 
-        console.log(`Постить: ${makePost}, Интересно: ${interesting}, Крими: ${isCrime}, Жесть: ${postCrime}, Повтор: ${repeating}, Пост ${titles}`);
+        console.log(`Пост: "${titles}", Новости: ${options.news}, Постить: ${makePost}, Интересно: ${interesting}, Крими: ${isCrime}, Жесть: ${postCrime}, Повтор: ${repeating}`);
 
         // сделать текст статьи
         rusShort = rusArticle;
@@ -417,10 +417,6 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
                 console.log("relAi:", rusShort);
             }
         } else {
-            // if (rusArticle.length > 2000) {
-            //     rusArticle = await gigaChatAi.shortenArticle(rusArticle);
-            // }
-            // rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
 
             let maxIterations = 3;
             rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);

@@ -67,7 +67,7 @@ async function generateChatResponse(token, messages) {
         const output = response.data.choices[0].message.content;
         return output;
     } catch (error) {
-        console.error('Error generating chat response:', error.response ? error.response.data : error.message);
+        console.error('Error generateChatResponse:', error.response ? error.response.data : error.message);
     }
 }
 
@@ -124,7 +124,6 @@ async function getPostOutOfArticle(articleText) {
     const messages = buildMessages(articleText);
     if (token) {
         const res = await generateChatResponse(token, messages);
-        console.log(res);
         return res;
     }
 }
