@@ -232,7 +232,8 @@ async function extractTextAndImageFromURL(url) {
         const $ = cheerio.load(response.data);
 
         // Extract text
-        const text = $('p').text();
+        let text = $('p').text();
+        text = text.replace(/\s+/g, ' ').trim();
 
         // Try to extract the image URL from Open Graph meta tag
         let imageUrl = $('meta[property="og:image"]').attr('content');
@@ -412,14 +413,22 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
             } else if (isCrime && !postCrime) {
                 console.log("crime topic, skip this time");
             } else if (makePost && interesting) {
-                const prompt = prompts.currentPrompt(rusArticle);
-                rusShort = await relAi.triggerRelAi(prompt);
+                const relData = await db.getRelevanceaiUrls();
+                const endpoint=relData[0].endpoint;
+                const project = relData[0].project;
+                const prompt = prompts.promptNewsAt(rusArticle);
+                rusShort = await relAi.triggerRelAi(prompt, endpoint, project);
                 console.log("relAi:", rusShort);
             }
         } else {
+            const relData = await db.getRelevanceaiUrls();
+            const endpoint=relData[1].endpoint;
+            const project = relData[1].project;
+            const prompt = prompts.promptPsyNews(rusArticle);
+            rusShort = await relAi.triggerRelAi(prompt, endpoint, project);
+            // rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
 
             let maxIterations = 3;
-            rusShort = await gigaChatAi.getPostOutOfArticle(rusArticle);
             for (let i = 0; i < maxIterations; i++) {
                 if (rusShort && rusShort.length) {
                     rusShortLength = rusShort.length;
@@ -469,14 +478,18 @@ async function parseGoogleNewsRss(rssUrl, options = {}) {
 
         if (((makePost && interesting) || !options.news) && tgText.length > 300) {
 
-            const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, options.chatId, options.botToken);
+            if (true) {
+                const sendTg = await tg.sendPhotoToTelegram(tgText, imgCollage, options.chatId, options.botToken);
 
-            // only one post per execution, rest is stored
-            if (sendTg.status === 200) {  // Use === for comparison
-                makePost = false;
-                crimeCounter += 1;
-                await db.updateNewsMngt(crimeCounter);
+                // only one post per execution, rest is stored
+                if (sendTg.status === 200) {  // Use === for comparison
+                    makePost = false;
+                    crimeCounter += 1;
+                    await db.updateNewsMngt(crimeCounter);
+                }
             }
+
+
         }
 
         const updateArticle = await db.updateArticle(item);
@@ -516,3 +529,14 @@ async function executeGoogleParcing() {
 // executeGoogleParcing();
 
 module.exports = { executeGoogleParcing };
+
+// const tempText = `Get inspired by a weekly roundup on living well, made simple. Sign up for CNN’s Life, But Better newsletter for information and tools designed to improve your well-being.You’re hitting it off with a new fling or friend when suddenly, they drop off the face of Earth without warning and with absolutely no explanation. You then realize you’ve been ghosted, perhaps vowing to never treat anyone how you were treated.“Ghosting has probably existed since the dawn of time in some way,” said Dr. Jennice Vilhauer, a psychologist in Los Angeles and author of “Think Forward to Thrive: How to Use the Mind’s Power to Transcend Your Past and Transform Your Life.”But when internet dating surged around the mid-2010s, ghosting became more common. Its popularity led Vilhauer to write one of the first psychology articles on the topic in 2015, and Merriam-Webster to add the term to its dictionary in 2017. Google searches of the term peaked in 2019.Today, Vilhauer noted, there are thousands of articles on ghosting, and it happens so often that many people in the dating scene now anticipate it.But that doesn’t mean being ditched is painless.“We are wired to be connected to other people, and getting rejected has a negative effect on us in terms of how we evaluate ourselves, as well as our perception of safety in the world,” Vilhauer said. “The pain (is) just as real as if you have a physical pain.”Ghosting lacks the clarity and certainty of an explicit rejection, which helps people process, feel closure and move on, experts said. The absence of these things can be distressing, especially if you’re filling in the blanks with worst-case scenarios. People can become more guarded, which is detrimental to finding love or friendship.Those doing the ghosting may feel relief, guilt, both simultaneously or apathy, Vilhauer said.We live in a time when the expediency and inhuman nature of technology and dating apps render many people uncomfortable with difficult emotions and conversations and less accountable to people we know we may never again encounter in person, experts said.On dating apps, ghosting can be a simple and efficient way to end one of multiple connections someone is simultaneously entertaining, said Dr. Rich Slatcher, a professor of psychology at the University of Georgia. The more anonymous someone is, the easier it is to dehumanize them, he said, and how much we owe someone, especially in the early stages, isn’t a universally agreed-upon concept.Figuring out what message will end things while also preserving their feelings can be challenging. Some people lack maturity or empathy. Others are avoidant and dislike interactions that might involve conflict since people often negatively react to being told, “I don’t really want to hang out with you or talk to you anymore,” Slatcher said.If you tend to ghost for this reason, you’re likely avoiding conflict in other areas of your life, Slatcher said. Working with a therapist can help you overcome this habit.The decision to ghost another person isn’t always consciously made — sometimes, people just mentally cast aside the issue in their mind because they don’t feel like dealing with it at the time, then end up never responding.“Some people are just terrible at responding on text and just can’t get their act together,” Slatcher said.There are some people who would’ve preferred to be ghosted rather than knowing how much the “ghoster” dislikes them, Vilhauer said. But you can’t predict how someone will feel — so, whether it’s a friendship or romantic connection you’re ending, generally, providing some kind of final communication so the recipient can at least process it is best, experts said.The most acceptable reason for ghosting is, without a doubt, if there has been abuse or if further communication would put you in danger, Vilhauer said. In an abusive relationship, exiting it is often the most dangerous part, she added.Sometimes, people have “attempted to reject someone before, and that person has responded really angrily or aggressively, and so they are afraid to try again,” said Dr. Gili Freedman, an associate professor of psychology at St. Mary’s College of Maryland and author of a 2018 study on ghosting among friends. “So they ghost to try to protect themselves.”Ghosting is also acceptable if the other person is exhibiting inappropriate behaviors such as sending unsolicited explicit photos, showing up at your workplace, contacting your exes, stealing from you or showing blatant disregard for your boundaries, Vilhauer said.“What we don’t know is, does it actually keep you safer? It’s possible in the immediate aftermath, yeah,” Freedman said. “What about if you run into them again? Does the fact that you ghosted make things worse or better? I don’t know.”While some people think ghosting someone they’ve only been on one or two dates with is OK, experts disagree. Generally, they say that the kindest and most appropriate thing to do is to send a quick message such as this: “It was really nice to meet you, but I didn’t feel a connection.”If you’re actively considering ghosting someone, ask yourself if it’s necessary or if you just want to avoid an awkward situation. Is ghosting going to solve the problem in a way that makes sense for you? Do you feel good about it?If you’ve been ghosted, try not to dwell on it too much, especially because that person probably isn’t thinking about you, Slatcher said. That’s, of course, easier said than done, he added, but there are many healthy ways to distract yourself — exercising, listening to music and pursuing other hobbies.“When someone’s ghosted us, we can often feel a lack of belongingness,” Freedman said. “It might help to reach out to other friends to reconnect with them or reach out to family so that you’re reaffirming the other parts of your life where you do feel that belongingness and a more positive sense of self.”You can vent, but at some point, talking about it a lot is a fruitless exercise since you have no control over, or knowledge of, why that person ditched you, Slatcher said.Asking for an explanation once or twice if you want is OK, but don’t continue to demand one, Vilhauer said. Recognize that person is actively choosing to not respond — that’s a response in and of itself, and you shouldn’t continue to choose someone who isn’t choosing you.For more CNN news and newsletters create an account at CNN.comThe economy will be a paramount issue this week as Democrats gather in Chicago to fully anoint Kamala Harris as their nominee.Gamescom 2024 is almost here. Exhibitors from over 60 countries will descend on Cologne, Germany, for what is now the industry’s biggest gaming event following E3’s demise. You can watch the opening-night showcase right here on Tuesday, August 20.Fritz Burkard's 1934 Bugatti Type 59 Sports won Best of Show in Pebble Beach. It's the first time a Preservation-class car wins the event.You can save major bucks today on products from Apple, Ninja, FitBit, CeraVe, JBL and more.Compare the best CD rates available today vs. the national average.A dietitian shares her do's and don'ts for drinking coffee.Investors are counting down to a speech by Jerome Powell at Jackson Hole that could reset rate-cut expectations.The biggest news stories this morning:   Fortnite returns to iOS, How to choose the best TV for gaming right now, Microsoft boosts Windows’ FAT32 partition size limit.AMD, the chipmaker hot on the heels of Nvidia in the AI race, today announced a big acquisition to boost its position as an \"ecosystem\" partner for companies building big AI businesses: it is acquiring ZT Systems, which provides compute design and infrastructure for AI, cloud and general purpose computing, for $4.9 billion.  The plan is to incorporate ZT Systems’ computing infrastructure design business.  AMD said it will look to sell ZT Systems’ data center infrastructure manufacturing business to \"a strategic partner.\"Artificial sweeteners are low in calories, but that doesn't automatically mean they're healthier.`;
+// async function tempTest (tempText) {
+//     const relData = await db.getRelevanceaiUrls();
+//     const endpoint=relData[0].endpoint;
+//     const project = relData[0].project;
+//     const prompt = prompts.promptNewsAt(tempText);
+//     const tempRes = await relAi.triggerRelAi(prompt, endpoint, project);
+//     console.log(tempRes);
+// }
+// tempTest(tempText);

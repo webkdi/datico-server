@@ -7,27 +7,30 @@ const db = require("./db_datico");
 // const relApiUrl = 'https://api-d7b62b.stack.tryrelevance.com/latest/studios/cfb8606f-4af4-457d-84f0-d21b05940e0f/trigger_limited';
 
 // Async function to perform the POST request
-async function triggerRelAi(text) {
+async function triggerRelAi(text, endpoint, project, apiKey = "") {
     
-    const relData = await db.getRelevanceaiUrls();
-    const url=relData[0].endpoint;
-    const relProject = relData[0].project;
-
-    console.log("Длина вводного текста в Relevance:", text.length);
     const data = {
         params: {
             text: text
         },
-        project: relProject
+        project: project
     };
     const config = {
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": apiKey
         }
     };
 
+
+    fetch('https://api-d7b62b.stack.tryrelevance.com/latest/studios/ef33e836-a5fa-43e8-9599-55912af202ed/trigger_limited', {
+        method: "POST",
+        headers: {"Content-Type":"application/json","Authorization":"YOUR_API_KEY"},
+        body: JSON.stringify({"params":{"text":""},"project":"6f54abdd0f8d-4e58-9eb0-42c79d6a225f"})
+      })
+
     try {
-        const response = await axios.post(url, data, config);
+        const response = await axios.post(endpoint, data, config);
         // console.log('Response from Relevance:', response.data);
         return response.data.output.answer;
     } catch (error) {
