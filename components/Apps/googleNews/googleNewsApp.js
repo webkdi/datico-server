@@ -519,9 +519,9 @@ async function executeGoogleParcing() {
 
     // Austria news feed with interesting check
     await parseGoogleNewsRss(rssAutNews, optionsAtNews);
-    await parseGoogleNewsRss(rssPsyDeNews, optionsPsyNews);
+    // await parseGoogleNewsRss(rssPsyDeNews, optionsPsyNews);
     await parseGoogleNewsRss(rssPsyRuNews, optionsPsyNews);
-    await parseGoogleNewsRss(rssPsyEnNews, optionsPsyNews);
+    // await parseGoogleNewsRss(rssPsyEnNews, optionsPsyNews);
 
     console.log(Date().toString(), "executeGoogleParcing finished");
     return;
